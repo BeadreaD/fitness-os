@@ -2,11 +2,10 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Fitness et Nutrition OS</title>
   <link rel="manifest" href="manifest.webmanifest" />
-  <meta name="theme-color" content="#EEF2EA" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#1E2B24" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#EEF2EA" />
   <meta name="description" content="Planification des repas, stock, courses, entraînement et suivi du corps." />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -15,21 +14,20 @@
   <link rel="apple-touch-icon" href="icone-192.png" />
   <link rel="icon" href="icone-192.png" />
 
-  <script>
-    // Applique le thème choisi avant le premier pixel, pour éviter un éclair de couleur
-    (() => {
-      try {
-        const theme = JSON.parse(localStorage.getItem('mealPlanner:v1') || '{}')?.ui?.theme;
-        if (theme === 'clair') document.documentElement.dataset.theme = 'light';
-        else if (theme === 'sombre') document.documentElement.dataset.theme = 'dark';
-      } catch (e) { /* premier lancement */ }
-    })();
-  </script>
   <link rel="stylesheet" href="tailwind.css" />
   <script src="chart.umd.js"></script>
 
   <style>
     [hidden] { display: none !important; }
+    /* Encoches et barre d'accueil de l'iPhone */
+    body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    header { padding-top: env(safe-area-inset-top, 0px); }
+    #toast { bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+    /* Sur téléphone, la barre de résumé du profil ne doit pas masquer la notification */
+    @media (max-width: 1023px) {
+      body:has(#profil-barre:not(.translate-y-full)) #toast { bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+    }
+    #profil-barre, #modale-seance [data-repos], #modale-seance footer { padding-bottom: env(safe-area-inset-bottom, 0px); }
     input[type=number]::-webkit-inner-spin-button { opacity: .4; }
     body:has(dialog[open]) { overflow: hidden; }
     dialog[open] { animation: modale-entree .22s ease-out; }
@@ -270,17 +268,6 @@
           </div>
         </aside>
       </div>
-
-      <!-- Apparence -->
-      <section aria-labelledby="apparence-titre" class="mt-12 rounded-2xl bg-carte p-5 ring-1 ring-encre/10 sm:p-6">
-        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div class="max-w-prose">
-            <h2 id="apparence-titre" class="text-lg font-semibold">Apparence</h2>
-            <p class="mt-1 text-sm text-pierre">Le thème sombre suit ton téléphone par défaut. Tu peux aussi le forcer, par exemple pour consulter tes recettes le soir en cuisine.</p>
-          </div>
-          <div id="theme-choix" class="flex shrink-0 rounded-full bg-sauge p-1" role="group" aria-label="Thème de l'application"></div>
-        </div>
-      </section>
 
       <!-- Calories des jours d'entraînement -->
       <section aria-labelledby="ajustement-titre" class="mt-12 rounded-2xl bg-carte p-5 ring-1 ring-encre/10 sm:p-6">
@@ -561,7 +548,7 @@
         <div id="perf-resume" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
 
         <div class="mt-4 rounded-3xl bg-carte p-5 ring-1 ring-encre/10">
-          <div class="relative h-72 sm:h-80">
+          <div class="relative h-64 sm:h-80">
             <canvas id="perf-graphique" aria-label="Courbe de progression" role="img"></canvas>
           </div>
           <p id="perf-message" class="mt-3 text-sm text-pierre"></p>
@@ -832,13 +819,13 @@
 
   <!-- ============ MODALE : DÉTAIL D'UN REPAS ============ -->
   <dialog id="modale-repas" aria-labelledby="modale-titre"
-          class="m-auto w-[min(calc(100%-2rem),42rem)] max-h-[min(90vh,56rem)] rounded-3xl bg-carte p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
+          class="max-sm:m-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col m-auto w-[min(calc(100%-2rem),42rem)] max-h-[min(90vh,56rem)] rounded-3xl bg-carte p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <div id="modale-contenu" class="flex min-h-0 flex-1 flex-col"></div>
   </dialog>
 
   <!-- ============ MODALE : EXERCICE PERSONNEL ============ -->
   <dialog id="modale-exercice" aria-labelledby="exercice-titre"
-          class="m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
+          class="max-sm:overflow-y-auto max-sm:m-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <form id="exercice-form" novalidate class="space-y-5 p-6">
       <h2 id="exercice-titre" class="text-xl font-extrabold tracking-tight"></h2>
       <label class="block">
@@ -905,13 +892,13 @@
 
   <!-- ============ MODALE : FICHE DE CUISINE ============ -->
   <dialog id="modale-session" aria-labelledby="fiche-titre"
-          class="m-auto max-h-[min(90vh,56rem)] w-[min(calc(100%-2rem),46rem)] rounded-3xl bg-carte p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
+          class="max-sm:m-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col m-auto max-h-[min(90vh,56rem)] w-[min(calc(100%-2rem),46rem)] rounded-3xl bg-carte p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <div id="fiche-contenu" class="flex min-h-0 flex-1 flex-col"></div>
   </dialog>
 
   <!-- ============ MODALE : COPIER UNE JOURNÉE ============ -->
   <dialog id="modale-copie" aria-labelledby="copie-titre"
-          class="m-auto w-[min(calc(100%-2rem),28rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
+          class="max-sm:overflow-y-auto max-sm:m-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col m-auto w-[min(calc(100%-2rem),28rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <form id="copie-form" class="space-y-5 p-6" novalidate>
       <div>
         <h2 id="copie-titre" class="text-xl font-extrabold tracking-tight"></h2>
@@ -932,9 +919,15 @@
     </form>
   </dialog>
 
+  <!-- ============ MODALE : FICHE D'UNE RECETTE ============ -->
+  <dialog id="modale-detail" aria-labelledby="detail-titre"
+          class="max-sm:m-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col m-auto max-h-[min(90vh,56rem)] w-[min(calc(100%-2rem),42rem)] rounded-3xl bg-carte p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
+    <div id="detail-contenu" class="flex min-h-0 flex-1 flex-col"></div>
+  </dialog>
+
   <!-- ============ MODALE : ÉDITEUR DE RECETTE ============ -->
   <dialog id="modale-recette" aria-labelledby="recette-titre"
-          class="m-auto h-[min(calc(100dvh-1rem),60rem)] w-[min(calc(100%-1rem),66rem)] rounded-3xl bg-sauge p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
+          class="max-sm:m-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col m-auto h-[min(calc(100dvh-1rem),60rem)] w-[min(calc(100%-1rem),66rem)] rounded-3xl bg-sauge p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <form id="recette-form" novalidate class="flex min-h-0 flex-1 flex-col">
       <header class="flex items-center justify-between gap-4 border-b border-encre/10 bg-carte px-5 py-4 sm:px-6">
         <h2 id="recette-titre" class="text-xl font-extrabold tracking-tight"></h2>
@@ -1036,7 +1029,7 @@
 
   <!-- ============ MODALE : INGRÉDIENT ============ -->
   <dialog id="modale-ingredient" aria-labelledby="ingredient-titre"
-          class="m-auto w-[min(calc(100%-2rem),30rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
+          class="max-sm:overflow-y-auto max-sm:m-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col m-auto w-[min(calc(100%-2rem),30rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <form id="ingredient-form" novalidate class="space-y-5 p-6">
       <h2 id="ingredient-titre" class="text-xl font-extrabold tracking-tight"></h2>
       <label class="block">
@@ -1105,7 +1098,7 @@
 
   <!-- ============ MODALE : IMPORT D'UNE SAUVEGARDE ============ -->
   <dialog id="modale-import" aria-labelledby="import-titre"
-          class="m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
+          class="max-sm:overflow-y-auto max-sm:m-0 max-sm:h-[100dvh] max-sm:max-h-none max-sm:w-screen max-sm:max-w-none max-sm:rounded-none max-sm:flex max-sm:flex-col m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <div class="space-y-5 p-6">
       <div>
         <h2 id="import-titre" class="text-xl font-extrabold tracking-tight">Importer cette sauvegarde</h2>
@@ -1139,10 +1132,10 @@
 
   <!-- ============ NOTIFICATION ============ -->
   <div id="toast" role="status" aria-live="polite"
-       class="print:hidden fixed bottom-6 left-1/2 z-50 flex max-w-[calc(100%-2rem)] -translate-x-1/2 translate-y-4 items-center gap-3 rounded-2xl bg-panneau py-2 pl-5 pr-2 text-surpanneau opacity-0 shadow-lg pointer-events-none transition duration-200">
-    <span id="toast-texte" class="py-1.5 text-sm"></span>
+       class="print:hidden fixed inset-x-3 bottom-6 z-50 flex max-w-[34rem] translate-y-4 flex-col gap-2 rounded-2xl bg-panneau p-3 text-surpanneau opacity-0 shadow-lg pointer-events-none transition duration-200 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:flex-row sm:items-center sm:gap-3 sm:py-2 sm:pl-5 sm:pr-2">
+    <span id="toast-texte" class="text-sm sm:py-1.5"></span>
     <button type="button" id="toast-action" hidden
-            class="shrink-0 rounded-xl px-3 py-1.5 text-sm font-semibold text-beurre hover:bg-surpanneau/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-beurre"></button>
+            class="shrink-0 rounded-xl bg-surpanneau/10 px-4 py-2.5 text-sm font-semibold text-beurre hover:bg-surpanneau/20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-beurre sm:bg-transparent sm:px-3 sm:py-1.5"></button>
   </div>
 
   <script>
@@ -2484,7 +2477,7 @@
 
   const DEFAULT_STATE = {
     version: 1,
-    ui: { vue: 'accueil', theme: 'systeme', activeTab: 'planning', ongletEntrainement: 'constructeur', jourSeance: 'lundi', dateSeance: null, reposDefaut: 90, jourSuivi: null, masquerCoches: false, achatParFournees: true,
+    ui: { vue: 'accueil', activeTab: 'planning', ongletEntrainement: 'constructeur', jourSeance: 'lundi', dateSeance: null, reposDefaut: 90, jourSuivi: null, masquerCoches: false, achatParFournees: true,
       joursCuisine: ['mercredi', 'dimanche'], fourneesDoubles: true },
     profil: {
       sexe: 'homme', age: 25, taille: 178,
@@ -2774,6 +2767,9 @@
       bouton.textContent = action || '';
       bouton.onclick = () => { onAction?.(); this.masquer(); };
       toast.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+      // Sur téléphone, on laisse le temps de lire et d'atteindre le bouton
+      if (action && window.innerWidth < 640) duree = Math.max(duree, 9000);
+      clearTimeout(this.timer);
       clearTimeout(this.timer);
       this.timer = setTimeout(() => this.masquer(), duree);
     },
@@ -2880,7 +2876,7 @@
           lien: '#/entrainement',
           titre: 'Training Planner',
           description: 'Bibliothèque d\'exercices, constructeur de séances, suivi des performances.',
-          couleur: 'bg-panneau',
+          couleur: 'bg-lip',
           icone: '<path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10" stroke-linecap="round" stroke-linejoin="round"/>',
           chiffres: (() => {
             const seances = Object.values(d.entrainement.seances).filter((s) => s.exercices.length).length;
@@ -3233,7 +3229,7 @@
       const zone = $('seance-exercices');
       const cleFocus = zone.contains(document.activeElement) ? document.activeElement.dataset.focus : null;
       const champ = 'w-16 rounded-lg bg-sauge/60 px-2 py-1.5 text-sm font-semibold tabular-nums ring-1 ring-encre/10 outline-none focus:ring-2 focus:ring-focus';
-      const bouton = 'grid h-8 w-8 place-items-center rounded-lg text-pierre hover:bg-sauge disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
+      const bouton = 'grid h-10 w-10 place-items-center rounded-lg text-pierre sm:h-8 sm:w-8 hover:bg-sauge disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
 
       zone.innerHTML = seance.exercices.length ? seance.exercices.map((ligne, i) => {
         const exercice = getExerciceById(ligne.id);
@@ -4497,52 +4493,6 @@
   };
 
   /* =========================================================
-     7 decies. THÈME CLAIR OU SOMBRE
-     ========================================================= */
-  const Theme = {
-    CHOIX: [['systeme', 'Système'], ['clair', 'Clair'], ['sombre', 'Sombre']],
-
-    init() {
-      $('theme-choix').innerHTML = this.CHOIX.map(([id, label]) => `
-        <button type="button" data-theme="${id}" aria-pressed="false"
-                class="rounded-full px-3.5 py-1.5 text-sm font-semibold aria-pressed:bg-carte aria-pressed:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">${label}</button>`).join('');
-      $('theme-choix').addEventListener('click', (e) => {
-        const bouton = e.target.closest('[data-theme]');
-        if (!bouton) return;
-        State.update((d) => { d.ui.theme = bouton.dataset.theme; });
-      });
-      window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', () => this.appliquer());
-      State.subscribe(() => this.render());
-      this.render();
-    },
-
-    appliquer() {
-      const theme = State.data.ui.theme;
-      const racine = document.documentElement;
-      if (theme === 'clair') racine.dataset.theme = 'light';
-      else if (theme === 'sombre') racine.dataset.theme = 'dark';
-      else delete racine.dataset.theme;
-
-      // La couleur de la barre du navigateur suit le thème réellement affiché
-      const sombre = theme === 'sombre'
-        || (theme !== 'clair' && window.matchMedia?.('(prefers-color-scheme: dark)').matches);
-      document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.remove());
-      const meta = document.createElement('meta');
-      meta.name = 'theme-color';
-      meta.content = sombre ? '#121815' : '#EEF2EA';
-      document.head.append(meta);
-    },
-
-    render() {
-      this.appliquer();
-      document.querySelectorAll('[data-theme]').forEach((bouton) => {
-        if (bouton.tagName !== 'BUTTON') return;
-        bouton.setAttribute('aria-pressed', String(bouton.dataset.theme === State.data.ui.theme));
-      });
-    },
-  };
-
-  /* =========================================================
      8. NAVIGATION PAR ONGLETS
      ========================================================= */
   const Tabs = {
@@ -4965,7 +4915,7 @@
               ${variation !== null ? `<span class="text-xs text-pierre tabular-nums">${signe(variation, nf1)} kg</span>` : ''}
               <span class="font-semibold tabular-nums">${nf1.format(e.poids)} kg</span>
               <button type="button" data-supprimer="${e.date}" aria-label="Supprimer la pesée du ${dateLongue(e.date)}"
-                      class="grid h-7 w-7 place-items-center rounded-lg text-pierre hover:bg-sauge hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
+                      class="grid h-9 w-9 place-items-center sm:h-7 sm:w-7 rounded-lg text-pierre hover:bg-sauge hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
             </span>
           </li>`;
       }).join('');
@@ -5423,7 +5373,7 @@
       const { meal, portions } = slot;
       const kcal = macrosPortion(meal, portions).calories;
       const consomme = !!State.data.suivi.repas[cle];
-      const boutonPetit = 'grid h-7 w-7 place-items-center rounded-lg hover:bg-encre/10 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
+      const boutonPetit = 'grid h-9 w-9 place-items-center sm:h-7 sm:w-7 rounded-lg hover:bg-encre/10 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
 
       return `
         <div class="flex flex-col">
@@ -5438,9 +5388,9 @@
               <span class="-mr-1 -mt-1 flex shrink-0 items-center">
                 <button type="button" data-consommer="${cle}" data-focus="${cle}|consommer" aria-pressed="${consomme}"
                         aria-label="${consomme ? 'Annuler la consommation' : 'Marquer comme consommé et déduire du stock'} : ${esc(meal.nom)}, ${contexte}"
-                        class="grid h-7 w-7 place-items-center rounded-lg text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${consomme ? 'bg-basilic text-white' : 'text-pierre hover:bg-sauge hover:text-menthe'}">✓</button>
+                        class="grid h-9 w-9 place-items-center sm:h-7 sm:w-7 rounded-lg text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${consomme ? 'bg-basilic text-white' : 'text-pierre hover:bg-sauge hover:text-menthe'}">✓</button>
                 <button type="button" data-retirer="${cle}" data-focus="${cle}|retirer" aria-label="Retirer ${esc(meal.nom)}, ${contexte}"
-                        class="grid h-7 w-7 place-items-center rounded-lg text-base text-pierre hover:bg-sauge hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
+                        class="grid h-9 w-9 place-items-center sm:h-7 sm:w-7 rounded-lg text-base text-pierre hover:bg-sauge hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
               </span>
             </div>
             <div class="flex items-center justify-between gap-2 text-xs text-pierre">
@@ -5545,7 +5495,7 @@
           <ol class="mt-4 space-y-4">
             ${liste.map((f, i) => `
               <li class="flex gap-3">
-                <span class="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-sauge text-sm font-semibold" aria-hidden="true">${i + 1}</span>
+                <span class="mt-0.5 grid h-9 w-9 shrink-0 place-items-center sm:h-7 sm:w-7 rounded-full bg-sauge text-sm font-semibold" aria-hidden="true">${i + 1}</span>
                 <div class="min-w-0">
                   <p class="font-semibold leading-snug">${esc(f.meal.nom)}
                     <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-menthe">${f.appareil.label}</span>
@@ -5783,7 +5733,7 @@
                   class="rounded-full bg-carte px-3 py-1 font-semibold ring-1 ring-encre/10 hover:ring-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">${this.ETIQUETTES[m.etat]}</button>
           <span data-minuteur-temps role="timer" class="min-w-[4.5rem] px-1 text-center font-semibold tabular-nums">${m.etat === 'termine' ? 'Terminé' : this.format(m.restant)}</span>
           <button type="button" data-minuteur-reset data-focus="minuteur|${cle}|reset" aria-label="Réinitialiser le minuteur" ${m.etat === 'pret' ? 'hidden' : ''}
-                  class="grid h-7 w-7 place-items-center rounded-full text-pierre hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">↺</button>
+                  class="grid h-9 w-9 place-items-center sm:h-7 sm:w-7 rounded-full text-pierre hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">↺</button>
         </div>`;
     },
 
@@ -6459,7 +6409,7 @@
           <li class="flex gap-3">
             <button type="button" data-etape="${i}" data-recette="${session.meal.id}" data-focus="fiche|${session.meal.id}|${i}" aria-pressed="${faite}"
                     aria-label="Étape ${i + 1} de ${esc(session.meal.nom)} faite"
-                    class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${faite ? 'bg-basilic text-white' : 'bg-carte text-menthe ring-2 ring-focus hover:bg-basilic/10'}">
+                    class="grid h-9 w-9 shrink-0 place-items-center sm:h-7 sm:w-7 rounded-full text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${faite ? 'bg-basilic text-white' : 'bg-carte text-menthe ring-2 ring-focus hover:bg-basilic/10'}">
               ${faite ? '✓' : i + 1}
             </button>
             <div class="min-w-0 flex-1">
@@ -6606,7 +6556,8 @@
         const bouton = e.target.closest('[data-action-recette]');
         if (!bouton) return;
         const [action, id] = bouton.dataset.actionRecette.split('|');
-        if (action === 'modifier') EditeurRecette.ouvrir(id);
+        if (action === 'detail') DetailRecette.ouvrir(id);
+        else if (action === 'modifier') EditeurRecette.ouvrir(id);
         else if (action === 'dupliquer') this.dupliquer(id);
         else if (action === 'supprimer') this.supprimer(id);
       });
@@ -6653,7 +6604,10 @@
           <div class="flex flex-wrap gap-1.5">
             ${meal.creneaux.map((c) => `<span class="rounded-full bg-sauge px-2.5 py-1 text-xs font-semibold text-menthe">${CRENEAUX[c]}</span>`).join('')}
           </div>
-          <h3 class="mt-3 text-lg font-semibold leading-snug">${esc(meal.nom)}</h3>
+          <button type="button" data-action-recette="detail|${meal.id}" data-focus="recette|detail|${meal.id}"
+                  class="mt-3 w-full rounded text-left text-lg font-semibold leading-snug hover:text-menthe focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+            ${esc(meal.nom)}
+          </button>
           <p class="mt-3 flex items-baseline gap-2">
             <span class="text-3xl font-extrabold tabular-nums">${nf0.format(meal.macros.calories)}</span>
             <span class="text-sm text-pierre">kcal par portion</span>
@@ -6668,7 +6622,10 @@
                 <dd class="font-semibold tabular-nums">${meal.macros[m.cle]} g</dd>
               </div>`).join('')}
           </dl>
-          <p class="mt-4 line-clamp-2 text-sm text-pierre">${meal.ingredients.map((i) => esc(detailIngredient(i).nom)).join(', ')}</p>
+          <button type="button" data-action-recette="detail|${meal.id}"
+                  class="mt-4 line-clamp-2 rounded text-left text-sm text-pierre hover:text-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+            ${meal.ingredients.map((i) => esc(detailIngredient(i).nom)).join(', ')}
+          </button>
           <p class="mt-2 text-xs text-pierre">
             ${meal.tempsPreparation} min, ${pluriel(meal.portions, 'portion')}, ${pluriel(meal.instructions.length, 'étape')}${usages ? `, prévue ${usages} fois au planning` : ''}.
             ${meal.conservation ? `Se conserve ${pluriel(meal.conservation, 'jour')} au frais` : 'À consommer le jour même'}
@@ -6815,6 +6772,141 @@
         action: 'Annuler',
         onAction: () => State.update((d) => { d.ingredientsPerso[ref] = ingredient; }),
       });
+    },
+  };
+
+  /* =========================================================
+     17 bis. FICHE D'UNE RECETTE (depuis l'onglet Recettes)
+     ========================================================= */
+  const DetailRecette = {
+    id: null,
+
+    init() {
+      this.dialog = $('modale-detail');
+      this.dialog.addEventListener('click', (e) => this.onClick(e));
+      this.dialog.addEventListener('close', () => { if (this.elementRetour?.isConnected) this.elementRetour.focus(); });
+      State.subscribe(() => { if (this.dialog.open) this.render(); });
+    },
+
+    ouvrir(id) {
+      if (!getMealById(id)) return;
+      this.id = id;
+      this.elementRetour = document.activeElement;
+      this.render();
+      this.dialog.showModal();
+      restaurerFocus(this.dialog, ['detail|fermer']);
+    },
+
+    fermer() { if (this.dialog.open) this.dialog.close(); },
+
+    onClick(e) {
+      if (e.target === this.dialog) { this.fermer(); return; }
+      const bouton = e.target.closest('button');
+      if (!bouton) return;
+      const ds = bouton.dataset;
+      if ('fermerDetail' in ds) this.fermer();
+      else if ('modifierDetail' in ds) { this.fermer(); EditeurRecette.ouvrir(this.id); }
+      else if (ds.etape) { Cuisine.basculer(this.id, Number(ds.etape)); this.render(); }
+      else if ('minuteurAction' in ds) {
+        const bloc = bouton.closest('[data-minuteur]');
+        Cuisine.actionPrincipale(bloc.dataset.minuteur, Number(bloc.dataset.total), bloc.dataset.libelle);
+      } else if ('minuteurReset' in ds) {
+        Cuisine.reinitialiser(bouton.closest('[data-minuteur]').dataset.minuteur);
+      }
+    },
+
+    render() {
+      const meal = getMealById(this.id);
+      if (!meal) { this.fermer(); return; }
+      const zone = this.dialog.querySelector('[data-defilement-detail]');
+      const defilement = zone ? zone.scrollTop : 0;
+      const kcalMacros = MACROS_AFFICHAGE.reduce((s, m) => s + meal.macros[m.cle] * m.kcalParG, 0) || 1;
+      const { cout, complet } = coutRecette(meal);
+      const usages = Recettes.usagesPlanning(meal.id);
+      const part = Math.round((meal.macros.calories / State.data.besoins.calories) * 100);
+
+      $('detail-contenu').innerHTML = `
+        <header class="flex items-start justify-between gap-4 border-b border-encre/10 p-5 sm:p-6">
+          <div class="min-w-0">
+            <div class="flex flex-wrap gap-1.5">
+              ${meal.creneaux.map((c) => `<span class="rounded-full bg-sauge px-2.5 py-1 text-xs font-semibold text-menthe">${CRENEAUX[c]}</span>`).join('')}
+            </div>
+            <h2 id="detail-titre" class="mt-2 text-2xl font-extrabold leading-tight tracking-tight">${esc(meal.nom)}</h2>
+            <p class="mt-1 text-sm text-pierre">
+              ${pluriel(meal.portions, 'portion')}, ${meal.tempsPreparation} min,
+              ${meal.conservation ? `${pluriel(meal.conservation, 'jour')} au frais` : 'à manger le jour même'}${usages ? `, prévue ${usages} fois au planning` : ''}
+            </p>
+          </div>
+          <button type="button" data-fermer-detail data-focus="detail|fermer" aria-label="Fermer"
+                  class="grid h-11 w-11 shrink-0 place-items-center rounded-full text-xl hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
+        </header>
+
+        <div data-defilement-detail class="min-h-0 flex-1 space-y-7 overflow-y-auto p-5 sm:p-6">
+          <div>
+            <p class="flex items-baseline gap-2">
+              <span class="text-4xl font-extrabold tabular-nums">${nf0.format(meal.macros.calories)}</span>
+              <span class="text-pierre">kcal par portion, soit ${part} % de ton objectif</span>
+            </p>
+            <div class="mt-3 flex h-2.5 overflow-hidden rounded-full" aria-hidden="true">
+              ${MACROS_AFFICHAGE.map((m) => `<div class="${m.couleur}" style="width:${(meal.macros[m.cle] * m.kcalParG / kcalMacros) * 100}%"></div>`).join('')}
+            </div>
+            <dl class="mt-3 grid grid-cols-3 gap-2 text-sm">
+              ${MACROS_AFFICHAGE.map((m) => `
+                <div>
+                  <dt class="flex items-center gap-1.5 text-pierre"><span class="h-2 w-2 rounded-full ${m.couleur}"></span>${m.label}</dt>
+                  <dd class="font-semibold tabular-nums">${meal.macros[m.cle]} g</dd>
+                </div>`).join('')}
+            </dl>
+            <p class="mt-3 text-sm text-pierre">${cout > 0 ? `${complet ? 'Environ' : 'Au moins'} ${nfPrix.format(cout)} par portion` : 'Coût inconnu : aucun prix renseigné'}</p>
+          </div>
+
+          <section>
+            <h3 class="text-lg font-semibold">Ingrédients <span class="text-sm font-normal text-pierre">pour ${pluriel(meal.portions, 'portion')}</span></h3>
+            <ul class="mt-3 divide-y divide-encre/10">
+              ${meal.ingredients.map(detailIngredient).map((i) => `
+                <li class="flex justify-between gap-4 py-2 text-sm">
+                  <span>${esc(i.nom)}</span>
+                  <span class="font-semibold tabular-nums">${formatQuantite(i.quantite, i.unite)}</span>
+                </li>`).join('')}
+            </ul>
+          </section>
+
+          <section>
+            <h3 class="text-lg font-semibold">Préparation</h3>
+            <ol class="mt-4 space-y-4">
+              ${meal.instructions.map((etape, i) => {
+                const faite = Cuisine.estFaite(meal.id, i);
+                const minuteur = Cuisine.duree(etape);
+                return `
+                  <li class="flex gap-3">
+                    <button type="button" data-etape="${i}" data-focus="detail|etape|${i}" aria-pressed="${faite}"
+                            aria-label="Étape ${i + 1} faite"
+                            class="grid h-9 w-9 shrink-0 place-items-center rounded-full text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${faite ? 'bg-basilic text-white' : 'bg-carte text-menthe ring-2 ring-basilic hover:bg-basilic/10'}">
+                      ${faite ? '✓' : i + 1}
+                    </button>
+                    <div class="min-w-0 flex-1 pt-1">
+                      <p class="leading-relaxed ${faite ? 'text-pierre line-through decoration-pierre/50' : ''}">${esc(etape)}</p>
+                      ${minuteur ? Cuisine.html(`${meal.id}|${i}`, minuteur, `${meal.nom}, étape ${i + 1}`) : ''}
+                    </div>
+                  </li>`;
+              }).join('')}
+            </ol>
+          </section>
+        </div>
+
+        <footer class="flex items-center justify-between gap-3 border-t border-encre/10 p-4">
+          <button type="button" data-modifier-detail
+                  class="rounded-full px-4 py-2.5 text-sm font-semibold text-menthe hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+            Modifier la recette
+          </button>
+          <button type="button" data-fermer-detail
+                  class="rounded-full bg-panneau px-5 py-2.5 text-sm font-semibold text-surpanneau hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+            Fermer
+          </button>
+        </footer>`;
+
+      const nouvelleZone = this.dialog.querySelector('[data-defilement-detail]');
+      if (nouvelleZone) nouvelleZone.scrollTop = defilement;
     },
   };
 
@@ -8823,6 +8915,7 @@
     Suivi.init();
     FicheSession.init();
     Recettes.init();
+    DetailRecette.init();
     EditeurRecette.init();
     EditeurIngredient.init();
     Sauvegarde.init();
@@ -8838,7 +8931,6 @@
     ModeSeance.init();
     Performances.init();
     Progression.init();
-    Theme.init();
     Router.init();
     Installation.init();
   });
