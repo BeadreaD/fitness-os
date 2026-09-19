@@ -1,0 +1,22 @@
+{
+  "name": "Fitness & Nutrition OS",
+  "short_name": "Fitness OS",
+  "description": "Planification des repas, stock, courses, entraînement et suivi du corps.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EEF2EA",
+  "theme_color": "#1E2B24",
+  "lang": "fr",
+  "icons": [
+    { "src": "./icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "./icone-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "./icone-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "Ma séance du jour", "url": "./index.html#/entrainement/seances" },
+    { "name": "Liste de courses", "url": "./index.html#/repas/courses" },
+    { "name": "Planning des repas", "url": "./index.html#/repas/planning" }
+  ]
+}
