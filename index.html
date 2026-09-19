@@ -15,6 +15,16 @@
   <link rel="apple-touch-icon" href="icone-192.png" />
   <link rel="icon" href="icone-192.png" />
 
+  <script>
+    // Applique le thème choisi avant le premier pixel, pour éviter un éclair de couleur
+    (() => {
+      try {
+        const theme = JSON.parse(localStorage.getItem('mealPlanner:v1') || '{}')?.ui?.theme;
+        if (theme === 'clair') document.documentElement.dataset.theme = 'light';
+        else if (theme === 'sombre') document.documentElement.dataset.theme = 'dark';
+      } catch (e) { /* premier lancement */ }
+    })();
+  </script>
   <link rel="stylesheet" href="tailwind.css" />
   <script src="chart.umd.js"></script>
 
@@ -50,7 +60,7 @@
     <div class="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
       <div class="flex items-center gap-3">
         <a href="#/accueil" id="lien-accueil"
-           class="grid h-10 w-10 shrink-0 place-items-center rounded-full ring-1 ring-encre/15 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic"
+           class="grid h-10 w-10 shrink-0 place-items-center rounded-full ring-1 ring-encre/15 hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus"
            aria-label="Revenir à l'accueil">
           <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M12 4 6 10l6 6" stroke-linecap="round" stroke-linejoin="round" />
@@ -63,18 +73,24 @@
         </div>
       </div>
 
+      <button type="button" id="indicateur-sync" hidden
+              class="order-first flex shrink-0 items-center gap-2 rounded-full bg-carte px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/10 hover:ring-encre/30 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:order-none">
+        <span id="indicateur-point" class="h-2.5 w-2.5 rounded-full bg-pierre" aria-hidden="true"></span>
+        <span id="indicateur-texte"></span>
+      </button>
+
       <nav id="nav-onglets" aria-label="Sections du Meal Planner">
-        <div role="tablist" class="relative flex w-full sm:w-auto bg-white rounded-full p-1 ring-1 ring-encre/10">
+        <div role="tablist" class="relative flex w-full sm:w-auto bg-carte rounded-full p-1 ring-1 ring-encre/10">
           <span id="tab-indicator" aria-hidden="true"
                 class="absolute top-1 bottom-1 left-0 rounded-full bg-beurre transition-all duration-300 ease-out"></span>
           <button role="tab" id="tab-planning" data-tab="planning" aria-controls="panel-planning"
-                  class="relative z-10 flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-full text-sm font-semibold text-pierre aria-selected:text-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Planning</button>
+                  class="relative z-10 flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-full text-sm font-semibold text-pierre aria-selected:text-nuit focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Planning</button>
           <button role="tab" id="tab-recettes" data-tab="recettes" aria-controls="panel-recettes"
-                  class="relative z-10 flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-full text-sm font-semibold text-pierre aria-selected:text-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Recettes</button>
+                  class="relative z-10 flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-full text-sm font-semibold text-pierre aria-selected:text-nuit focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Recettes</button>
           <button role="tab" id="tab-stock" data-tab="stock" aria-controls="panel-stock"
-                  class="relative z-10 flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-full text-sm font-semibold text-pierre aria-selected:text-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Stock</button>
+                  class="relative z-10 flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-full text-sm font-semibold text-pierre aria-selected:text-nuit focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Stock</button>
           <button role="tab" id="tab-courses" data-tab="courses" aria-controls="panel-courses"
-                  class="relative z-10 flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-full text-sm font-semibold text-pierre aria-selected:text-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Courses</button>
+                  class="relative z-10 flex-1 sm:flex-none px-3 sm:px-5 py-2 rounded-full text-sm font-semibold text-pierre aria-selected:text-nuit focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Courses</button>
         </div>
       </nav>
     </div>
@@ -90,7 +106,7 @@
         <h2 id="accueil-titre" class="text-3xl font-extrabold tracking-tight">Tes modules</h2>
         <p class="mt-2 text-pierre">Choisis le dossier sur lequel tu veux travailler. Tout reste enregistré dans ce navigateur.</p>
       </div>
-      <section id="accueil-journee" aria-labelledby="journee-titre" class="mt-8 rounded-3xl bg-white p-5 ring-1 ring-encre/10 sm:p-6"></section>
+      <section id="accueil-journee" aria-labelledby="journee-titre" class="mt-8 rounded-3xl bg-carte p-5 ring-1 ring-encre/10 sm:p-6"></section>
       <h3 class="mt-10 text-lg font-semibold">Tes dossiers</h3>
       <div id="accueil-dossiers" class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></div>
       <p id="accueil-resume" class="mt-8 text-sm text-pierre"></p>
@@ -114,20 +130,20 @@
             <div class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <span class="block text-sm text-pierre mb-1.5" id="label-sexe">Sexe</span>
-                <div class="flex bg-white rounded-xl p-1 ring-1 ring-encre/10" role="radiogroup" aria-labelledby="label-sexe">
+                <div class="flex bg-carte rounded-xl p-1 ring-1 ring-encre/10" role="radiogroup" aria-labelledby="label-sexe">
                   <label class="flex-1 cursor-pointer">
                     <input type="radio" name="sexe" value="homme" class="peer sr-only" />
-                    <span class="block text-center py-2 rounded-lg text-sm font-semibold text-pierre peer-checked:bg-basilic peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-basilic">Homme</span>
+                    <span class="block text-center py-2 rounded-lg text-sm font-semibold text-pierre peer-checked:bg-basilic peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-focus">Homme</span>
                   </label>
                   <label class="flex-1 cursor-pointer">
                     <input type="radio" name="sexe" value="femme" class="peer sr-only" />
-                    <span class="block text-center py-2 rounded-lg text-sm font-semibold text-pierre peer-checked:bg-basilic peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-basilic">Femme</span>
+                    <span class="block text-center py-2 rounded-lg text-sm font-semibold text-pierre peer-checked:bg-basilic peer-checked:text-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-focus">Femme</span>
                   </label>
                 </div>
               </div>
               <label class="block">
                 <span class="block text-sm text-pierre mb-1.5">Âge</span>
-                <span class="flex items-center bg-white rounded-xl ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic has-[:invalid]:ring-lip">
+                <span class="flex items-center bg-carte rounded-xl ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus has-[:invalid]:ring-lip">
                   <input type="number" name="age" min="14" max="90" step="1" inputmode="numeric"
                          class="w-full bg-transparent px-3 py-2.5 font-semibold tabular-nums outline-none" />
                   <span class="pr-3 text-sm text-pierre">ans</span>
@@ -135,7 +151,7 @@
               </label>
               <label class="block">
                 <span class="block text-sm text-pierre mb-1.5">Taille</span>
-                <span class="flex items-center bg-white rounded-xl ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic has-[:invalid]:ring-lip">
+                <span class="flex items-center bg-carte rounded-xl ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus has-[:invalid]:ring-lip">
                   <input type="number" name="taille" min="130" max="220" step="1" inputmode="numeric"
                          class="w-full bg-transparent px-3 py-2.5 font-semibold tabular-nums outline-none" />
                   <span class="pr-3 text-sm text-pierre">cm</span>
@@ -147,13 +163,13 @@
           <!-- Poids -->
           <fieldset>
             <legend class="text-lg font-semibold">Poids</legend>
-            <div class="mt-4 space-y-6 bg-white rounded-2xl p-5 ring-1 ring-encre/10">
+            <div class="mt-4 space-y-6 bg-carte rounded-2xl p-5 ring-1 ring-encre/10">
               <div>
                 <div class="flex items-center justify-between gap-4">
                   <label for="poids-range" class="text-sm text-pierre">Poids actuel</label>
                   <span class="flex items-center gap-1">
                     <input type="number" name="poids" min="40" max="160" step="0.1" inputmode="decimal" aria-label="Poids actuel en kilos"
-                           class="w-20 text-right text-2xl font-extrabold tabular-nums bg-transparent rounded-md outline-none focus-visible:ring-2 focus-visible:ring-basilic invalid:text-lip" />
+                           class="w-20 text-right text-2xl font-extrabold tabular-nums bg-transparent rounded-md outline-none focus-visible:ring-2 focus-visible:ring-focus invalid:text-lip" />
                     <span class="text-pierre">kg</span>
                   </span>
                 </div>
@@ -165,7 +181,7 @@
                   <label for="cible-range" class="text-sm text-pierre">Poids cible</label>
                   <span class="flex items-center gap-1">
                     <input type="number" name="poidsCible" min="40" max="160" step="0.1" inputmode="decimal" aria-label="Poids cible en kilos"
-                           class="w-20 text-right text-2xl font-extrabold tabular-nums bg-transparent rounded-md outline-none focus-visible:ring-2 focus-visible:ring-basilic invalid:text-lip" />
+                           class="w-20 text-right text-2xl font-extrabold tabular-nums bg-transparent rounded-md outline-none focus-visible:ring-2 focus-visible:ring-focus invalid:text-lip" />
                     <span class="text-pierre">kg</span>
                   </span>
                 </div>
@@ -180,7 +196,7 @@
           <fieldset>
             <legend class="text-lg font-semibold">Suivi du poids</legend>
             <p class="mt-1 text-sm text-pierre max-w-prose">Chaque changement de ton poids actuel enregistre la pesée du jour.</p>
-            <div class="mt-4 bg-white rounded-2xl p-5 ring-1 ring-encre/10 space-y-5">
+            <div class="mt-4 bg-carte rounded-2xl p-5 ring-1 ring-encre/10 space-y-5">
               <div id="histo-graphique"></div>
               <div class="flex flex-wrap gap-x-5 gap-y-1 text-xs text-pierre" aria-hidden="true">
                 <span class="flex items-center gap-2"><span class="w-5 h-0.5 bg-basilic"></span>Poids réel</span>
@@ -192,14 +208,14 @@
                 <p class="text-sm font-semibold">Ajouter une pesée passée</p>
                 <div class="mt-2 flex flex-wrap items-center gap-2">
                   <input type="date" id="histo-date" aria-label="Date de la pesée"
-                         class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/10 outline-none focus-visible:ring-2 focus-visible:ring-basilic" />
-                  <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic">
+                         class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/10 outline-none focus-visible:ring-2 focus-visible:ring-focus" />
+                  <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus">
                     <input type="number" id="histo-poids" min="40" max="160" step="0.1" inputmode="decimal" aria-label="Poids en kilos"
                            class="w-20 bg-transparent px-3 py-2 text-sm font-semibold tabular-nums outline-none" />
                     <span class="pr-3 text-sm text-pierre">kg</span>
                   </span>
                   <button type="button" id="histo-ajouter"
-                          class="rounded-full bg-basilic px-4 py-2 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                          class="rounded-full bg-basilic px-4 py-2 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                     Ajouter la pesée
                   </button>
                 </div>
@@ -226,37 +242,48 @@
 
         <!-- Résultats -->
         <aside id="profil-resultats" class="mt-10 lg:mt-0 lg:sticky lg:top-28">
-          <div class="rounded-3xl bg-encre text-sauge p-6 space-y-6">
+          <div class="rounded-3xl bg-panneau text-surpanneau p-6 space-y-6">
             <div>
-              <h3 class="text-sm text-sauge/70">Objectif calorique quotidien</h3>
+              <h3 class="text-sm text-surpanneau/70">Objectif calorique quotidien</h3>
               <p class="mt-1 flex items-baseline gap-2">
                 <span id="res-calories" class="text-5xl font-extrabold tracking-tight tabular-nums">0</span>
-                <span class="text-sauge/70">kcal</span>
+                <span class="text-surpanneau/70">kcal</span>
               </p>
             </div>
             <dl class="space-y-2 text-sm">
-              <div class="flex justify-between gap-4"><dt class="text-sauge/70">Métabolisme de base</dt><dd id="res-bmr" class="font-semibold tabular-nums"></dd></div>
-              <div class="flex justify-between gap-4"><dt class="text-sauge/70">Dépense totale (TDEE)</dt><dd id="res-tdee" class="font-semibold tabular-nums"></dd></div>
-              <div class="flex justify-between gap-4"><dt class="text-sauge/70">Surplus <span id="res-surplus-pct"></span></dt><dd id="res-surplus" class="font-semibold tabular-nums text-beurre"></dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-surpanneau/70">Métabolisme de base</dt><dd id="res-bmr" class="font-semibold tabular-nums"></dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-surpanneau/70">Dépense totale (TDEE)</dt><dd id="res-tdee" class="font-semibold tabular-nums"></dd></div>
+              <div class="flex justify-between gap-4"><dt class="text-surpanneau/70">Surplus <span id="res-surplus-pct"></span></dt><dd id="res-surplus" class="font-semibold tabular-nums text-beurre"></dd></div>
             </dl>
             <div>
-              <h3 class="text-sm text-sauge/70">Répartition des macros</h3>
-              <div id="res-barre" class="mt-3 flex h-3 rounded-full overflow-hidden bg-sauge/10" role="img"></div>
+              <h3 class="text-sm text-surpanneau/70">Répartition des macros</h3>
+              <div id="res-barre" class="mt-3 flex h-3 rounded-full overflow-hidden bg-surpanneau/10" role="img"></div>
               <dl id="res-macros" class="mt-4 space-y-3"></dl>
             </div>
-            <div class="border-t border-sauge/15 pt-5 text-sm leading-relaxed">
+            <div class="border-t border-surpanneau/15 pt-5 text-sm leading-relaxed">
               <p id="res-estimation"></p>
               <p id="res-alerte" class="mt-2 text-beurre" hidden></p>
             </div>
-            <p class="text-xs text-sauge/60 leading-relaxed">
+            <p class="text-xs text-surpanneau/60 leading-relaxed">
               Estimations théoriques (formule Mifflin-St Jeor, 7 700 kcal par kg). Ajuste après 2 à 3 semaines selon l'évolution réelle de ton poids.
             </p>
           </div>
         </aside>
       </div>
 
+      <!-- Apparence -->
+      <section aria-labelledby="apparence-titre" class="mt-12 rounded-2xl bg-carte p-5 ring-1 ring-encre/10 sm:p-6">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div class="max-w-prose">
+            <h2 id="apparence-titre" class="text-lg font-semibold">Apparence</h2>
+            <p class="mt-1 text-sm text-pierre">Le thème sombre suit ton téléphone par défaut. Tu peux aussi le forcer, par exemple pour consulter tes recettes le soir en cuisine.</p>
+          </div>
+          <div id="theme-choix" class="flex shrink-0 rounded-full bg-sauge p-1" role="group" aria-label="Thème de l'application"></div>
+        </div>
+      </section>
+
       <!-- Calories des jours d'entraînement -->
-      <section aria-labelledby="ajustement-titre" class="mt-12 rounded-2xl bg-white p-5 ring-1 ring-encre/10 sm:p-6">
+      <section aria-labelledby="ajustement-titre" class="mt-12 rounded-2xl bg-carte p-5 ring-1 ring-encre/10 sm:p-6">
         <div class="flex flex-col gap-6 lg:flex-row lg:justify-between">
           <div class="max-w-prose">
             <h2 id="ajustement-titre" class="text-lg font-semibold">Calories des jours d'entraînement</h2>
@@ -271,7 +298,7 @@
             <div class="mt-3 flex flex-wrap gap-4">
               <label class="block">
                 <span class="mb-1 block text-xs text-pierre">Jour de musculation</span>
-                <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic">
+                <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus">
                   <input type="number" id="ajust-muscu" min="0" max="1500" step="50" inputmode="numeric"
                          class="w-24 bg-transparent px-3 py-2 text-sm font-semibold tabular-nums outline-none" />
                   <span class="pr-3 text-sm text-pierre">kcal</span>
@@ -279,7 +306,7 @@
               </label>
               <label class="block">
                 <span class="mb-1 block text-xs text-pierre">Jour de cardio ou course</span>
-                <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic">
+                <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus">
                   <input type="number" id="ajust-cardio" min="0" max="1500" step="50" inputmode="numeric"
                          class="w-24 bg-transparent px-3 py-2 text-sm font-semibold tabular-nums outline-none" />
                   <span class="pr-3 text-sm text-pierre">kcal</span>
@@ -293,11 +320,11 @@
       </section>
 
       <!-- Installation sur l'appareil -->
-      <section id="installation" aria-labelledby="installation-titre" class="mt-12 rounded-2xl bg-encre p-5 text-sauge sm:p-6" hidden>
+      <section id="installation" aria-labelledby="installation-titre" class="mt-12 rounded-2xl bg-panneau p-5 text-surpanneau sm:p-6" hidden>
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div class="max-w-prose">
             <h2 id="installation-titre" class="text-lg font-semibold">Installer l'application</h2>
-            <p id="installation-texte" class="mt-1 text-sm text-sauge/70"></p>
+            <p id="installation-texte" class="mt-1 text-sm text-surpanneau/70"></p>
           </div>
           <button type="button" id="installation-bouton" hidden
                   class="shrink-0 rounded-full bg-beurre px-5 py-2.5 text-sm font-semibold text-encre hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beurre">
@@ -307,7 +334,7 @@
       </section>
 
       <!-- Sauvegarde des données -->
-      <section aria-labelledby="sauvegarde-titre" class="mt-12 rounded-2xl bg-white p-5 ring-1 ring-encre/10 sm:p-6">
+      <section aria-labelledby="sauvegarde-titre" class="mt-12 rounded-2xl bg-carte p-5 ring-1 ring-encre/10 sm:p-6">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div class="max-w-prose">
             <h2 id="sauvegarde-titre" class="text-lg font-semibold">Sauvegarde de tes données</h2>
@@ -315,12 +342,12 @@
             <p id="sauvegarde-derniere" class="mt-2 text-sm"></p>
           </div>
           <div class="flex shrink-0 flex-wrap gap-2">
-            <label class="relative cursor-pointer rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-basilic">
+            <label class="relative cursor-pointer rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-focus">
               Importer une sauvegarde
               <input type="file" id="fichier-import" accept="application/json,.json" class="sr-only" />
             </label>
             <button type="button" id="btn-exporter"
-                    class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                    class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
               Exporter mes données
             </button>
           </div>
@@ -334,7 +361,7 @@
             <p class="mt-1 text-sm text-pierre">Un rappel s'affiche au démarrage quand ta dernière sauvegarde date trop.</p>
             <label class="mt-3 block">
               <span class="sr-only">Fréquence du rappel</span>
-              <select id="sauvegarde-rappel" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic">
+              <select id="sauvegarde-rappel" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus">
                 <option value="7">Toutes les semaines</option>
                 <option value="14">Toutes les deux semaines</option>
                 <option value="30">Tous les mois</option>
@@ -357,37 +384,42 @@
           <form id="nuage-form" class="mt-4 grid gap-3 sm:grid-cols-2" hidden>
             <label class="block">
               <span class="mb-1 block text-xs text-pierre">Type de service</span>
-              <select id="nuage-type" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic w-full">
+              <select id="nuage-type" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full">
                 <option value="supabase">Supabase (recommandé)</option>
                 <option value="simple">Adresse JSON simple</option>
               </select>
             </label>
             <label class="block">
               <span class="mb-1 block text-xs text-pierre">Nom du carnet</span>
-              <input type="text" id="nuage-id" placeholder="moi" autocomplete="off" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic w-full" />
+              <input type="text" id="nuage-id" placeholder="moi" autocomplete="off" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full" />
             </label>
             <label class="block sm:col-span-2">
               <span class="mb-1 block text-xs text-pierre">Adresse du projet</span>
-              <input type="url" id="nuage-url" placeholder="https://xxxx.supabase.co" autocomplete="off" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic w-full" />
+              <input type="url" id="nuage-url" placeholder="https://xxxx.supabase.co" autocomplete="off" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full" />
             </label>
             <label class="block sm:col-span-2">
               <span class="mb-1 block text-xs text-pierre">Clé publique (anon)</span>
-              <input type="password" id="nuage-cle" autocomplete="off" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic w-full" />
+              <input type="password" id="nuage-cle" autocomplete="off" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full" />
+            </label>
+            <label class="block sm:col-span-2">
+              <span class="mb-1 block text-xs text-pierre">Mot de passe de chiffrement <span class="text-pierre">(facultatif, mais recommandé)</span></span>
+              <input type="password" id="nuage-mdp" autocomplete="off" class="rounded-xl bg-sauge/60 px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full" />
+              <span class="mt-1 block text-xs text-pierre">Tes données sont chiffrées sur cet appareil avant d'être envoyées. Le même mot de passe doit être saisi sur chaque appareil, et personne ne peut le retrouver à ta place.</span>
             </label>
             <div class="flex flex-wrap gap-2 sm:col-span-2">
-              <button type="submit" class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Connecter</button>
-              <button type="button" data-nuage-annuler class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Annuler</button>
+              <button type="submit" class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Connecter</button>
+              <button type="button" data-nuage-annuler class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Annuler</button>
             </div>
           </form>
         </div>
       </section>
 
       <!-- Barre récapitulative mobile -->
-      <div id="profil-barre" class="lg:hidden fixed inset-x-0 bottom-0 z-20 bg-encre text-sauge transition-transform duration-300">
+      <div id="profil-barre" class="lg:hidden fixed inset-x-0 bottom-0 z-20 bg-panneau text-surpanneau transition-transform duration-300">
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-4">
           <p class="flex items-baseline gap-1.5">
             <span id="barre-calories" class="text-xl font-extrabold tabular-nums"></span>
-            <span class="text-sm text-sauge/70">kcal par jour</span>
+            <span class="text-sm text-surpanneau/70">kcal par jour</span>
           </p>
           <p id="barre-macros" class="flex gap-3 text-sm tabular-nums"></p>
         </div>
@@ -412,16 +444,16 @@
           <div>
             <div id="seance-jours" class="grid grid-cols-4 gap-2 sm:grid-cols-7" role="group" aria-label="Jour de la semaine"></div>
 
-            <div class="mt-6 rounded-2xl bg-white p-5 ring-1 ring-encre/10">
+            <div class="mt-6 rounded-2xl bg-carte p-5 ring-1 ring-encre/10">
               <div class="grid gap-4 sm:grid-cols-[minmax(0,1fr)_12rem]">
                 <label class="block">
                   <span class="mb-1.5 block text-sm font-semibold">Nom de la séance</span>
                   <input type="text" id="seance-nom" maxlength="60" autocomplete="off" placeholder="Pecs et triceps"
-                         class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic w-full text-lg font-semibold" />
+                         class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full text-lg font-semibold" />
                 </label>
                 <label class="block">
                   <span class="mb-1.5 block text-sm font-semibold">Type</span>
-                  <select id="seance-type" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic w-full">
+                  <select id="seance-type" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full">
                     <option value="musculation">Musculation</option>
                     <option value="cardio">Cardio et course</option>
                   </select>
@@ -430,15 +462,15 @@
               <p id="seance-resume" class="mt-3 text-sm text-pierre"></p>
             </div>
 
-            <ul id="seance-exercices" class="mt-4 divide-y divide-encre/10 rounded-2xl bg-white ring-1 ring-encre/10"></ul>
+            <ul id="seance-exercices" class="mt-4 divide-y divide-encre/10 rounded-2xl bg-carte ring-1 ring-encre/10"></ul>
 
             <div class="mt-4 flex flex-wrap gap-2">
               <button type="button" id="seance-vider"
-                      class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                      class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                 Vider la séance
               </button>
               <button type="button" id="seance-exemple"
-                      class="rounded-full px-4 py-2.5 text-sm font-semibold text-basilic hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                      class="rounded-full px-4 py-2.5 text-sm font-semibold text-menthe hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
                 Restaurer la séance d'exemple
               </button>
             </div>
@@ -446,7 +478,7 @@
 
           <aside class="mt-10 lg:mt-0 lg:sticky lg:top-28">
             <h3 class="text-lg font-semibold">Bibliothèque d'exercices</h3>
-            <label class="mt-3 flex items-center rounded-full bg-white ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic">
+            <label class="mt-3 flex items-center rounded-full bg-carte ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus">
               <span class="sr-only">Rechercher un exercice</span>
               <svg class="ml-4 h-4 w-4 shrink-0 text-pierre" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 4 4" stroke-linecap="round"/></svg>
               <input type="search" id="exercices-recherche" placeholder="Pec, dos, squat, course…"
@@ -454,11 +486,11 @@
             </label>
             <div id="exercices-groupes" class="mt-3 flex flex-wrap gap-1.5" role="group" aria-label="Filtrer par groupe musculaire"></div>
             <button type="button" id="exercice-nouveau"
-                    class="mt-3 w-full rounded-full px-4 py-2.5 text-sm font-semibold text-basilic ring-1 ring-encre/15 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                    class="mt-3 w-full rounded-full px-4 py-2.5 text-sm font-semibold text-menthe ring-1 ring-encre/15 hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
               Créer un exercice
             </button>
             <p id="exercices-compte" class="mt-3 text-sm text-pierre" aria-live="polite"></p>
-            <ul id="exercices-resultats" class="mt-2 max-h-[32rem] divide-y divide-encre/10 overflow-y-auto rounded-2xl bg-white ring-1 ring-encre/10"></ul>
+            <ul id="exercices-resultats" class="mt-2 max-h-[32rem] divide-y divide-encre/10 overflow-y-auto rounded-2xl bg-carte ring-1 ring-encre/10"></ul>
           </aside>
         </div>
       </section>
@@ -472,20 +504,20 @@
           </div>
           <div class="flex flex-wrap items-center gap-2">
             <button type="button" id="seances-precedent" aria-label="Jour précédent"
-                    class="grid h-10 w-10 place-items-center rounded-full ring-1 ring-encre/15 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">←</button>
-            <input type="date" id="seances-date" aria-label="Date de la séance" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic text-sm" />
+                    class="grid h-10 w-10 place-items-center rounded-full ring-1 ring-encre/15 hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">←</button>
+            <input type="date" id="seances-date" aria-label="Date de la séance" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus text-sm" />
             <button type="button" id="seances-suivant" aria-label="Jour suivant"
-                    class="grid h-10 w-10 place-items-center rounded-full ring-1 ring-encre/15 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">→</button>
+                    class="grid h-10 w-10 place-items-center rounded-full ring-1 ring-encre/15 hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">→</button>
             <button type="button" id="seances-aujourdhui"
-                    class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Aujourd'hui</button>
+                    class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Aujourd'hui</button>
             <button type="button" id="seances-mode"
-                    class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-encre disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Mode séance</button>
+                    class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-accentfort disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Mode séance</button>
           </div>
         </div>
 
         <div id="seances-semaine" class="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7" role="group" aria-label="Semaine d'entraînement"></div>
         <div id="seances-detail" class="mt-6 space-y-4"></div>
-        <div id="seances-bilan" class="mt-6 rounded-3xl bg-encre p-6 text-sauge"></div>
+        <div id="seances-bilan" class="mt-6 rounded-3xl bg-panneau p-6 text-surpanneau"></div>
       </section>
 
       <!-- Progression générale -->
@@ -496,11 +528,11 @@
         </div>
         <div id="progression-resume" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
         <div class="mt-4 grid gap-4 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-start">
-          <section class="rounded-3xl bg-white p-5 ring-1 ring-encre/10">
+          <section class="rounded-3xl bg-carte p-5 ring-1 ring-encre/10">
             <h3 class="font-extrabold">Volume par groupe musculaire</h3>
             <ul id="progression-groupes" class="mt-2 divide-y divide-encre/10"></ul>
           </section>
-          <section class="rounded-3xl bg-white ring-1 ring-encre/10">
+          <section class="rounded-3xl bg-carte ring-1 ring-encre/10">
             <h3 class="p-5 pb-0 font-extrabold">Exercice par exercice</h3>
             <ul id="progression-exercices" class="mt-2 divide-y divide-encre/10"></ul>
           </section>
@@ -512,7 +544,7 @@
         <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <label class="block lg:w-96">
             <span class="mb-1.5 block text-sm font-semibold">Exercice suivi</span>
-            <select id="perf-exercice" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic w-full text-lg font-semibold"></select>
+            <select id="perf-exercice" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full text-lg font-semibold"></select>
           </label>
           <div class="flex flex-wrap items-end gap-4">
             <div>
@@ -528,7 +560,7 @@
 
         <div id="perf-resume" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"></div>
 
-        <div class="mt-4 rounded-3xl bg-white p-5 ring-1 ring-encre/10">
+        <div class="mt-4 rounded-3xl bg-carte p-5 ring-1 ring-encre/10">
           <div class="relative h-72 sm:h-80">
             <canvas id="perf-graphique" aria-label="Courbe de progression" role="img"></canvas>
           </div>
@@ -537,7 +569,7 @@
 
         <section aria-labelledby="perf-historique-titre" class="mt-10">
           <h3 id="perf-historique-titre" class="text-xl font-extrabold tracking-tight">Séances enregistrées</h3>
-          <ul id="perf-historique" class="mt-4 divide-y divide-encre/10 rounded-2xl bg-white ring-1 ring-encre/10"></ul>
+          <ul id="perf-historique" class="mt-4 divide-y divide-encre/10 rounded-2xl bg-carte ring-1 ring-encre/10"></ul>
         </section>
       </section>
     </section>
@@ -561,11 +593,11 @@
         </div>
         <div class="flex flex-wrap gap-2">
           <button type="button" id="btn-vider"
-                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Vider la semaine
           </button>
           <button type="button" id="btn-proposer"
-                  class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Proposer une semaine
           </button>
         </div>
@@ -594,7 +626,7 @@
         </div>
 
         <div class="mt-6 grid gap-4 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]">
-          <div class="rounded-3xl bg-white p-5 ring-1 ring-encre/10">
+          <div class="rounded-3xl bg-carte p-5 ring-1 ring-encre/10">
             <div class="flex items-baseline justify-between gap-3">
               <h3 class="font-semibold">Calories de la semaine</h3>
               <span class="flex items-center gap-2 text-xs text-pierre" aria-hidden="true">
@@ -605,15 +637,15 @@
             <div id="suivi-semaine" class="mt-5 grid grid-cols-7 gap-1 sm:gap-2"></div>
           </div>
 
-          <div class="rounded-3xl bg-encre p-6 text-sauge">
+          <div class="rounded-3xl bg-panneau p-6 text-surpanneau">
             <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <h3 id="suivi-jour-titre" class="text-xl font-extrabold"></h3>
               <p id="suivi-statut" class="flex items-center gap-2 text-sm"></p>
             </div>
             <div id="suivi-barres" class="mt-6 space-y-6"></div>
-            <div id="suivi-suggestion" class="mt-6 rounded-2xl bg-sauge/10 p-4"></div>
-            <div class="mt-6 border-t border-sauge/15 pt-4">
-              <p class="text-xs text-sauge/60">Répartition par créneau : touche un créneau pour isoler sa contribution.</p>
+            <div id="suivi-suggestion" class="mt-6 rounded-2xl bg-surpanneau/10 p-4"></div>
+            <div class="mt-6 border-t border-surpanneau/15 pt-4">
+              <p class="text-xs text-surpanneau/60">Répartition par créneau : touche un créneau pour isoler sa contribution.</p>
               <div id="suivi-legende" class="mt-3 flex flex-wrap gap-2"></div>
             </div>
           </div>
@@ -631,13 +663,13 @@
           <p id="recettes-compte" class="mt-2 text-pierre"></p>
         </div>
         <button type="button" id="btn-nouvelle-recette"
-                class="self-start rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic sm:self-auto">
+                class="self-start rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:self-auto">
           Nouvelle recette
         </button>
       </div>
 
       <div class="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center">
-        <label class="flex items-center rounded-full bg-white ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic lg:w-80">
+        <label class="flex items-center rounded-full bg-carte ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus lg:w-80">
           <span class="sr-only">Rechercher une recette ou un ingrédient</span>
           <svg class="ml-4 h-4 w-4 shrink-0 text-pierre" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="9" cy="9" r="6"/><path d="m14 14 4 4" stroke-linecap="round"/></svg>
           <input type="search" id="recettes-recherche" placeholder="Recette ou ingrédient"
@@ -656,11 +688,11 @@
             <p class="mt-1 text-sm text-pierre">Le catalogue de base contient <span id="ingredients-base"></span> ingrédients. Ajoute les tiens avec leurs valeurs nutritionnelles pour les utiliser dans tes recettes.</p>
           </div>
           <button type="button" id="btn-nouvel-ingredient"
-                  class="self-start rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic sm:self-auto">
+                  class="self-start rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:self-auto">
             Nouvel ingrédient
           </button>
         </div>
-        <ul id="ingredients-perso" class="mt-4 divide-y divide-encre/10 rounded-2xl bg-white ring-1 ring-encre/10"></ul>
+        <ul id="ingredients-perso" class="mt-4 divide-y divide-encre/10 rounded-2xl bg-carte ring-1 ring-encre/10"></ul>
       </section>
     </section>
 
@@ -673,27 +705,27 @@
         <p id="stock-resume" class="mt-2 max-w-prose text-pierre"></p>
       </div>
 
-      <div class="mt-6 flex flex-col gap-3 rounded-2xl bg-white p-4 ring-1 ring-encre/10 sm:flex-row sm:items-end">
+      <div class="mt-6 flex flex-col gap-3 rounded-2xl bg-carte p-4 ring-1 ring-encre/10 sm:flex-row sm:items-end">
         <label class="block min-w-0 flex-1">
           <span class="mb-1.5 block text-sm font-semibold">Ajouter un ingrédient au stock</span>
-          <select id="stock-ajout-ref" class="rounded-xl bg-white px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic w-full"></select>
+          <select id="stock-ajout-ref" class="rounded-xl bg-carte px-3 py-2 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus w-full"></select>
         </label>
         <label class="block">
           <span class="mb-1.5 block text-sm font-semibold">Quantité</span>
-          <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/15 focus-within:ring-2 focus-within:ring-basilic">
+          <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/15 focus-within:ring-2 focus-within:ring-focus">
             <input type="number" id="stock-ajout-quantite" min="0" step="any" inputmode="decimal"
                    class="w-24 bg-transparent px-3 py-2 text-sm font-semibold tabular-nums outline-none" />
             <span id="stock-ajout-unite" class="pr-3 text-sm text-pierre"></span>
           </span>
         </label>
         <button type="button" id="stock-ajouter"
-                class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-encre disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-accentfort disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
           Ajouter
         </button>
       </div>
 
       <div class="mt-6 flex flex-col gap-3 lg:flex-row lg:items-center">
-        <label class="flex items-center rounded-full bg-white ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic lg:w-72">
+        <label class="flex items-center rounded-full bg-carte ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus lg:w-72">
           <span class="sr-only">Rechercher un ingrédient</span>
           <input type="search" id="stock-recherche" placeholder="Rechercher un ingrédient"
                  class="w-full bg-transparent px-4 py-2.5 text-sm outline-none" />
@@ -706,7 +738,7 @@
       <section aria-labelledby="mouvements-titre" class="mt-14">
         <h2 id="mouvements-titre" class="text-xl font-extrabold tracking-tight">Derniers mouvements</h2>
         <p class="mt-1 text-sm text-pierre">Chaque repas consommé ou fournée cuisinée déduit les quantités exactes de ton stock.</p>
-        <ul id="stock-mouvements" class="mt-4 divide-y divide-encre/10 rounded-2xl bg-white ring-1 ring-encre/10"></ul>
+        <ul id="stock-mouvements" class="mt-4 divide-y divide-encre/10 rounded-2xl bg-carte ring-1 ring-encre/10"></ul>
       </section>
     </section>
 
@@ -721,7 +753,7 @@
       </div>
 
       <div id="courses-contenu">
-        <div class="mt-6 rounded-2xl bg-white p-5 ring-1 ring-encre/10 print:hidden">
+        <div class="mt-6 rounded-2xl bg-carte p-5 ring-1 ring-encre/10 print:hidden">
           <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
             <p class="flex items-baseline gap-2">
               <span id="courses-a-acheter" class="text-4xl font-extrabold tracking-tight tabular-nums"></span>
@@ -747,19 +779,19 @@
             </label>
           </div>
           <button type="button" id="courses-reinitialiser"
-                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Réinitialiser les cases
           </button>
           <button type="button" id="courses-imprimer"
-                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Imprimer
           </button>
           <button type="button" id="courses-partager" hidden
-                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Partager
           </button>
           <button type="button" id="courses-copier"
-                  class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Copier la liste
           </button>
         </div>
@@ -771,13 +803,13 @@
         <p class="font-semibold">Ta liste est vide.</p>
         <p class="mt-1 text-pierre">Elle se remplit toute seule à partir des repas de ton planning, portions comprises.</p>
         <button type="button" id="courses-aller-planning"
-                class="mt-4 rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                class="mt-4 rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
           Remplir mon planning
         </button>
       </div>
 
       <!-- Le stock alimente la liste -->
-      <section class="mt-14 rounded-2xl bg-white p-5 ring-1 ring-encre/10 print:hidden">
+      <section class="mt-14 rounded-2xl bg-carte p-5 ring-1 ring-encre/10 print:hidden">
         <h2 class="text-lg font-semibold">Cette liste tient compte de ton stock</h2>
         <p class="mt-1 max-w-prose text-sm text-pierre">
           Seul ce qui manque est à acheter : besoin de la semaine, moins ce que tu as déjà, plus de quoi rester au-dessus de tes seuils.
@@ -785,11 +817,11 @@
         </p>
         <div class="mt-4 flex flex-wrap gap-2">
           <button type="button" id="courses-ranger"
-                  class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-encre disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full bg-basilic px-4 py-2.5 text-sm font-semibold text-white hover:bg-accentfort disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Ranger les articles cochés dans le stock
           </button>
           <button type="button" id="courses-vers-stock"
-                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Ouvrir mon stock
           </button>
         </div>
@@ -800,27 +832,27 @@
 
   <!-- ============ MODALE : DÉTAIL D'UN REPAS ============ -->
   <dialog id="modale-repas" aria-labelledby="modale-titre"
-          class="m-auto w-[min(calc(100%-2rem),42rem)] max-h-[min(90vh,56rem)] rounded-3xl bg-white p-0 text-encre open:flex open:flex-col backdrop:bg-encre/60 backdrop:backdrop-blur-sm">
+          class="m-auto w-[min(calc(100%-2rem),42rem)] max-h-[min(90vh,56rem)] rounded-3xl bg-carte p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <div id="modale-contenu" class="flex min-h-0 flex-1 flex-col"></div>
   </dialog>
 
   <!-- ============ MODALE : EXERCICE PERSONNEL ============ -->
   <dialog id="modale-exercice" aria-labelledby="exercice-titre"
-          class="m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-white p-0 text-encre backdrop:bg-encre/60 backdrop:backdrop-blur-sm">
+          class="m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <form id="exercice-form" novalidate class="space-y-5 p-6">
       <h2 id="exercice-titre" class="text-xl font-extrabold tracking-tight"></h2>
       <label class="block">
         <span class="mb-1.5 block text-sm font-semibold">Nom de l'exercice</span>
-        <input type="text" id="exercice-nom" maxlength="60" autocomplete="off" placeholder="Tirage horizontal à la poulie" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full" />
+        <input type="text" id="exercice-nom" maxlength="60" autocomplete="off" placeholder="Tirage horizontal à la poulie" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full" />
       </label>
       <div class="grid grid-cols-2 gap-4">
         <label class="block">
           <span class="mb-1.5 block text-sm font-semibold">Groupe</span>
-          <select id="exercice-groupe" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full"></select>
+          <select id="exercice-groupe" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full"></select>
         </label>
         <label class="block">
           <span class="mb-1.5 block text-sm font-semibold">Type</span>
-          <select id="exercice-type" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full">
+          <select id="exercice-type" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full">
             <option value="musculation">Musculation</option>
             <option value="cardio">Cardio et course</option>
           </select>
@@ -828,86 +860,86 @@
       </div>
       <label class="block">
         <span class="mb-1.5 block text-sm font-semibold">Matériel</span>
-        <input type="text" id="exercice-materiel" maxlength="40" autocomplete="off" placeholder="Poulie, haltères, poids du corps…" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full" />
+        <input type="text" id="exercice-materiel" maxlength="40" autocomplete="off" placeholder="Poulie, haltères, poids du corps…" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full" />
       </label>
       <fieldset>
         <legend class="text-sm font-semibold">Valeurs par défaut</legend>
         <div class="mt-2 grid grid-cols-3 gap-3">
           <label class="block">
             <span class="mb-1 block text-xs text-pierre">Séries</span>
-            <input type="number" id="exercice-series" min="1" max="20" step="1" inputmode="numeric" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full tabular-nums" />
+            <input type="number" id="exercice-series" min="1" max="20" step="1" inputmode="numeric" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full tabular-nums" />
           </label>
           <label class="block" data-champ-muscu>
             <span class="mb-1 block text-xs text-pierre">Répétitions</span>
-            <input type="number" id="exercice-reps" min="1" max="100" step="1" inputmode="numeric" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full tabular-nums" />
+            <input type="number" id="exercice-reps" min="1" max="100" step="1" inputmode="numeric" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full tabular-nums" />
           </label>
           <label class="block" data-champ-cardio hidden>
             <span class="mb-1 block text-xs text-pierre">Minutes</span>
-            <input type="number" id="exercice-duree" min="1" max="600" step="1" inputmode="numeric" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full tabular-nums" />
+            <input type="number" id="exercice-duree" min="1" max="600" step="1" inputmode="numeric" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full tabular-nums" />
           </label>
           <label class="block" data-champ-cardio hidden>
             <span class="mb-1 block text-xs text-pierre">Kilomètres</span>
-            <input type="number" id="exercice-distance" min="0" step="0.1" inputmode="decimal" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full tabular-nums" />
+            <input type="number" id="exercice-distance" min="0" step="0.1" inputmode="decimal" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full tabular-nums" />
           </label>
         </div>
       </fieldset>
       <label class="block">
         <span class="mb-1.5 block text-sm font-semibold">Mots-clés de recherche <span class="font-normal text-pierre">(facultatif, séparés par des virgules)</span></span>
-        <input type="text" id="exercice-motscles" maxlength="120" autocomplete="off" placeholder="dos, row, grand dorsal" class="rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full" />
+        <input type="text" id="exercice-motscles" maxlength="120" autocomplete="off" placeholder="dos, row, grand dorsal" class="rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip w-full" />
       </label>
       <div id="exercice-erreurs" class="text-sm text-lip" hidden></div>
       <div class="flex flex-wrap items-center justify-end gap-2 border-t border-encre/10 pt-4">
         <button type="button" id="exercice-supprimer" hidden
                 class="mr-auto rounded-full px-4 py-2.5 text-sm font-semibold text-lip hover:bg-lip/10 disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-lip">Supprimer</button>
-        <button type="button" data-fermer-exercice class="rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Annuler</button>
-        <button type="submit" class="rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Enregistrer</button>
+        <button type="button" data-fermer-exercice class="rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Annuler</button>
+        <button type="submit" class="rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Enregistrer</button>
       </div>
     </form>
   </dialog>
 
   <!-- ============ MODALE : MODE SÉANCE PLEIN ÉCRAN ============ -->
   <dialog id="modale-seance" aria-labelledby="mode-titre"
-          class="m-0 h-[100dvh] max-h-none w-screen max-w-none bg-sauge p-0 text-encre open:flex open:flex-col backdrop:bg-encre">
+          class="m-0 h-[100dvh] max-h-none w-screen max-w-none bg-sauge p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70">
     <div id="mode-contenu" class="flex min-h-0 flex-1 flex-col"></div>
   </dialog>
 
   <!-- ============ MODALE : FICHE DE CUISINE ============ -->
   <dialog id="modale-session" aria-labelledby="fiche-titre"
-          class="m-auto max-h-[min(90vh,56rem)] w-[min(calc(100%-2rem),46rem)] rounded-3xl bg-white p-0 text-encre open:flex open:flex-col backdrop:bg-encre/60 backdrop:backdrop-blur-sm">
+          class="m-auto max-h-[min(90vh,56rem)] w-[min(calc(100%-2rem),46rem)] rounded-3xl bg-carte p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <div id="fiche-contenu" class="flex min-h-0 flex-1 flex-col"></div>
   </dialog>
 
   <!-- ============ MODALE : COPIER UNE JOURNÉE ============ -->
   <dialog id="modale-copie" aria-labelledby="copie-titre"
-          class="m-auto w-[min(calc(100%-2rem),28rem)] rounded-3xl bg-white p-0 text-encre backdrop:bg-encre/60 backdrop:backdrop-blur-sm">
+          class="m-auto w-[min(calc(100%-2rem),28rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <form id="copie-form" class="space-y-5 p-6" novalidate>
       <div>
         <h2 id="copie-titre" class="text-xl font-extrabold tracking-tight"></h2>
         <p class="mt-1 text-sm text-pierre">Les repas déjà prévus sur les jours choisis seront remplacés, portions comprises.</p>
       </div>
       <div class="flex flex-wrap gap-2">
-        <button type="button" data-preselection="semaine" class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Du lundi au vendredi</button>
-        <button type="button" data-preselection="tous" class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Tous les jours</button>
+        <button type="button" data-preselection="semaine" class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Du lundi au vendredi</button>
+        <button type="button" data-preselection="tous" class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Tous les jours</button>
       </div>
       <fieldset>
         <legend class="sr-only">Jours de destination</legend>
         <div id="copie-jours" class="grid grid-cols-1 gap-2 sm:grid-cols-2"></div>
       </fieldset>
       <div class="flex justify-end gap-2 border-t border-encre/10 pt-4">
-        <button type="button" data-fermer-copie class="rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Annuler</button>
-        <button type="submit" id="copie-valider" class="rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-encre disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Copier</button>
+        <button type="button" data-fermer-copie class="rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Annuler</button>
+        <button type="submit" id="copie-valider" class="rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-accentfort disabled:opacity-40 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Copier</button>
       </div>
     </form>
   </dialog>
 
   <!-- ============ MODALE : ÉDITEUR DE RECETTE ============ -->
   <dialog id="modale-recette" aria-labelledby="recette-titre"
-          class="m-auto h-[min(calc(100dvh-1rem),60rem)] w-[min(calc(100%-1rem),66rem)] rounded-3xl bg-sauge p-0 text-encre open:flex open:flex-col backdrop:bg-encre/60 backdrop:backdrop-blur-sm">
+          class="m-auto h-[min(calc(100dvh-1rem),60rem)] w-[min(calc(100%-1rem),66rem)] rounded-3xl bg-sauge p-0 text-encre open:flex open:flex-col backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <form id="recette-form" novalidate class="flex min-h-0 flex-1 flex-col">
-      <header class="flex items-center justify-between gap-4 border-b border-encre/10 bg-white px-5 py-4 sm:px-6">
+      <header class="flex items-center justify-between gap-4 border-b border-encre/10 bg-carte px-5 py-4 sm:px-6">
         <h2 id="recette-titre" class="text-xl font-extrabold tracking-tight"></h2>
         <button type="button" data-fermer-recette aria-label="Fermer l'éditeur"
-                class="grid h-10 w-10 place-items-center rounded-full text-xl hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">×</button>
+                class="grid h-10 w-10 place-items-center rounded-full text-xl hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
       </header>
 
       <div data-defilement-recette class="min-h-0 flex-1 overflow-y-auto">
@@ -917,7 +949,7 @@
             <section class="space-y-5">
               <label class="block">
                 <span class="mb-1.5 block text-sm font-semibold">Nom de la recette</span>
-                <input type="text" id="recette-nom" maxlength="90" autocomplete="off" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip text-lg font-semibold" />
+                <input type="text" id="recette-nom" maxlength="90" autocomplete="off" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip text-lg font-semibold" />
               </label>
 
               <fieldset>
@@ -928,18 +960,18 @@
               <div class="grid grid-cols-2 gap-4 sm:max-w-2xl sm:grid-cols-3">
                 <label class="block">
                   <span class="mb-1.5 block text-sm font-semibold">Portions produites</span>
-                  <input type="number" id="recette-portions" min="1" max="20" step="1" inputmode="numeric" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" />
+                  <input type="number" id="recette-portions" min="1" max="20" step="1" inputmode="numeric" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" />
                 </label>
                 <label class="block">
                   <span class="mb-1.5 block text-sm font-semibold">Temps de préparation</span>
-                  <span class="flex items-center rounded-xl bg-white ring-1 ring-encre/15 focus-within:ring-2 focus-within:ring-basilic">
+                  <span class="flex items-center rounded-xl bg-carte ring-1 ring-encre/15 focus-within:ring-2 focus-within:ring-focus">
                     <input type="number" id="recette-temps" min="0" max="600" step="1" inputmode="numeric" class="w-full bg-transparent px-3 py-2.5 tabular-nums outline-none" />
                     <span class="pr-3 text-sm text-pierre">min</span>
                   </span>
                 </label>
                 <label class="block">
                   <span class="mb-1.5 block text-sm font-semibold">Conservation</span>
-                  <span class="flex items-center rounded-xl bg-white ring-1 ring-encre/15 focus-within:ring-2 focus-within:ring-basilic">
+                  <span class="flex items-center rounded-xl bg-carte ring-1 ring-encre/15 focus-within:ring-2 focus-within:ring-focus">
                     <input type="number" id="recette-conservation" min="0" max="30" step="1" inputmode="numeric" class="w-full bg-transparent px-3 py-2.5 tabular-nums outline-none" />
                     <span class="pr-3 text-sm text-pierre">jours</span>
                   </span>
@@ -954,11 +986,11 @@
               <div id="recette-ingredients" class="mt-4 space-y-2"></div>
               <div class="mt-3 flex flex-wrap gap-2">
                 <button type="button" id="recette-ajouter-ingredient"
-                        class="rounded-full bg-white px-4 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:ring-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                        class="rounded-full bg-carte px-4 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:ring-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                   Ajouter un ingrédient
                 </button>
                 <button type="button" id="recette-creer-ingredient"
-                        class="rounded-full px-4 py-2 text-sm font-semibold text-basilic hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                        class="rounded-full px-4 py-2 text-sm font-semibold text-menthe hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                   Créer un ingrédient absent du catalogue
                 </button>
               </div>
@@ -967,36 +999,36 @@
             <section>
               <label for="recette-instructions" class="text-lg font-semibold">Préparation</label>
               <p class="mt-1 text-sm text-pierre">Une étape par ligne. Les durées comme « 12 minutes » deviennent des minuteurs.</p>
-              <textarea id="recette-instructions" rows="8" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip mt-3 leading-relaxed"></textarea>
+              <textarea id="recette-instructions" rows="8" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip mt-3 leading-relaxed"></textarea>
               <p id="recette-etapes-info" class="mt-2 text-sm text-pierre"></p>
             </section>
           </div>
 
           <aside class="lg:sticky lg:top-0">
-            <div class="rounded-3xl bg-encre p-5 text-sauge">
-              <h3 class="text-sm text-sauge/70">Par portion</h3>
+            <div class="rounded-3xl bg-panneau p-5 text-surpanneau">
+              <h3 class="text-sm text-surpanneau/70">Par portion</h3>
               <p class="mt-1 flex items-baseline gap-2">
                 <span id="recette-apercu-kcal" class="text-4xl font-extrabold tracking-tight tabular-nums">0</span>
-                <span class="text-sauge/70">kcal</span>
+                <span class="text-surpanneau/70">kcal</span>
               </p>
-              <div id="recette-apercu-barre" class="mt-4 flex h-2.5 overflow-hidden rounded-full bg-sauge/10" aria-hidden="true"></div>
+              <div id="recette-apercu-barre" class="mt-4 flex h-2.5 overflow-hidden rounded-full bg-surpanneau/10" aria-hidden="true"></div>
               <dl id="recette-apercu-macros" class="mt-4 space-y-2 text-sm"></dl>
-              <p id="recette-apercu-total" class="mt-4 border-t border-sauge/15 pt-4 text-xs leading-relaxed text-sauge/70"></p>
+              <p id="recette-apercu-total" class="mt-4 border-t border-surpanneau/15 pt-4 text-xs leading-relaxed text-surpanneau/70"></p>
             </div>
           </aside>
         </div>
       </div>
 
-      <footer class="border-t border-encre/10 bg-white px-5 py-4 sm:px-6">
+      <footer class="border-t border-encre/10 bg-carte px-5 py-4 sm:px-6">
         <div id="recette-erreurs" class="mb-3 text-sm text-lip" hidden></div>
-        <div id="recette-quitter" class="mb-3 flex flex-wrap items-center gap-3 rounded-2xl bg-beurre/30 px-4 py-3 text-sm" hidden>
+        <div id="recette-quitter" class="mb-3 flex flex-wrap items-center gap-3 rounded-2xl bg-beurre/90 text-nuit px-4 py-3 text-sm" hidden>
           <span class="flex-1">Tes modifications ne sont pas enregistrées.</span>
-          <button type="button" data-quitter-confirmer class="rounded-full px-3 py-1.5 font-semibold text-lip hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-lip">Quitter sans enregistrer</button>
-          <button type="button" data-quitter-annuler class="rounded-full bg-encre px-3 py-1.5 font-semibold text-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Continuer l'édition</button>
+          <button type="button" data-quitter-confirmer class="rounded-full px-3 py-1.5 font-semibold text-lip hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-lip">Quitter sans enregistrer</button>
+          <button type="button" data-quitter-annuler class="rounded-full bg-panneau px-3 py-1.5 font-semibold text-surpanneau focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Continuer l'édition</button>
         </div>
         <div class="flex justify-end gap-2">
-          <button type="button" data-fermer-recette class="rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Annuler</button>
-          <button type="submit" class="rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Enregistrer la recette</button>
+          <button type="button" data-fermer-recette class="rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Annuler</button>
+          <button type="submit" class="rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Enregistrer la recette</button>
         </div>
       </footer>
     </form>
@@ -1004,17 +1036,17 @@
 
   <!-- ============ MODALE : INGRÉDIENT ============ -->
   <dialog id="modale-ingredient" aria-labelledby="ingredient-titre"
-          class="m-auto w-[min(calc(100%-2rem),30rem)] rounded-3xl bg-white p-0 text-encre backdrop:bg-encre/60 backdrop:backdrop-blur-sm">
+          class="m-auto w-[min(calc(100%-2rem),30rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <form id="ingredient-form" novalidate class="space-y-5 p-6">
       <h2 id="ingredient-titre" class="text-xl font-extrabold tracking-tight"></h2>
       <label class="block">
         <span class="mb-1.5 block text-sm font-semibold">Nom</span>
-        <input type="text" id="ingredient-nom" maxlength="60" autocomplete="off" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip" />
+        <input type="text" id="ingredient-nom" maxlength="60" autocomplete="off" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip" />
       </label>
       <div class="grid grid-cols-2 gap-4">
         <label class="block">
           <span class="mb-1.5 block text-sm font-semibold">Unité</span>
-          <select id="ingredient-unite" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip">
+          <select id="ingredient-unite" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip">
             <option value="g">Grammes (g)</option>
             <option value="ml">Millilitres (ml)</option>
             <option value="pièce">Pièce</option>
@@ -1022,15 +1054,15 @@
         </label>
         <label class="block">
           <span class="mb-1.5 block text-sm font-semibold">Rayon</span>
-          <select id="ingredient-rayon" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip"></select>
+          <select id="ingredient-rayon" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip"></select>
         </label>
       </div>
       <fieldset>
         <legend class="text-sm font-semibold">Valeurs nutritionnelles <span id="ingredient-base" class="font-normal text-pierre"></span></legend>
         <div class="mt-2 grid grid-cols-3 gap-3">
-          <label class="block"><span class="mb-1 block text-xs text-pierre">Protéines (g)</span><input type="number" data-nutriment="proteines" min="0" step="0.1" inputmode="decimal" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" /></label>
-          <label class="block"><span class="mb-1 block text-xs text-pierre">Glucides (g)</span><input type="number" data-nutriment="glucides" min="0" step="0.1" inputmode="decimal" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" /></label>
-          <label class="block"><span class="mb-1 block text-xs text-pierre">Lipides (g)</span><input type="number" data-nutriment="lipides" min="0" step="0.1" inputmode="decimal" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" /></label>
+          <label class="block"><span class="mb-1 block text-xs text-pierre">Protéines (g)</span><input type="number" data-nutriment="proteines" min="0" step="0.1" inputmode="decimal" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" /></label>
+          <label class="block"><span class="mb-1 block text-xs text-pierre">Glucides (g)</span><input type="number" data-nutriment="glucides" min="0" step="0.1" inputmode="decimal" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" /></label>
+          <label class="block"><span class="mb-1 block text-xs text-pierre">Lipides (g)</span><input type="number" data-nutriment="lipides" min="0" step="0.1" inputmode="decimal" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" /></label>
         </div>
         <p class="mt-2 text-xs text-pierre">Tu trouveras ces valeurs sur l'emballage, dans le tableau nutritionnel.</p>
       </fieldset>
@@ -1039,7 +1071,7 @@
         <div class="mt-2 grid grid-cols-3 gap-3">
           <label class="block">
             <span class="mb-1 block text-xs text-pierre">Emballage</span>
-            <select id="ingredient-achat-nom" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip">
+            <select id="ingredient-achat-nom" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip">
               <option value="">Sans nom</option>
               <option value="paquet">Paquet</option>
               <option value="sachet">Sachet</option>
@@ -1054,26 +1086,26 @@
           </label>
           <label class="block">
             <span class="mb-1 block text-xs text-pierre">Contenu <span id="ingredient-achat-unite"></span></span>
-            <input type="number" id="ingredient-achat-quantite" min="0" step="any" inputmode="decimal" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" />
+            <input type="number" id="ingredient-achat-quantite" min="0" step="any" inputmode="decimal" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" />
           </label>
           <label class="block">
             <span class="mb-1 block text-xs text-pierre">Prix (€)</span>
-            <input type="number" id="ingredient-achat-prix" min="0" step="0.01" inputmode="decimal" class="w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" />
+            <input type="number" id="ingredient-achat-prix" min="0" step="0.01" inputmode="decimal" class="w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip tabular-nums" />
           </label>
         </div>
       </fieldset>
       <p id="ingredient-apercu" class="rounded-xl bg-sauge px-4 py-3 text-sm"></p>
       <div id="ingredient-erreurs" class="text-sm text-lip" hidden></div>
       <div class="flex justify-end gap-2 border-t border-encre/10 pt-4">
-        <button type="button" data-fermer-ingredient class="rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Annuler</button>
-        <button type="submit" class="rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Enregistrer l'ingrédient</button>
+        <button type="button" data-fermer-ingredient class="rounded-full px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Annuler</button>
+        <button type="submit" class="rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Enregistrer l'ingrédient</button>
       </div>
     </form>
   </dialog>
 
   <!-- ============ MODALE : IMPORT D'UNE SAUVEGARDE ============ -->
   <dialog id="modale-import" aria-labelledby="import-titre"
-          class="m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-white p-0 text-encre backdrop:bg-encre/60 backdrop:backdrop-blur-sm">
+          class="m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/70 backdrop:backdrop-blur-sm">
     <div class="space-y-5 p-6">
       <div>
         <h2 id="import-titre" class="text-xl font-extrabold tracking-tight">Importer cette sauvegarde</h2>
@@ -1083,22 +1115,22 @@
       <p id="import-avertissement" class="text-sm text-pierre" hidden></p>
       <div class="space-y-2 border-t border-encre/10 pt-4">
         <button type="button" data-import="remplacer"
-                class="w-full rounded-2xl bg-basilic px-4 py-3 text-left text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                class="w-full rounded-2xl bg-basilic px-4 py-3 text-left text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
           <span class="block font-semibold">Tout remplacer</span>
           <span class="block text-sm text-white/80">Profil, suivi, planning, recettes et ingrédients</span>
         </button>
         <button type="button" data-import="fusionner"
-                class="w-full rounded-2xl px-4 py-3 text-left ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                class="w-full rounded-2xl px-4 py-3 text-left ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
           <span class="block font-semibold">Fusionner les deux versions</span>
           <span class="block text-sm text-pierre">Garde ce que chaque appareil a de plus récent</span>
         </button>
         <button type="button" data-import="recettes"
-                class="w-full rounded-2xl px-4 py-3 text-left ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                class="w-full rounded-2xl px-4 py-3 text-left ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
           <span class="block font-semibold">Ajouter uniquement les recettes</span>
           <span class="block text-sm text-pierre">Tes données actuelles sont conservées</span>
         </button>
         <button type="button" data-import="annuler"
-                class="w-full rounded-2xl px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                class="w-full rounded-2xl px-4 py-2.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
           Annuler
         </button>
       </div>
@@ -1107,10 +1139,10 @@
 
   <!-- ============ NOTIFICATION ============ -->
   <div id="toast" role="status" aria-live="polite"
-       class="print:hidden fixed bottom-6 left-1/2 z-50 flex max-w-[calc(100%-2rem)] -translate-x-1/2 translate-y-4 items-center gap-3 rounded-2xl bg-encre py-2 pl-5 pr-2 text-sauge opacity-0 shadow-lg pointer-events-none transition duration-200">
+       class="print:hidden fixed bottom-6 left-1/2 z-50 flex max-w-[calc(100%-2rem)] -translate-x-1/2 translate-y-4 items-center gap-3 rounded-2xl bg-panneau py-2 pl-5 pr-2 text-surpanneau opacity-0 shadow-lg pointer-events-none transition duration-200">
     <span id="toast-texte" class="py-1.5 text-sm"></span>
     <button type="button" id="toast-action" hidden
-            class="shrink-0 rounded-xl px-3 py-1.5 text-sm font-semibold text-beurre hover:bg-sauge/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-beurre"></button>
+            class="shrink-0 rounded-xl px-3 py-1.5 text-sm font-semibold text-beurre hover:bg-surpanneau/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-beurre"></button>
   </div>
 
   <script>
@@ -2452,7 +2484,7 @@
 
   const DEFAULT_STATE = {
     version: 1,
-    ui: { vue: 'accueil', activeTab: 'planning', ongletEntrainement: 'constructeur', jourSeance: 'lundi', dateSeance: null, reposDefaut: 90, jourSuivi: null, masquerCoches: false, achatParFournees: true,
+    ui: { vue: 'accueil', theme: 'systeme', activeTab: 'planning', ongletEntrainement: 'constructeur', jourSeance: 'lundi', dateSeance: null, reposDefaut: 90, jourSuivi: null, masquerCoches: false, achatParFournees: true,
       joursCuisine: ['mercredi', 'dimanche'], fourneesDoubles: true },
     profil: {
       sexe: 'homme', age: 25, taille: 178,
@@ -2848,7 +2880,7 @@
           lien: '#/entrainement',
           titre: 'Training Planner',
           description: 'Bibliothèque d\'exercices, constructeur de séances, suivi des performances.',
-          couleur: 'bg-encre',
+          couleur: 'bg-panneau',
           icone: '<path d="M4 9v6M7 7v10M17 7v10M20 9v6M7 12h10" stroke-linecap="round" stroke-linejoin="round"/>',
           chiffres: (() => {
             const seances = Object.values(d.entrainement.seances).filter((s) => s.exercices.length).length;
@@ -2897,7 +2929,7 @@
         : 0;
 
       const bouton = (texte, attributs, principal = false) => `
-        <a ${attributs} class="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic ${principal ? 'bg-basilic text-white hover:bg-encre' : 'ring-1 ring-encre/15 hover:bg-sauge'}">${texte}</a>`;
+        <a ${attributs} class="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${principal ? 'bg-basilic text-white hover:bg-accentfort' : 'ring-1 ring-encre/15 hover:bg-sauge'}">${texte}</a>`;
 
       $('accueil-journee').innerHTML = `
         <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -2909,7 +2941,7 @@
           <section class="min-w-0">
             <h4 class="font-semibold">Repas</h4>
             <ul class="mt-2 divide-y divide-encre/10">${repas}</ul>
-            <p class="mt-2 text-sm tabular-nums ${totaux.calories >= besoins.calories * 0.95 ? 'text-basilic' : 'text-pierre'}">
+            <p class="mt-2 text-sm tabular-nums ${totaux.calories >= besoins.calories * 0.95 ? 'text-menthe' : 'text-pierre'}">
               ${nf0.format(totaux.calories)} sur ${nf0.format(besoins.calories)} kcal prévus, ${totaux.proteines} g de protéines
             </p>
             <div class="mt-3">${bouton('Ouvrir le planning', 'href="#/repas/planning"')}</div>
@@ -2923,7 +2955,7 @@
               <ul class="mt-2 text-sm text-pierre">${seance.exercices.slice(0, 3).map((l) => `<li class="truncate">${esc(getExerciceById(l.id)?.nom || '')}</li>`).join('')}${seance.exercices.length > 3 ? `<li>et ${seance.exercices.length - 3} autres</li>` : ''}</ul>
               <div class="mt-3 flex flex-wrap gap-2">
                 <button type="button" id="journee-demarrer"
-                        class="inline-flex items-center rounded-full bg-basilic px-4 py-2 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">Démarrer la séance</button>
+                        class="inline-flex items-center rounded-full bg-basilic px-4 py-2 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">Démarrer la séance</button>
                 ${bouton('Voir le détail', 'href="#/entrainement/seances"')}
               </div>`
             : `
@@ -2949,7 +2981,7 @@
     renderAccueil() {
       this.renderJournee();
       $('accueil-dossiers').innerHTML = this.dossiers().map((dossier) => `
-        <a href="${dossier.lien}" class="group relative flex flex-col overflow-hidden rounded-3xl bg-white p-6 ring-1 ring-encre/10 transition hover:-translate-y-0.5 hover:ring-2 hover:ring-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+        <a href="${dossier.lien}" class="group relative flex flex-col overflow-hidden rounded-3xl bg-carte p-6 ring-1 ring-encre/10 transition hover:-translate-y-0.5 hover:ring-2 hover:ring-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
           <span class="absolute inset-x-0 top-0 h-1.5 ${dossier.couleur}" aria-hidden="true"></span>
           <span class="grid h-12 w-12 place-items-center rounded-2xl ${dossier.couleur} ${dossier.couleur === 'bg-beurre' ? 'text-encre' : 'text-white'}" aria-hidden="true">
             <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8">${dossier.icone}</svg>
@@ -2959,7 +2991,7 @@
           <ul class="mt-4 flex flex-wrap gap-2">
             ${dossier.chiffres.map((c) => `<li class="rounded-full bg-sauge px-3 py-1 text-xs font-semibold">${c}</li>`).join('')}
           </ul>
-          <span class="mt-auto pt-5 text-sm font-semibold text-basilic">Ouvrir le dossier →</span>
+          <span class="mt-auto pt-5 text-sm font-semibold text-menthe">Ouvrir le dossier →</span>
         </a>`).join('');
 
       const majPoids = State.data.historiquePoids.at(-1);
@@ -2987,7 +3019,7 @@
       $('nav-entrainement').innerHTML = this.ONGLETS.map((o) => `
         <button type="button" role="tab" id="tab-entrainement-${o.id}" data-onglet-entrainement="${o.id}"
                 aria-controls="panel-entrainement-${o.id}" aria-selected="false"
-                class="rounded-full px-4 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white aria-selected:bg-encre aria-selected:text-sauge aria-selected:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">${o.label}</button>`).join('');
+                class="rounded-full px-4 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte aria-selected:bg-panneau aria-selected:text-surpanneau aria-selected:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">${o.label}</button>`).join('');
       $('nav-entrainement').addEventListener('click', (e) => {
         const bouton = e.target.closest('[data-onglet-entrainement]');
         if (bouton) this.activer(bouton.dataset.ongletEntrainement);
@@ -2995,7 +3027,7 @@
 
       $('seance-jours').innerHTML = JOURS.map((jour) => `
         <button type="button" data-jour-seance="${jour.id}" data-focus="seance|${jour.id}" aria-pressed="false"
-                class="flex flex-col items-center gap-0.5 rounded-2xl bg-white px-2 py-3 text-center ring-1 ring-encre/10 hover:ring-encre/30 aria-pressed:bg-encre aria-pressed:text-sauge aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                class="flex flex-col items-center gap-0.5 rounded-2xl bg-carte px-2 py-3 text-center ring-1 ring-encre/10 hover:ring-encre/30 aria-pressed:bg-panneau aria-pressed:text-surpanneau aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
           <span class="text-sm font-extrabold">${jour.label.slice(0, 3)}</span>
           <span data-resume-jour="${jour.id}" class="text-[0.7rem] leading-tight opacity-80"></span>
         </button>`).join('');
@@ -3007,7 +3039,7 @@
 
       $('exercices-groupes').innerHTML = [['', 'Tous'], ...Object.entries(GROUPES)].map(([id, label]) => `
         <button type="button" data-groupe="${id}" aria-pressed="false"
-                class="rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/15 hover:bg-white aria-pressed:bg-basilic aria-pressed:text-white aria-pressed:ring-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">${label}</button>`).join('');
+                class="rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/15 hover:bg-carte aria-pressed:bg-basilic aria-pressed:text-white aria-pressed:ring-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">${label}</button>`).join('');
       $('exercices-groupes').addEventListener('click', (e) => {
         const bouton = e.target.closest('[data-groupe]');
         if (!bouton) return;
@@ -3200,8 +3232,8 @@
     renderLignes(seance) {
       const zone = $('seance-exercices');
       const cleFocus = zone.contains(document.activeElement) ? document.activeElement.dataset.focus : null;
-      const champ = 'w-16 rounded-lg bg-sauge/60 px-2 py-1.5 text-sm font-semibold tabular-nums ring-1 ring-encre/10 outline-none focus:ring-2 focus:ring-basilic';
-      const bouton = 'grid h-8 w-8 place-items-center rounded-lg text-pierre hover:bg-sauge disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic';
+      const champ = 'w-16 rounded-lg bg-sauge/60 px-2 py-1.5 text-sm font-semibold tabular-nums ring-1 ring-encre/10 outline-none focus:ring-2 focus:ring-focus';
+      const bouton = 'grid h-8 w-8 place-items-center rounded-lg text-pierre hover:bg-sauge disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
 
       zone.innerHTML = seance.exercices.length ? seance.exercices.map((ligne, i) => {
         const exercice = getExerciceById(ligne.id);
@@ -3214,7 +3246,7 @@
             <div class="min-w-0 flex-1">
               <p class="font-semibold leading-snug">
                 <span class="mr-1 text-pierre">${i + 1}.</span>${esc(exercice.nom)}
-                <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-basilic">${GROUPES[exercice.groupe]}</span>
+                <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-menthe">${GROUPES[exercice.groupe]}</span>
               </p>
               <p class="text-xs text-pierre">${esc(exercice.materiel)}</p>
             </div>
@@ -3253,20 +3285,20 @@
       $('exercices-resultats').innerHTML = resultats.map((exercice) => `
         <li class="flex items-stretch">
           <button type="button" data-ajouter="${exercice.id}" data-focus="exercice|${exercice.id}"
-                  class="flex min-w-0 flex-1 items-baseline justify-between gap-3 px-4 py-3 text-left hover:bg-sauge/60 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-basilic">
+                  class="flex min-w-0 flex-1 items-baseline justify-between gap-3 px-4 py-3 text-left hover:bg-sauge/60 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus">
             <span class="min-w-0">
               <span class="block font-semibold leading-snug">
                 ${esc(exercice.nom)}
-                ${exercice.perso ? '<span class="ml-1 rounded-full bg-sauge px-2 py-0.5 text-[0.65rem] font-semibold text-basilic">perso</span>' : ''}
+                ${exercice.perso ? '<span class="ml-1 rounded-full bg-sauge px-2 py-0.5 text-[0.65rem] font-semibold text-menthe">perso</span>' : ''}
               </span>
               <span class="block text-xs text-pierre">${GROUPES[exercice.groupe]}, ${esc(exercice.materiel)}, ${exercice.type === 'cardio' ? `${exercice.dureeDefaut} min` : `${exercice.seriesDefaut} × ${exercice.repsDefaut}`}</span>
             </span>
-            <span class="shrink-0 text-sm font-semibold ${comptes[exercice.id] ? 'text-basilic' : 'text-pierre'}">${comptes[exercice.id] ? `×${comptes[exercice.id]}` : '+'}</span>
+            <span class="shrink-0 text-sm font-semibold ${comptes[exercice.id] ? 'text-menthe' : 'text-pierre'}">${comptes[exercice.id] ? `×${comptes[exercice.id]}` : '+'}</span>
           </button>
           ${exercice.perso ? `
             <button type="button" data-modifier-exercice="${exercice.id}" data-focus="exercice|${exercice.id}|modifier"
                     aria-label="Modifier ${esc(exercice.nom)}"
-                    class="grid w-11 shrink-0 place-items-center text-pierre hover:bg-sauge/60 hover:text-basilic focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-basilic">✎</button>` : ''}
+                    class="grid w-11 shrink-0 place-items-center text-pierre hover:bg-sauge/60 hover:text-menthe focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-focus">✎</button>` : ''}
         </li>`).join('');
     },
   };
@@ -3435,10 +3467,10 @@
         return `
           <button type="button" data-date-seance="${jourDate}" data-focus="jour|${jourDate}" aria-pressed="${actif}"
                   aria-label="${jour.label} ${dateCourte(jourDate)} : ${seance?.exercices.length ? seance.nom : 'repos'}${loguee ? ', séance enregistrée' : ''}"
-                  class="flex flex-col gap-1 rounded-2xl p-3 text-left ring-1 ring-encre/10 hover:ring-encre/30 aria-pressed:bg-encre aria-pressed:text-sauge aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic ${actif ? '' : 'bg-white'}">
+                  class="flex flex-col gap-1 rounded-2xl p-3 text-left ring-1 ring-encre/10 hover:ring-encre/30 aria-pressed:bg-panneau aria-pressed:text-surpanneau aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${actif ? '' : 'bg-carte'}">
             <span class="flex items-baseline justify-between gap-2">
               <span class="text-sm font-extrabold">${jour.label.slice(0, 3)} ${new Date(`${jourDate}T00:00:00`).getDate()}</span>
-              <span class="text-xs ${loguee ? 'text-basilic' : 'opacity-60'}" aria-hidden="true">${loguee ? '✓' : estAujourdhui ? '•' : ''}</span>
+              <span class="text-xs ${loguee ? 'text-menthe' : 'opacity-60'}" aria-hidden="true">${loguee ? '✓' : estAujourdhui ? '•' : ''}</span>
             </span>
             <span class="text-xs leading-tight opacity-80">${seance?.exercices.length ? esc(seance.nom || 'Séance') : 'Repos'}</span>
           </button>`;
@@ -3458,7 +3490,7 @@
         return;
       }
 
-      const champ = 'w-20 rounded-lg bg-sauge/60 px-2 py-2 text-sm font-semibold tabular-nums ring-1 ring-encre/10 outline-none focus:ring-2 focus:ring-basilic';
+      const champ = 'w-20 rounded-lg bg-sauge/60 px-2 py-2 text-sm font-semibold tabular-nums ring-1 ring-encre/10 outline-none focus:ring-2 focus:ring-focus';
 
       zone.innerHTML = seance.exercices.map((ligne, position) => {
         const exercice = getExerciceById(ligne.id);
@@ -3480,11 +3512,11 @@
           : 'Première fois sur cet exercice.';
 
         return `
-          <article class="rounded-2xl bg-white p-5 ring-1 ring-encre/10">
+          <article class="rounded-2xl bg-carte p-5 ring-1 ring-encre/10">
             <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
               <h4 class="text-lg font-semibold">
                 <span class="mr-1 text-pierre">${position + 1}.</span>${esc(exercice.nom)}
-                <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-basilic">${GROUPES[exercice.groupe]}</span>
+                <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-menthe">${GROUPES[exercice.groupe]}</span>
               </h4>
               <p class="text-sm text-pierre tabular-nums">Objectif : ${objectif}${record ? `, record ${nfMesure.format(record)} kg` : ''}</p>
             </div>
@@ -3505,16 +3537,16 @@
                   ${!cardio && volumeSerie(serie) ? `<span class="pb-2 text-sm text-pierre tabular-nums">${nf0.format(volumeSerie(serie))} kg soulevés${serie.poids > record && record ? ' · record' : ''}</span>` : ''}
                   <button type="button" data-perf-action="retirer|${ligne.id}|${i}" data-focus="perf|${ligne.id}|${i}|retirer"
                           aria-label="Retirer la série ${i + 1}" ${series.length <= 1 ? 'disabled' : ''}
-                          class="mb-0.5 grid h-9 w-9 place-items-center rounded-lg text-pierre hover:bg-sauge hover:text-lip disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">×</button>
+                          class="mb-0.5 grid h-9 w-9 place-items-center rounded-lg text-pierre hover:bg-sauge hover:text-lip disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
                 </li>`).join('')}
             </ul>
 
             <div class="mt-4 flex flex-wrap items-center gap-2 border-t border-encre/10 pt-3">
               <button type="button" data-perf-action="ajouter|${ligne.id}" data-focus="perf|${ligne.id}|ajouter"
-                      class="rounded-full px-3 py-1.5 text-sm font-semibold text-basilic hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">+ Série</button>
+                      class="rounded-full px-3 py-1.5 text-sm font-semibold text-menthe hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">+ Série</button>
               ${precedent ? `
                 <button type="button" data-perf-action="reprendre|${ligne.id}" data-focus="perf|${ligne.id}|reprendre"
-                        class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Reprendre ces charges</button>` : ''}
+                        class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Reprendre ces charges</button>` : ''}
               ${!cardio && volume ? `<span class="ml-auto text-sm text-pierre tabular-nums">Volume : ${nf0.format(volume)} kg${meilleure > record && record ? `, nouveau record à ${nfMesure.format(meilleure)} kg` : ''}</span>` : ''}
             </div>
           </article>`;
@@ -3539,20 +3571,20 @@
       zone.innerHTML = `
         <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
           <div>
-            <h4 class="text-sm text-sauge/70">Bilan de la séance</h4>
+            <h4 class="text-sm text-surpanneau/70">Bilan de la séance</h4>
             <p class="mt-1 text-2xl font-extrabold tracking-tight">
               ${faits} ${faits > 1 ? 'exercices' : 'exercice'} sur ${seance.exercices.length}
               ${complet ? (faits > 1 ? 'terminés' : 'terminé') : (faits > 1 ? 'commencés' : 'commencé')}
             </p>
           </div>
           <dl class="flex flex-wrap gap-x-8 gap-y-2 text-sm">
-            ${volume ? `<div><dt class="text-sauge/70">Volume total</dt><dd class="text-lg font-extrabold tabular-nums">${nf0.format(volume)} kg</dd></div>` : ''}
-            ${nbSeries ? `<div><dt class="text-sauge/70">Séries</dt><dd class="text-lg font-extrabold tabular-nums">${nbSeries}</dd></div>` : ''}
-            ${minutes ? `<div><dt class="text-sauge/70">Durée</dt><dd class="text-lg font-extrabold tabular-nums">${formatDuree(minutes)}</dd></div>` : ''}
-            ${distance ? `<div><dt class="text-sauge/70">Distance</dt><dd class="text-lg font-extrabold tabular-nums">${nfMesure.format(distance)} km</dd></div>` : ''}
+            ${volume ? `<div><dt class="text-surpanneau/70">Volume total</dt><dd class="text-lg font-extrabold tabular-nums">${nf0.format(volume)} kg</dd></div>` : ''}
+            ${nbSeries ? `<div><dt class="text-surpanneau/70">Séries</dt><dd class="text-lg font-extrabold tabular-nums">${nbSeries}</dd></div>` : ''}
+            ${minutes ? `<div><dt class="text-surpanneau/70">Durée</dt><dd class="text-lg font-extrabold tabular-nums">${formatDuree(minutes)}</dd></div>` : ''}
+            ${distance ? `<div><dt class="text-surpanneau/70">Distance</dt><dd class="text-lg font-extrabold tabular-nums">${nfMesure.format(distance)} km</dd></div>` : ''}
           </dl>
         </div>
-        <p class="mt-3 text-sm text-sauge/70">
+        <p class="mt-3 text-sm text-surpanneau/70">
           ${nbSeries
             ? `Enregistré le ${dateLongue(date)}. Tes performances alimenteront les courbes de l'onglet « Mes performances ».`
             : 'Saisis tes charges au fur et à mesure : tout est enregistré automatiquement, série par série.'}
@@ -3584,7 +3616,7 @@
     init() {
       $('perf-periodes').innerHTML = this.PERIODES.map(([jours, label]) => `
         <button type="button" data-periode="${jours}" aria-pressed="false"
-                class="rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/15 hover:bg-white aria-pressed:bg-encre aria-pressed:text-sauge aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">${label}</button>`).join('');
+                class="rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/15 hover:bg-carte aria-pressed:bg-panneau aria-pressed:text-surpanneau aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">${label}</button>`).join('');
 
       $('perf-exercice').addEventListener('change', (e) => { this.exerciceId = e.target.value; this.mesure = null; this.render(); });
       $('perf-mesures').addEventListener('click', (e) => {
@@ -3649,7 +3681,7 @@
       const mesure = this.mesureActive();
       $('perf-mesures').innerHTML = this.mesures().map((m) => `
         <button type="button" data-mesure="${m.cle}" aria-pressed="${m.cle === mesure.cle}"
-                class="rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/15 hover:bg-white aria-pressed:bg-basilic aria-pressed:text-white aria-pressed:ring-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">${m.label}</button>`).join('');
+                class="rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/15 hover:bg-carte aria-pressed:bg-basilic aria-pressed:text-white aria-pressed:ring-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">${m.label}</button>`).join('');
       document.querySelectorAll('[data-periode]').forEach((b) => {
         b.setAttribute('aria-pressed', String(Number(b.dataset.periode) === this.periode));
       });
@@ -3681,7 +3713,7 @@
         : null;
 
       const carte = (titre, valeur, detail) => `
-        <div class="rounded-2xl bg-white p-5 ring-1 ring-encre/10">
+        <div class="rounded-2xl bg-carte p-5 ring-1 ring-encre/10">
           <p class="text-sm text-pierre">${titre}</p>
           <p class="mt-1 text-2xl font-extrabold tabular-nums">${valeur}</p>
           <p class="mt-1 text-xs text-pierre">${detail}</p>
@@ -3695,18 +3727,18 @@
           derniere ? `le ${dateCourte(derniere.date)}` : 'à toi de jouer'),
         carte('Progression', progression === null ? '—' : `${signe(Math.round(progression), nf0)} %`,
           premiere && derniere !== premiere ? `depuis le ${dateCourte(premiere.date)}` : 'il faut deux séances pour comparer'),
-        `<div class="rounded-2xl bg-encre p-5 text-sauge">
+        `<div class="rounded-2xl bg-panneau p-5 text-surpanneau">
           <label class="block">
-            <span class="text-sm text-sauge/70">Objectif, ${cardio ? 'distance' : 'charge'}</span>
+            <span class="text-sm text-surpanneau/70">Objectif, ${cardio ? 'distance' : 'charge'}</span>
             <span class="mt-1 flex items-baseline gap-2">
               <input type="number" min="0" step="${cardio ? '0.5' : '2.5'}" inputmode="decimal" value="${objectif || ''}"
                      data-objectif="${exercice.id}" data-focus="objectif|${exercice.id}" placeholder="${recordBrut ? nfMesure.format(Math.round(recordBrut * 1.1 * 2) / 2) : '—'}"
                      aria-label="Objectif en ${uniteObjectif} pour ${esc(exercice.nom)}"
-                     class="w-24 rounded-lg bg-sauge/10 px-2 py-1 text-2xl font-extrabold tabular-nums outline-none ring-1 ring-sauge/20 placeholder:text-sauge/40 focus:ring-2 focus:ring-beurre" />
-              <span class="text-sauge/70">${uniteObjectif}</span>
+                     class="w-24 rounded-lg bg-surpanneau/10 px-2 py-1 text-2xl font-extrabold tabular-nums outline-none ring-1 ring-surpanneau/20 placeholder:text-surpanneau/40 focus:ring-2 focus:ring-beurre" />
+              <span class="text-surpanneau/70">${uniteObjectif}</span>
             </span>
           </label>
-          <p class="mt-2 text-xs text-sauge/70">
+          <p class="mt-2 text-xs text-surpanneau/70">
             ${objectif
               ? (reste > 0
                 ? `Record actuel ${nfMesure.format(recordBrut)} ${uniteObjectif}, il te reste ${nfMesure.format(Math.round(reste * 10) / 10)} ${uniteObjectif}.`
@@ -3714,7 +3746,7 @@
               : 'Fixe une cible pour suivre ce qu\'il te reste à gagner.'}
           </p>
           ${objectif && recordBrut ? `
-            <div class="mt-3 h-2 overflow-hidden rounded-full bg-sauge/15" aria-hidden="true">
+            <div class="mt-3 h-2 overflow-hidden rounded-full bg-surpanneau/15" aria-hidden="true">
               <div class="h-full rounded-full bg-beurre transition-[width] duration-500" style="width:${Math.min(100, (recordBrut / objectif) * 100)}%"></div>
             </div>` : ''}
         </div>`,
@@ -3814,7 +3846,7 @@
             </div>
             <p class="shrink-0 text-sm tabular-nums">
               ${cardio ? `${nfMesure.format(entree.distance)} km` : `${nf0.format(entree.volume)} kg de volume`}
-              ${evolution ? `<span class="${evolution > 0 ? 'text-basilic' : 'text-pierre'}"> (${signe(evolution, nfMesure)} kg)</span>` : ''}
+              ${evolution ? `<span class="${evolution > 0 ? 'text-menthe' : 'text-pierre'}"> (${signe(evolution, nfMesure)} kg)</span>` : ''}
             </p>
           </li>`;
       }).join('') : `<li class="p-4 text-sm text-pierre">Aucune séance enregistrée pour cet exercice.</li>`;
@@ -3831,7 +3863,7 @@
     init() {
       $('progression-fenetres').innerHTML = this.FENETRES.map(([jours, label]) => `
         <button type="button" data-fenetre="${jours}" aria-pressed="false"
-                class="rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/15 hover:bg-white aria-pressed:bg-encre aria-pressed:text-sauge aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">${label}</button>`).join('');
+                class="rounded-full px-3 py-1.5 text-xs font-semibold ring-1 ring-encre/15 hover:bg-carte aria-pressed:bg-panneau aria-pressed:text-surpanneau aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">${label}</button>`).join('');
       $('progression-fenetres').addEventListener('click', (e) => {
         const bouton = e.target.closest('[data-fenetre]');
         if (!bouton) return;
@@ -3932,7 +3964,7 @@
       const aSurveiller = bilans.filter((b) => ['stagnation', 'delaisse'].includes(b.statut.cle)).length;
 
       const carte = (titre, valeur, detail) => `
-        <div class="rounded-2xl bg-white p-5 ring-1 ring-encre/10">
+        <div class="rounded-2xl bg-carte p-5 ring-1 ring-encre/10">
           <p class="text-sm text-pierre">${titre}</p>
           <p class="mt-1 text-2xl font-extrabold tabular-nums">${valeur}</p>
           <p class="mt-1 text-xs text-pierre">${detail}</p>
@@ -3979,11 +4011,11 @@
               </p>
             </div>
             <div class="flex items-center gap-3">
-              <span class="text-sm font-semibold tabular-nums ${b.ecart > 0 ? 'text-basilic' : b.ecart < 0 ? 'text-lip' : 'text-pierre'}">
+              <span class="text-sm font-semibold tabular-nums ${b.ecart > 0 ? 'text-menthe' : b.ecart < 0 ? 'text-lip' : 'text-pierre'}">
                 ${b.ecart ? `${signe(b.ecart, nfMesure)} ${unite}` : '—'}
               </span>
               <button type="button" data-voir-exercice="${b.exercice.id}"
-                      class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Voir la courbe</button>
+                      class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Voir la courbe</button>
             </div>
           </li>`;
       }).join('')
@@ -4131,9 +4163,9 @@
       const pause = zone.querySelector('[data-mode-repos="pause"]');
       if (pause) pause.textContent = repos?.etat === 'pause' ? 'Reprendre' : 'Pause';
       zone.classList.toggle('bg-beurre', repos?.etat === 'termine');
-      zone.classList.toggle('bg-encre', repos?.etat !== 'termine');
+      zone.classList.toggle('bg-panneau', repos?.etat !== 'termine');
       zone.classList.toggle('text-encre', repos?.etat === 'termine');
-      zone.classList.toggle('text-sauge', repos?.etat !== 'termine');
+      zone.classList.toggle('text-surpanneau', repos?.etat !== 'termine');
     },
 
     /* ---- Rendu ---- */
@@ -4153,16 +4185,16 @@
       const seance = Seances.seanceDuJour();
 
       const cleFocus = this.dialog.contains(document.activeElement) ? document.activeElement.dataset.focus : null;
-      const grandChamp = 'w-full rounded-xl bg-white px-3 py-3 text-center text-2xl font-extrabold tabular-nums ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic';
+      const grandChamp = 'w-full rounded-xl bg-carte px-3 py-3 text-center text-2xl font-extrabold tabular-nums ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus';
 
       $('mode-contenu').innerHTML = `
-        <header class="flex items-center justify-between gap-4 border-b border-encre/10 bg-white px-4 py-3">
+        <header class="flex items-center justify-between gap-4 border-b border-encre/10 bg-carte px-4 py-3">
           <div class="min-w-0">
             <p class="truncate text-sm text-pierre">${esc(seance.nom || 'Séance')}, ${dateCourte(Seances.date())}</p>
             <h2 id="mode-titre" class="text-lg font-extrabold leading-tight">Exercice ${this.index + 1} sur ${lignes.length}</h2>
           </div>
           <button type="button" data-mode-fermer data-focus="mode|fermer" aria-label="Quitter le mode séance"
-                  class="grid h-11 w-11 shrink-0 place-items-center rounded-full text-xl ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">×</button>
+                  class="grid h-11 w-11 shrink-0 place-items-center rounded-full text-xl ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
         </header>
         <div class="h-1.5 bg-encre/10" aria-hidden="true">
           <div class="h-full bg-basilic transition-[width] duration-300" style="width:${(totalFaits / lignes.length) * 100}%"></div>
@@ -4171,7 +4203,7 @@
         <div class="min-h-0 flex-1 overflow-y-auto px-4 py-5">
           <h3 class="text-2xl font-extrabold leading-tight">${esc(exercice.nom)}</h3>
           <p class="mt-1 flex flex-wrap items-center gap-2 text-sm text-pierre">
-            <span class="rounded-full bg-white px-2.5 py-1 text-xs font-semibold text-basilic">${GROUPES[exercice.groupe]}</span>
+            <span class="rounded-full bg-carte px-2.5 py-1 text-xs font-semibold text-menthe">${GROUPES[exercice.groupe]}</span>
             <span>${esc(exercice.materiel)}</span>
             <span>Objectif : ${cardio ? `${ligne.duree || '?'} min` : `${ligne.series} × ${ligne.reps}`}</span>
           </p>
@@ -4179,7 +4211,7 @@
 
           <ul class="mt-5 space-y-3">
             ${series.map((serie, i) => `
-              <li class="rounded-2xl p-3 ring-1 ${serie.fait ? 'bg-basilic/10 ring-basilic/40' : 'bg-white ring-encre/10'}">
+              <li class="rounded-2xl p-3 ring-1 ${serie.fait ? 'bg-basilic/10 ring-focus/40' : 'bg-carte ring-encre/10'}">
                 <div class="flex items-center gap-3">
                   <span class="w-14 shrink-0 text-sm font-semibold text-pierre">Série ${i + 1}</span>
                   ${(cardio ? [['duree', 'min'], ['distance', 'km']] : [['poids', 'kg'], ['reps', 'reps']]).map(([cle, unite]) => `
@@ -4191,42 +4223,42 @@
                     </label>`).join('')}
                   <button type="button" data-mode-valider="${ligne.id}|${i}" data-focus="mode|${ligne.id}|${i}|valider"
                           aria-pressed="${!!serie.fait}" aria-label="Valider la série ${i + 1}"
-                          class="grid h-14 w-14 shrink-0 place-items-center self-end rounded-2xl text-xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic ${serie.fait ? 'bg-basilic text-white' : 'bg-sauge text-basilic ring-1 ring-basilic/40'}">✓</button>
+                          class="grid h-14 w-14 shrink-0 place-items-center self-end rounded-2xl text-xl font-bold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${serie.fait ? 'bg-basilic text-white' : 'bg-sauge text-menthe ring-1 ring-focus/40'}">✓</button>
                 </div>
               </li>`).join('')}
           </ul>
 
           <button type="button" data-mode-serie="ajouter" data-focus="mode|ajouter"
-                  class="mt-3 rounded-full px-4 py-2.5 text-sm font-semibold text-basilic hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">+ Ajouter une série</button>
+                  class="mt-3 rounded-full px-4 py-2.5 text-sm font-semibold text-menthe hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">+ Ajouter une série</button>
 
           <p class="mt-4 text-sm text-pierre">${faites ? `${pluriel(faites, 'série validée', 'séries validées')} sur ${series.length}.` : 'Valide chaque série d\'un appui : le repos démarre tout seul.'}</p>
         </div>
 
-        <div data-repos class="bg-encre px-4 py-3 text-sauge transition-colors">
+        <div data-repos class="bg-panneau px-4 py-3 text-surpanneau transition-colors">
           <div class="flex items-center justify-between gap-3">
             <div class="min-w-0">
               <p class="text-xs opacity-70">Repos</p>
               <p data-repos-temps class="text-3xl font-extrabold tabular-nums">${Cuisine.format(State.data.ui.reposDefaut)}</p>
             </div>
             <div class="flex flex-wrap items-center justify-end gap-1.5">
-              <button type="button" data-mode-repos="moins" aria-label="Quinze secondes de moins" class="rounded-full px-3 py-2 text-sm font-semibold ring-1 ring-sauge/30 hover:bg-sauge/10">−15 s</button>
-              <button type="button" data-mode-repos="plus" aria-label="Quinze secondes de plus" class="rounded-full px-3 py-2 text-sm font-semibold ring-1 ring-sauge/30 hover:bg-sauge/10">+15 s</button>
+              <button type="button" data-mode-repos="moins" aria-label="Quinze secondes de moins" class="rounded-full px-3 py-2 text-sm font-semibold ring-1 ring-surpanneau/30 hover:bg-surpanneau/10">−15 s</button>
+              <button type="button" data-mode-repos="plus" aria-label="Quinze secondes de plus" class="rounded-full px-3 py-2 text-sm font-semibold ring-1 ring-surpanneau/30 hover:bg-surpanneau/10">+15 s</button>
               <button type="button" data-mode-repos="${this.repos ? 'pause' : 'lancer'}" class="rounded-full bg-beurre px-4 py-2 text-sm font-semibold text-encre hover:bg-sauge">${this.repos ? 'Pause' : 'Lancer'}</button>
-              ${this.repos ? `<button type="button" data-mode-repos="stop" class="rounded-full px-3 py-2 text-sm font-semibold ring-1 ring-sauge/30 hover:bg-sauge/10">Stop</button>` : ''}
+              ${this.repos ? `<button type="button" data-mode-repos="stop" class="rounded-full px-3 py-2 text-sm font-semibold ring-1 ring-surpanneau/30 hover:bg-surpanneau/10">Stop</button>` : ''}
             </div>
           </div>
-          <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-sauge/20" aria-hidden="true">
+          <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-surpanneau/20" aria-hidden="true">
             <div data-repos-barre class="h-full rounded-full bg-beurre transition-[width] duration-500" style="width:0%"></div>
           </div>
         </div>
 
-        <footer class="flex items-center justify-between gap-3 border-t border-encre/10 bg-white px-4 py-3">
+        <footer class="flex items-center justify-between gap-3 border-t border-encre/10 bg-carte px-4 py-3">
           <button type="button" data-mode-aller="-1" data-focus="mode|precedent" ${this.index === 0 ? 'disabled' : ''}
-                  class="rounded-full px-4 py-3 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">← Précédent</button>
+                  class="rounded-full px-4 py-3 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">← Précédent</button>
           <p class="text-sm text-pierre tabular-nums">${totalFaits} sur ${lignes.length} faits</p>
           ${this.index === lignes.length - 1
-            ? `<button type="button" data-mode-fermer class="rounded-full bg-basilic px-5 py-3 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Terminer</button>`
-            : `<button type="button" data-mode-aller="1" data-focus="mode|suivant" class="rounded-full bg-basilic px-5 py-3 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Suivant →</button>`}
+            ? `<button type="button" data-mode-fermer class="rounded-full bg-basilic px-5 py-3 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Terminer</button>`
+            : `<button type="button" data-mode-aller="1" data-focus="mode|suivant" class="rounded-full bg-basilic px-5 py-3 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Suivant →</button>`}
         </footer>`;
 
       this.majRepos();
@@ -4465,6 +4497,52 @@
   };
 
   /* =========================================================
+     7 decies. THÈME CLAIR OU SOMBRE
+     ========================================================= */
+  const Theme = {
+    CHOIX: [['systeme', 'Système'], ['clair', 'Clair'], ['sombre', 'Sombre']],
+
+    init() {
+      $('theme-choix').innerHTML = this.CHOIX.map(([id, label]) => `
+        <button type="button" data-theme="${id}" aria-pressed="false"
+                class="rounded-full px-3.5 py-1.5 text-sm font-semibold aria-pressed:bg-carte aria-pressed:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">${label}</button>`).join('');
+      $('theme-choix').addEventListener('click', (e) => {
+        const bouton = e.target.closest('[data-theme]');
+        if (!bouton) return;
+        State.update((d) => { d.ui.theme = bouton.dataset.theme; });
+      });
+      window.matchMedia?.('(prefers-color-scheme: dark)').addEventListener?.('change', () => this.appliquer());
+      State.subscribe(() => this.render());
+      this.render();
+    },
+
+    appliquer() {
+      const theme = State.data.ui.theme;
+      const racine = document.documentElement;
+      if (theme === 'clair') racine.dataset.theme = 'light';
+      else if (theme === 'sombre') racine.dataset.theme = 'dark';
+      else delete racine.dataset.theme;
+
+      // La couleur de la barre du navigateur suit le thème réellement affiché
+      const sombre = theme === 'sombre'
+        || (theme !== 'clair' && window.matchMedia?.('(prefers-color-scheme: dark)').matches);
+      document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => meta.remove());
+      const meta = document.createElement('meta');
+      meta.name = 'theme-color';
+      meta.content = sombre ? '#121815' : '#EEF2EA';
+      document.head.append(meta);
+    },
+
+    render() {
+      this.appliquer();
+      document.querySelectorAll('[data-theme]').forEach((bouton) => {
+        if (bouton.tagName !== 'BUTTON') return;
+        bouton.setAttribute('aria-pressed', String(bouton.dataset.theme === State.data.ui.theme));
+      });
+    },
+  };
+
+  /* =========================================================
      8. NAVIGATION PAR ONGLETS
      ========================================================= */
   const Tabs = {
@@ -4547,7 +4625,7 @@
       $('activite-choix').innerHTML = NIVEAUX_ACTIVITE.map((a, i) => `
         <label class="cursor-pointer">
           <input type="radio" name="activite" value="${a.id}" class="peer sr-only" />
-          <span class="flex flex-col items-center gap-2 rounded-2xl px-1 pt-3 pb-2.5 bg-white ring-1 ring-encre/10 hover:ring-encre/30 peer-checked:ring-2 peer-checked:ring-basilic peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-basilic">
+          <span class="flex flex-col items-center gap-2 rounded-2xl px-1 pt-3 pb-2.5 bg-carte ring-1 ring-encre/10 hover:ring-encre/30 peer-checked:ring-2 peer-checked:ring-focus peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus">
             <span class="flex items-end h-16" aria-hidden="true">
               <span data-jauge="${i}" class="block w-5 sm:w-7 rounded-md bg-encre/10 transition-colors duration-200" style="height:${(i + 1) * 20}%"></span>
             </span>
@@ -4558,7 +4636,7 @@
       $('rythme-choix').innerHTML = RYTHMES.map((r) => `
         <label class="cursor-pointer">
           <input type="radio" name="rythme" value="${r.id}" class="peer sr-only" />
-          <span class="flex h-full flex-col gap-1 rounded-2xl p-4 bg-white ring-1 ring-encre/10 hover:ring-encre/30 peer-checked:ring-2 peer-checked:ring-basilic peer-checked:bg-basilic/5 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-basilic">
+          <span class="flex h-full flex-col gap-1 rounded-2xl p-4 bg-carte ring-1 ring-encre/10 hover:ring-encre/30 peer-checked:ring-2 peer-checked:ring-focus peer-checked:bg-basilic/5 peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus">
             <span class="text-2xl font-extrabold tabular-nums">+${Math.round(r.surplus * 100)} %</span>
             <span class="font-semibold">${r.label}</span>
             <span class="text-sm text-pierre leading-snug">${r.detail}</span>
@@ -4576,7 +4654,7 @@
           </dt>
           <dd class="text-right">
             <span data-grammes="${m.cle}" class="text-xl font-extrabold tabular-nums"></span>
-            <span class="block text-xs text-sauge/60" data-sous="${m.cle}"></span>
+            <span class="block text-xs text-surpanneau/60" data-sous="${m.cle}"></span>
           </dd>
         </div>`).join('');
     },
@@ -4710,7 +4788,7 @@
             </span>
             <span class="shrink-0 text-right tabular-nums">
               <span class="font-semibold">${nf0.format(besoins.calories)} kcal</span>
-              ${bonus ? `<span class="block text-xs text-basilic">+ ${nf0.format(bonus)}</span>` : ''}
+              ${bonus ? `<span class="block text-xs text-menthe">+ ${nf0.format(bonus)}</span>` : ''}
             </span>
           </li>`;
       }).join('');
@@ -4861,9 +4939,9 @@
           <line x1="${x(t0)}" y1="${y(liste[0].poids)}" x2="${x(tFin)}" y2="${y(prevuFin)}"
                 class="stroke-pierre/60" stroke-width="2" stroke-dasharray="6 5" />
           <polyline points="${points.map(([px, py]) => `${px.toFixed(1)},${py.toFixed(1)}`).join(' ')}"
-                    fill="none" class="stroke-basilic" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
+                    fill="none" class="stroke-menthe" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" />
           ${points.map(([px, py, e]) => `
-            <circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4" class="fill-white stroke-basilic" stroke-width="2.5">
+            <circle cx="${px.toFixed(1)}" cy="${py.toFixed(1)}" r="4" class="fill-carte stroke-menthe" stroke-width="2.5">
               <title>${dateCourte(e.date)} : ${nf1.format(e.poids)} kg</title>
             </circle>`).join('')}
           <text x="${g}" y="${H - 8}" class="fill-pierre" font-size="11">${dateCourte(liste[0].date)}</text>
@@ -4887,7 +4965,7 @@
               ${variation !== null ? `<span class="text-xs text-pierre tabular-nums">${signe(variation, nf1)} kg</span>` : ''}
               <span class="font-semibold tabular-nums">${nf1.format(e.poids)} kg</span>
               <button type="button" data-supprimer="${e.date}" aria-label="Supprimer la pesée du ${dateLongue(e.date)}"
-                      class="grid h-7 w-7 place-items-center rounded-lg text-pierre hover:bg-sauge hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">×</button>
+                      class="grid h-7 w-7 place-items-center rounded-lg text-pierre hover:bg-sauge hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
             </span>
           </li>`;
       }).join('');
@@ -5332,7 +5410,7 @@
         return `
           <div class="flex flex-col">
             ${etiquetteMobile}
-            <label class="relative flex min-h-[5.5rem] flex-1 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-encre/15 text-sm text-pierre hover:border-basilic hover:text-basilic focus-within:border-basilic focus-within:text-basilic">
+            <label class="relative flex min-h-[5.5rem] flex-1 cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-encre/15 text-sm text-pierre hover:border-focus hover:text-menthe focus-within:border-focus focus-within:text-menthe">
               <span aria-hidden="true">Ajouter un repas</span>
               <select data-slot="${cle}" data-focus="${cle}|select" aria-label="Ajouter un repas, ${contexte}"
                       class="absolute inset-0 h-full w-full cursor-pointer opacity-0">
@@ -5345,24 +5423,24 @@
       const { meal, portions } = slot;
       const kcal = macrosPortion(meal, portions).calories;
       const consomme = !!State.data.suivi.repas[cle];
-      const boutonPetit = 'grid h-7 w-7 place-items-center rounded-lg hover:bg-encre/10 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic';
+      const boutonPetit = 'grid h-7 w-7 place-items-center rounded-lg hover:bg-encre/10 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
 
       return `
         <div class="flex flex-col">
           ${etiquetteMobile}
-          <div class="flex min-h-[5.5rem] flex-1 flex-col justify-between gap-2 rounded-xl bg-white p-3 ring-1 ring-encre/10">
+          <div class="flex min-h-[5.5rem] flex-1 flex-col justify-between gap-2 rounded-xl bg-carte p-3 ring-1 ring-encre/10">
             <div class="flex items-start justify-between gap-1">
               <button type="button" data-ouvrir="${cle}" data-focus="${cle}|ouvrir"
-                      class="min-w-0 rounded text-left text-sm font-semibold leading-snug hover:text-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic ${consomme ? 'text-pierre line-through decoration-pierre/50' : ''}">
+                      class="min-w-0 rounded text-left text-sm font-semibold leading-snug hover:text-menthe focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${consomme ? 'text-pierre line-through decoration-pierre/50' : ''}">
                 ${esc(meal.nom)}
                 <span class="mt-0.5 block text-xs font-normal text-pierre tabular-nums">${nf0.format(kcal)} kcal</span>
               </button>
               <span class="-mr-1 -mt-1 flex shrink-0 items-center">
                 <button type="button" data-consommer="${cle}" data-focus="${cle}|consommer" aria-pressed="${consomme}"
                         aria-label="${consomme ? 'Annuler la consommation' : 'Marquer comme consommé et déduire du stock'} : ${esc(meal.nom)}, ${contexte}"
-                        class="grid h-7 w-7 place-items-center rounded-lg text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic ${consomme ? 'bg-basilic text-white' : 'text-pierre hover:bg-sauge hover:text-basilic'}">✓</button>
+                        class="grid h-7 w-7 place-items-center rounded-lg text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${consomme ? 'bg-basilic text-white' : 'text-pierre hover:bg-sauge hover:text-menthe'}">✓</button>
                 <button type="button" data-retirer="${cle}" data-focus="${cle}|retirer" aria-label="Retirer ${esc(meal.nom)}, ${contexte}"
-                        class="grid h-7 w-7 place-items-center rounded-lg text-base text-pierre hover:bg-sauge hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">×</button>
+                        class="grid h-7 w-7 place-items-center rounded-lg text-base text-pierre hover:bg-sauge hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
               </span>
             </div>
             <div class="flex items-center justify-between gap-2 text-xs text-pierre">
@@ -5373,7 +5451,7 @@
                 <button type="button" data-portion="${cle}|1" data-focus="${cle}|plus" aria-label="Augmenter la portion"
                         ${portions >= PORTIONS.max ? 'disabled' : ''} class="${boutonPetit}">+</button>
               </span>
-              <label class="relative cursor-pointer rounded-lg px-2 py-1 hover:bg-sauge hover:text-encre focus-within:outline focus-within:outline-2 focus-within:outline-basilic">
+              <label class="relative cursor-pointer rounded-lg px-2 py-1 hover:bg-sauge hover:text-nuit focus-within:outline focus-within:outline-2 focus-within:outline-focus">
                 <span aria-hidden="true">Changer</span>
                 <select data-slot="${cle}" data-focus="${cle}|select" aria-label="Changer le repas, ${contexte}"
                         class="absolute inset-0 h-full w-full cursor-pointer opacity-0">
@@ -5393,14 +5471,14 @@
 
       return `
         <section aria-labelledby="jour-${jour.id}"
-                 class="rounded-2xl p-3 ${aujourdhui ? 'bg-white/70 ring-2 ring-basilic/50' : 'bg-white/35 ring-1 ring-encre/5'} lg:grid lg:grid-cols-[130px_repeat(4,minmax(0,1fr))] lg:gap-3">
+                 class="rounded-2xl p-3 ${aujourdhui ? 'bg-carte/70 ring-2 ring-focus/50' : 'bg-carte/35 ring-1 ring-encre/5'} lg:grid lg:grid-cols-[130px_repeat(4,minmax(0,1fr))] lg:gap-3">
           <div class="flex flex-wrap items-center gap-x-3 gap-y-1 px-1 pb-3 lg:flex-col lg:flex-nowrap lg:items-start lg:justify-center lg:gap-1 lg:pb-0">
             <h3 id="jour-${jour.id}" class="text-lg font-extrabold leading-tight">${jour.label}</h3>
             <p class="text-sm text-pierre tabular-nums">${aujourdhui ? "Aujourd'hui, " : ''}${resume}</p>
             ${total.nbRepas ? `
               <button type="button" data-copier="${jour.id}" data-focus="${jour.id}|copier"
                       aria-label="Copier les repas du ${jour.label.toLowerCase()} vers d'autres jours"
-                      class="-mx-2 ml-auto rounded-lg px-2 py-1 text-xs font-semibold text-basilic hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic lg:ml-[-0.5rem]">
+                      class="-mx-2 ml-auto rounded-lg px-2 py-1 text-xs font-semibold text-menthe hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus lg:ml-[-0.5rem]">
                 Copier vers…
               </button>` : ''}
           </div>
@@ -5425,7 +5503,7 @@
       $('batch-jours').innerHTML = `<span class="text-sm text-pierre">Jours de cuisine :</span>`
         + JOURS.map((j) => `
           <button type="button" data-jour-cuisine="${j.id}" data-focus="cuisine|${j.id}" aria-pressed="${joursCuisine.includes(j.id)}"
-                  class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white aria-pressed:bg-basilic aria-pressed:text-white aria-pressed:ring-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte aria-pressed:bg-basilic aria-pressed:text-white aria-pressed:ring-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             ${j.label.slice(0, 3)}
           </button>`).join('');
 
@@ -5453,7 +5531,7 @@
         }));
 
       const cartes = groupes.map(({ jour, liste }) => `
-        <section class="rounded-2xl bg-white p-5 ring-1 ring-encre/10">
+        <section class="rounded-2xl bg-carte p-5 ring-1 ring-encre/10">
           <div class="flex flex-wrap items-baseline justify-between gap-x-3">
             <h3 class="text-lg font-extrabold">${jour.label}
               <span class="text-sm font-normal text-pierre">${joursCuisine.includes(jour.id) ? 'jour de cuisine' : 'à cuisiner le jour même'}</span>
@@ -5461,7 +5539,7 @@
             <p class="text-sm text-pierre tabular-nums">${pluriel(liste.length, 'session')}, ${formatDuree(minutes(liste))}</p>
           </div>
           <button type="button" data-fiche="${jour.id}" data-focus="fiche|${jour.id}"
-                  class="mt-3 rounded-full bg-basilic px-4 py-2 text-sm font-semibold text-white hover:bg-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="mt-3 rounded-full bg-basilic px-4 py-2 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Ouvrir la fiche de cuisine
           </button>
           <ol class="mt-4 space-y-4">
@@ -5470,7 +5548,7 @@
                 <span class="mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full bg-sauge text-sm font-semibold" aria-hidden="true">${i + 1}</span>
                 <div class="min-w-0">
                   <p class="font-semibold leading-snug">${esc(f.meal.nom)}
-                    <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-basilic">${f.appareil.label}</span>
+                    <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-menthe">${f.appareil.label}</span>
                   </p>
                   <p class="text-sm text-pierre">
                     ${f.fournees > 1 ? `Fournée ×${f.fournees}, soit ${pluriel(f.produites, 'portion')} d'un coup` : `1 fournée de ${pluriel(f.meal.portions, 'portion')}`}, ${formatDuree(f.duree)}.
@@ -5489,7 +5567,7 @@
 
       const tempsDemande = minutes(demande);
       cartes.push(`
-        <section class="rounded-2xl bg-white/50 p-5 ring-1 ring-encre/10">
+        <section class="rounded-2xl bg-carte/50 p-5 ring-1 ring-encre/10">
           <h3 class="text-lg font-extrabold">À la demande</h3>
           <p class="mt-1 text-sm text-pierre">
             ${demande.length
@@ -5565,7 +5643,7 @@
       $('copie-jours').innerHTML = JOURS.filter((j) => j.id !== source).map((j) => {
         const n = Planning.nbRepas(State.data.planning, j.id);
         return `
-          <label class="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 ring-1 ring-encre/10 hover:ring-encre/30 has-[:checked]:bg-basilic/5 has-[:checked]:ring-2 has-[:checked]:ring-basilic has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-basilic">
+          <label class="flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 ring-1 ring-encre/10 hover:ring-encre/30 has-[:checked]:bg-basilic/5 has-[:checked]:ring-2 has-[:checked]:ring-focus has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-focus">
             <input type="checkbox" name="cible" value="${j.id}" class="h-4 w-4 accent-basilic" />
             <span class="font-semibold">${j.label}</span>
             <span class="ml-auto text-xs text-pierre">${n ? `${n} repas` : 'vide'}</span>
@@ -5700,12 +5778,12 @@
       const m = this.etat(cle, total);
       return `
         <div data-minuteur="${cle}" data-total="${total}" data-libelle="${esc(libelle)}"
-             class="mt-2 inline-flex items-center gap-1 rounded-full p-1 pr-1.5 text-sm transition-colors ${m.etat === 'termine' ? 'bg-beurre/50' : 'bg-sauge'}">
+             class="mt-2 inline-flex items-center gap-1 rounded-full p-1 pr-1.5 text-sm transition-colors ${m.etat === 'termine' ? 'bg-beurre text-nuit' : 'bg-sauge'}">
           <button type="button" data-minuteur-action data-focus="minuteur|${cle}|action"
-                  class="rounded-full bg-white px-3 py-1 font-semibold ring-1 ring-encre/10 hover:ring-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">${this.ETIQUETTES[m.etat]}</button>
+                  class="rounded-full bg-carte px-3 py-1 font-semibold ring-1 ring-encre/10 hover:ring-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">${this.ETIQUETTES[m.etat]}</button>
           <span data-minuteur-temps role="timer" class="min-w-[4.5rem] px-1 text-center font-semibold tabular-nums">${m.etat === 'termine' ? 'Terminé' : this.format(m.restant)}</span>
           <button type="button" data-minuteur-reset data-focus="minuteur|${cle}|reset" aria-label="Réinitialiser le minuteur" ${m.etat === 'pret' ? 'hidden' : ''}
-                  class="grid h-7 w-7 place-items-center rounded-full text-pierre hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">↺</button>
+                  class="grid h-7 w-7 place-items-center rounded-full text-pierre hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">↺</button>
         </div>`;
     },
 
@@ -5716,7 +5794,8 @@
       bloc.querySelector('[data-minuteur-action]').textContent = this.ETIQUETTES[m.etat];
       bloc.querySelector('[data-minuteur-temps]').textContent = m.etat === 'termine' ? 'Terminé' : this.format(m.restant);
       bloc.querySelector('[data-minuteur-reset]').hidden = m.etat === 'pret';
-      bloc.classList.toggle('bg-beurre/50', m.etat === 'termine');
+      bloc.classList.toggle('bg-beurre', m.etat === 'termine');
+      bloc.classList.toggle('text-nuit', m.etat === 'termine');
       bloc.classList.toggle('bg-sauge', m.etat !== 'termine');
     },
   };
@@ -5799,7 +5878,7 @@
       const kcalMacros = MACROS_AFFICHAGE.reduce((s, m) => s + macros[m.cle] * m.kcalParG, 0) || 1;
       const nbFaites = Cuisine.nbFaites(meal.id);
       const nbEtapes = meal.instructions.length;
-      const boutonPortion = 'grid h-8 w-8 place-items-center rounded-lg bg-white text-lg ring-1 ring-encre/10 hover:ring-basilic disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic';
+      const boutonPortion = 'grid h-8 w-8 place-items-center rounded-lg bg-carte text-lg ring-1 ring-encre/10 hover:ring-focus disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
 
       const quantite = (i) => {
         const brut = (i.quantite / meal.portions) * portions;
@@ -5814,7 +5893,7 @@
             <h2 id="modale-titre" class="mt-1 text-2xl font-extrabold leading-tight tracking-tight">${esc(meal.nom)}</h2>
           </div>
           <button type="button" data-fermer data-focus="modale|fermer" aria-label="Fermer"
-                  class="grid h-10 w-10 shrink-0 place-items-center rounded-full text-xl hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">×</button>
+                  class="grid h-10 w-10 shrink-0 place-items-center rounded-full text-xl hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
         </header>
 
         <div data-defilement class="min-h-0 flex-1 space-y-8 overflow-y-auto p-6">
@@ -5870,7 +5949,7 @@
               <h3 class="text-lg font-semibold">Préparation</h3>
               <p class="flex items-center gap-2 text-sm text-pierre">
                 ${nbFaites === nbEtapes ? 'Tout est prêt, bon appétit.' : `${nbFaites} sur ${nbEtapes} étapes faites`}
-                ${nbFaites ? `<button type="button" data-tout-decocher class="rounded-lg px-2 py-1 font-semibold text-basilic hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Tout décocher</button>` : ''}
+                ${nbFaites ? `<button type="button" data-tout-decocher class="rounded-lg px-2 py-1 font-semibold text-menthe hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Tout décocher</button>` : ''}
               </p>
             </div>
             <div class="mt-3 h-1.5 overflow-hidden rounded-full bg-sauge" aria-hidden="true">
@@ -5884,7 +5963,7 @@
                   <li class="flex gap-4">
                     <button type="button" data-etape="${i}" data-focus="modale|etape|${i}" aria-pressed="${faite}"
                             aria-label="Étape ${i + 1} faite"
-                            class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic ${faite ? 'bg-basilic text-white' : 'bg-white text-basilic ring-2 ring-basilic hover:bg-basilic/10'}">
+                            class="grid h-8 w-8 shrink-0 place-items-center rounded-full text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${faite ? 'bg-basilic text-white' : 'bg-carte text-menthe ring-2 ring-focus hover:bg-basilic/10'}">
                       ${faite ? '✓' : i + 1}
                     </button>
                     <div class="min-w-0 flex-1 pt-1">
@@ -5900,7 +5979,7 @@
         <footer class="flex flex-wrap items-center justify-between gap-3 border-t border-encre/10 p-4">
           <span class="flex flex-wrap gap-1">
           <button type="button" data-modifier-recette
-                  class="rounded-full px-4 py-2.5 text-sm font-semibold text-basilic hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                  class="rounded-full px-4 py-2.5 text-sm font-semibold text-menthe hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
             Modifier la recette
           </button>
           <button type="button" data-retirer-modale
@@ -5909,7 +5988,7 @@
           </button>
           </span>
           <button type="button" data-fermer
-                  class="rounded-full bg-encre px-5 py-2.5 text-sm font-semibold text-sauge hover:bg-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full bg-panneau px-5 py-2.5 text-sm font-semibold text-surpanneau hover:bg-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Fermer
           </button>
         </footer>`;
@@ -5939,7 +6018,7 @@
       // Graphique de la semaine : une colonne cliquable par jour
       $('suivi-semaine').innerHTML = JOURS.map((j) => `
         <button type="button" data-jour-suivi="${j.id}" aria-pressed="false"
-                class="flex flex-col items-center gap-1.5 rounded-xl px-0.5 pb-1.5 pt-2 hover:bg-sauge/70 aria-pressed:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                class="flex flex-col items-center gap-1.5 rounded-xl px-0.5 pb-1.5 pt-2 hover:bg-sauge/70 aria-pressed:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
           <span class="relative block h-36 w-full">
             <span data-colonne class="absolute bottom-0 left-1/2 w-3/5 max-w-[2rem] -translate-x-1/2 rounded-t-md rounded-b-sm bg-encre/10 transition-[height] duration-700 ease-out" style="height:0"></span>
             <span data-repere class="absolute inset-x-0 border-t-2 border-dashed border-encre/40" style="bottom:0"></span>
@@ -5957,23 +6036,23 @@
             </span>
             <span class="text-sm tabular-nums">
               <span data-valeur class="text-lg font-extrabold"></span>
-              <span data-sur class="text-sauge/60"></span>
+              <span data-sur class="text-surpanneau/60"></span>
             </span>
           </div>
           <div class="relative mt-2 h-4" data-barre role="img">
-            <div class="absolute inset-0 rounded-full bg-sauge/10"></div>
+            <div class="absolute inset-0 rounded-full bg-surpanneau/10"></div>
             <div data-piste class="absolute inset-y-0 left-0 flex overflow-hidden rounded-full transition-[width] duration-700 ease-out" style="width:0">
               ${creneaux.map((c) => `
-                <span data-segment="${c}" class="h-full shrink-0 border-encre ${l.couleur} transition-[width,opacity] duration-500 cursor-pointer" style="width:0"></span>`).join('')}
+                <span data-segment="${c}" class="h-full shrink-0 border-panneau ${l.couleur} transition-[width,opacity] duration-500 cursor-pointer" style="width:0"></span>`).join('')}
             </div>
             <div data-marque class="absolute -inset-y-1 w-0.5 rounded bg-sauge transition-[left] duration-700" style="left:100%"></div>
           </div>
-          <p data-detail class="mt-1.5 text-xs text-sauge/70"></p>
+          <p data-detail class="mt-1.5 text-xs text-surpanneau/70"></p>
         </div>`).join('');
 
       $('suivi-legende').innerHTML = creneaux.map((c, i) => `
         <button type="button" data-creneau-suivi="${c}" aria-pressed="false"
-                class="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm ring-1 ring-sauge/20 hover:ring-sauge/50 aria-pressed:bg-sauge aria-pressed:text-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-beurre">
+                class="flex items-center gap-2 rounded-full px-3 py-1.5 text-sm ring-1 ring-surpanneau/20 hover:ring-surpanneau/50 aria-pressed:bg-sauge aria-pressed:text-nuit focus-visible:outline focus-visible:outline-2 focus-visible:outline-beurre">
           <span class="h-2.5 w-2.5 rounded-sm bg-current" style="opacity:${this.OPACITES[i]}" aria-hidden="true"></span>${CRENEAUX[c]}
         </button>`).join('');
 
@@ -6087,7 +6166,7 @@
       // --- Détail du jour sélectionné ---
       const s = this.statut(t.calories, cibles.calories);
       $('suivi-jour-titre').textContent = jour.label;
-      $('suivi-statut').innerHTML = `<span class="h-2.5 w-2.5 rounded-full ${s.cle === 'vide' ? 'bg-sauge/30' : s.fond}" aria-hidden="true"></span>${s.label}`;
+      $('suivi-statut').innerHTML = `<span class="h-2.5 w-2.5 rounded-full ${s.cle === 'vide' ? 'bg-surpanneau/30' : s.fond}" aria-hidden="true"></span>${s.label}`;
 
       this.LIGNES.forEach((ligne) => {
         const bloc = document.querySelector(`[data-ligne="${ligne.cle}"]`);
@@ -6154,13 +6233,13 @@
       const { planning, besoins } = State.data;
       const bouton = (action, libelle, principal = false) => `
         <button type="button" data-suggestion="${action}" data-focus="suggestion|${action}"
-                class="rounded-full px-4 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beurre ${principal ? 'bg-beurre text-encre hover:bg-sauge' : 'ring-1 ring-sauge/30 hover:bg-sauge/10'}">${libelle}</button>`;
+                class="rounded-full px-4 py-2 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-beurre ${principal ? 'bg-beurre text-nuit hover:bg-sauge' : 'ring-1 ring-surpanneau/30 hover:bg-surpanneau/10'}">${libelle}</button>`;
 
       let html;
       if (!t.nbRepas) {
         html = `
           <p class="font-semibold">Ce jour est vide.</p>
-          <p class="mt-1 text-sm text-sauge/70">Remplis-le en un clic, en tenant compte des repas du reste de ta semaine.</p>
+          <p class="mt-1 text-sm text-surpanneau/70">Remplis-le en un clic, en tenant compte des repas du reste de ta semaine.</p>
           <div class="mt-3">${bouton('remplir', 'Proposer ce jour', true)}</div>`;
       } else {
         const ecartKcal = t.calories - cibles.calories;
@@ -6171,7 +6250,7 @@
         if (kcalOk && protOk) {
           html = `
             <p class="font-semibold">Journée équilibrée.</p>
-            <p class="mt-1 text-sm text-sauge/70">Calories à 5 % près de l'objectif et protéines couvertes : rien à corriger.</p>`;
+            <p class="mt-1 text-sm text-surpanneau/70">Calories à 5 % près de l'objectif et protéines couvertes : rien à corriger.</p>`;
         } else {
           const kcal = nf0.format(Math.abs(ecartKcal));
           const prot = nf0.format(manqueProt);
@@ -6197,14 +6276,14 @@
           if (!liste.length) {
             html = `
               <p class="font-semibold">${constatPhrase}</p>
-              <p class="mt-1 text-sm text-sauge/70">Aucune modification simple n'améliore cette journée. Une recette plus adaptée, créée dans l'onglet Recettes, pourrait aider.</p>`;
+              <p class="mt-1 text-sm text-surpanneau/70">Aucune modification simple n'améliore cette journée. Une recette plus adaptée, créée dans l'onglet Recettes, pourrait aider.</p>`;
           } else {
             const index = this.indexSuggestion % liste.length;
             const s = liste[index];
             html = `
-              <p class="text-sm text-sauge/70">${constatPhrase} Suggestion :</p>
+              <p class="text-sm text-surpanneau/70">${constatPhrase} Suggestion :</p>
               <p class="mt-1.5 font-semibold leading-snug">${this.texteSuggestion(s)}</p>
-              <p class="mt-1 text-sm text-sauge/70 tabular-nums">La journée passerait à ${nf0.format(s.kcal)} kcal (${Math.round((s.kcal / cibles.calories) * 100)} %) et ${nf0.format(s.prot)} g de protéines.</p>
+              <p class="mt-1 text-sm text-surpanneau/70 tabular-nums">La journée passerait à ${nf0.format(s.kcal)} kcal (${Math.round((s.kcal / cibles.calories) * 100)} %) et ${nf0.format(s.prot)} g de protéines.</p>
               <div class="mt-3 flex flex-wrap gap-2">
                 ${bouton('appliquer', 'Appliquer', true)}
                 ${liste.length > 1 ? bouton('autre', `Autre suggestion (${index + 1} sur ${liste.length})`) : ''}
@@ -6380,7 +6459,7 @@
           <li class="flex gap-3">
             <button type="button" data-etape="${i}" data-recette="${session.meal.id}" data-focus="fiche|${session.meal.id}|${i}" aria-pressed="${faite}"
                     aria-label="Étape ${i + 1} de ${esc(session.meal.nom)} faite"
-                    class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic ${faite ? 'bg-basilic text-white' : 'bg-white text-basilic ring-2 ring-basilic hover:bg-basilic/10'}">
+                    class="grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${faite ? 'bg-basilic text-white' : 'bg-carte text-menthe ring-2 ring-focus hover:bg-basilic/10'}">
               ${faite ? '✓' : i + 1}
             </button>
             <div class="min-w-0 flex-1">
@@ -6395,7 +6474,7 @@
         const fait = !!State.data.suivi.sessions[`${this.jourId}|${session.meal.id}`];
         return `
           <button type="button" data-fournee-cuisinee="${session.meal.id}" data-focus="fiche|fournee|${session.meal.id}" aria-pressed="${fait}"
-                  class="rounded-full px-3 py-1.5 text-xs font-semibold print:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic ${fait ? 'bg-basilic text-white' : 'ring-1 ring-encre/15 hover:bg-sauge'}">
+                  class="rounded-full px-3 py-1.5 text-xs font-semibold print:hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus ${fait ? 'bg-basilic text-white' : 'ring-1 ring-encre/15 hover:bg-sauge'}">
             ${fait ? '✓ Fournée cuisinée' : 'Fournée cuisinée'}
           </button>`;
       };
@@ -6408,7 +6487,7 @@
             <p class="mt-1 text-sm text-pierre">${pluriel(sessions.length, 'session')}, ${formatDuree(duree)}, ${pluriel(sessions.reduce((s, x) => s + x.produites, 0), 'portion')} à la clé.</p>
           </div>
           <button type="button" data-fermer-fiche data-focus="fiche|fermer" aria-label="Fermer la fiche"
-                  class="grid h-10 w-10 shrink-0 place-items-center rounded-full text-xl hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic print:hidden">×</button>
+                  class="grid h-10 w-10 shrink-0 place-items-center rounded-full text-xl hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus print:hidden">×</button>
         </header>
 
         <div data-defilement-fiche class="min-h-0 flex-1 space-y-8 overflow-y-auto p-6">
@@ -6429,7 +6508,7 @@
             </div>
           </section>
 
-          <section class="rounded-2xl bg-sauge p-4 print:bg-white print:p-0">
+          <section class="rounded-2xl bg-sauge p-4 print:bg-carte print:p-0">
             <div class="flex flex-wrap items-center justify-between gap-3">
               <p class="text-sm">
                 <span class="font-semibold">Déduire du stock</span> :
@@ -6443,9 +6522,9 @@
             <div class="flex flex-wrap items-center gap-3 print:hidden">
               <div class="flex rounded-full bg-sauge p-1" role="group" aria-label="Mode d'affichage">
                 <button type="button" data-mode-fiche="entrelace" data-focus="fiche|mode|entrelace" aria-pressed="${modeActif === 'entrelace'}"
-                        class="rounded-full px-3 py-1.5 text-sm font-semibold aria-pressed:bg-white aria-pressed:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Déroulé entrelacé</button>
+                        class="rounded-full px-3 py-1.5 text-sm font-semibold aria-pressed:bg-carte aria-pressed:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Déroulé entrelacé</button>
                 <button type="button" data-mode-fiche="recettes" data-focus="fiche|mode|recettes" aria-pressed="${modeActif === 'recettes'}"
-                        class="rounded-full px-3 py-1.5 text-sm font-semibold aria-pressed:bg-white aria-pressed:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Recette par recette</button>
+                        class="rounded-full px-3 py-1.5 text-sm font-semibold aria-pressed:bg-carte aria-pressed:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Recette par recette</button>
               </div>
               ${gain > 60 ? `<p class="text-sm text-pierre">Entrelacé : ${formatDuree(entrelace.duree / 60)} au lieu de ${formatDuree(entrelace.sequentiel / 60)} à la suite.</p>` : ''}
             </div>` : ''}
@@ -6456,7 +6535,7 @@
               <ol class="mt-4 space-y-4">
                 ${entrelace.plan.map(({ t, session, index, attente }) => etape(session, index, {
                   entete: `<p class="mb-0.5 flex flex-wrap items-baseline gap-x-2 text-xs">
-                      <span class="font-semibold tabular-nums text-basilic">${t === 0 ? 'Départ' : `+ ${formatDuree(t / 60)}`}</span>
+                      <span class="font-semibold tabular-nums text-menthe">${t === 0 ? 'Départ' : `+ ${formatDuree(t / 60)}`}</span>
                       <span class="text-pierre">${esc(session.meal.nom)}${session.fournees > 1 ? ` (×${session.fournees})` : ''}</span>
                       ${attente ? `<span class="text-pierre">· ${formatDuree(attente / 60)} de cuisson</span>` : ''}
                     </p>`,
@@ -6468,7 +6547,7 @@
               <div class="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
                 <h3 class="text-lg font-semibold">
                   <span class="mr-1 text-pierre">${index + 1}.</span>${esc(session.meal.nom)}
-                  <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-basilic">${session.appareil.label}</span>
+                  <span class="ml-1 whitespace-nowrap rounded-full bg-sauge px-2 py-0.5 text-xs font-semibold text-menthe">${session.appareil.label}</span>
                 </h3>
                 <p class="text-sm text-pierre tabular-nums">${session.fournees > 1 ? `Fournée ×${session.fournees}` : '1 fournée'}, ${pluriel(session.produites, 'portion')}, ${formatDuree(session.duree)}</p>
               </div>
@@ -6484,11 +6563,11 @@
 
         <footer class="flex items-center justify-end gap-3 border-t border-encre/10 p-4 print:hidden">
           <button type="button" data-imprimer-fiche
-                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                  class="rounded-full px-4 py-2.5 text-sm font-semibold ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
             Imprimer la fiche
           </button>
           <button type="button" data-fermer-fiche
-                  class="rounded-full bg-encre px-5 py-2.5 text-sm font-semibold text-sauge hover:bg-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">
+                  class="rounded-full bg-panneau px-5 py-2.5 text-sm font-semibold text-surpanneau hover:bg-basilic focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
             Fermer
           </button>
         </footer>`;
@@ -6502,7 +6581,7 @@
   /* =========================================================
      17. ONGLET RECETTES : LISTE ET INGRÉDIENTS PERSONNELS
      ========================================================= */
-  const CLASSE_CHAMP = 'w-full rounded-xl bg-white px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-basilic aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip';
+  const CLASSE_CHAMP = 'w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip';
 
   const Recettes = {
     filtre: { texte: '', creneau: null },
@@ -6511,7 +6590,7 @@
       $('ingredients-base').textContent = Object.keys(INGREDIENTS).length;
       $('recettes-filtres').innerHTML = [['', 'Toutes'], ...Object.entries(CRENEAUX)].map(([id, label]) => `
         <button type="button" data-filtre="${id}" aria-pressed="false"
-                class="rounded-full px-3.5 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white aria-pressed:bg-encre aria-pressed:text-sauge aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">${label}</button>`).join('');
+                class="rounded-full px-3.5 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte aria-pressed:bg-panneau aria-pressed:text-surpanneau aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">${label}</button>`).join('');
 
       $('recettes-filtres').addEventListener('click', (e) => {
         const bouton = e.target.closest('[data-filtre]');
@@ -6568,11 +6647,11 @@
     carte(meal) {
       const usages = this.usagesPlanning(meal.id);
       const kcalMacros = MACROS_AFFICHAGE.reduce((s, m) => s + meal.macros[m.cle] * m.kcalParG, 0) || 1;
-      const bouton = 'rounded-lg px-2.5 py-1.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic';
+      const bouton = 'rounded-lg px-2.5 py-1.5 text-sm font-semibold hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus';
       return `
-        <article class="flex flex-col rounded-2xl bg-white p-5 ring-1 ring-encre/10">
+        <article class="flex flex-col rounded-2xl bg-carte p-5 ring-1 ring-encre/10">
           <div class="flex flex-wrap gap-1.5">
-            ${meal.creneaux.map((c) => `<span class="rounded-full bg-sauge px-2.5 py-1 text-xs font-semibold text-basilic">${CRENEAUX[c]}</span>`).join('')}
+            ${meal.creneaux.map((c) => `<span class="rounded-full bg-sauge px-2.5 py-1 text-xs font-semibold text-menthe">${CRENEAUX[c]}</span>`).join('')}
           </div>
           <h3 class="mt-3 text-lg font-semibold leading-snug">${esc(meal.nom)}</h3>
           <p class="mt-3 flex items-baseline gap-2">
@@ -6604,7 +6683,7 @@
           <div class="mt-auto pt-4">
             <div class="-mx-2 flex flex-wrap gap-1 border-t border-encre/10 px-0 pt-3">
               <button type="button" data-action-recette="modifier|${meal.id}" data-focus="recette|modifier|${meal.id}"
-                      aria-label="Modifier ${esc(meal.nom)}" class="${bouton} text-basilic">Modifier</button>
+                      aria-label="Modifier ${esc(meal.nom)}" class="${bouton} text-menthe">Modifier</button>
               <button type="button" data-action-recette="dupliquer|${meal.id}" data-focus="recette|dupliquer|${meal.id}"
                       aria-label="Dupliquer ${esc(meal.nom)}" class="${bouton}">Dupliquer</button>
               <button type="button" data-action-recette="supprimer|${meal.id}" data-focus="recette|supprimer|${meal.id}"
@@ -6646,7 +6725,7 @@
       const manquants = RECETTES_EXEMPLES.filter((e) => !State.data.recettes.some((r) => r.id === e.id));
       $('recettes-exemples').innerHTML = manquants.length
         ? `${pluriel(manquants.length, "recette d'exemple supprimée", "recettes d'exemple supprimées")}.
-           <button type="button" data-restaurer-exemples class="ml-1 rounded-lg px-2 py-1 font-semibold text-basilic hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Les restaurer</button>`
+           <button type="button" data-restaurer-exemples class="ml-1 rounded-lg px-2 py-1 font-semibold text-menthe hover:bg-carte focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Les restaurer</button>`
         : '';
 
       this.renderIngredients();
@@ -6681,7 +6760,7 @@
               <span id="usage-${ref}" class="mr-2 text-xs text-pierre">${utilisations ? `Dans ${pluriel(utilisations, 'recette')}` : 'Inutilisé'}</span>
               <button type="button" data-action-ingredient="modifier|${ref}" data-focus="ingredient-perso|modifier|${ref}"
                       aria-label="Modifier ${esc(ing.nom)}"
-                      class="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-basilic hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">Modifier</button>
+                      class="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-menthe hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Modifier</button>
               <button type="button" data-action-ingredient="supprimer|${ref}" data-focus="ingredient-perso|supprimer|${ref}"
                       aria-label="Supprimer ${esc(ing.nom)}" ${utilisations ? `disabled aria-describedby="usage-${ref}"` : ''}
                       class="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-lip hover:bg-lip/10 disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-lip">Supprimer</button>
@@ -6755,7 +6834,7 @@
       $('recette-creneaux').innerHTML = Object.entries(CRENEAUX).map(([id, label]) => `
         <label class="cursor-pointer">
           <input type="checkbox" value="${id}" data-creneau-recette class="peer sr-only" />
-          <span class="block rounded-full bg-white px-4 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:ring-basilic peer-checked:bg-basilic peer-checked:text-white peer-checked:ring-basilic peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-basilic">${label}</span>
+          <span class="block rounded-full bg-carte px-4 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:ring-focus peer-checked:bg-basilic peer-checked:text-white peer-checked:ring-focus peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus">${label}</span>
         </label>`).join('');
 
       $('recette-apercu-barre').innerHTML = MACROS_AFFICHAGE
@@ -6901,7 +6980,7 @@
                 ${liste.map(([ref, ing]) => `<option value="${ref}" ${ref === ligne.ref ? 'selected' : ''}>${esc(ing.nom)}${INGREDIENTS[ref] ? '' : ' (perso)'}</option>`).join('')}
               </optgroup>`).join('')}
           </select>
-          <span data-cadre-quantite class="flex items-center rounded-xl bg-white ring-1 ring-encre/15 focus-within:ring-2 focus-within:ring-basilic">
+          <span data-cadre-quantite class="flex items-center rounded-xl bg-carte ring-1 ring-encre/15 focus-within:ring-2 focus-within:ring-focus">
             <input type="number" data-champ="quantite" data-focus="ingredient|${i}|quantite" min="0" step="any" inputmode="decimal"
                    value="${esc(ligne.quantite)}" aria-label="Quantité de l'ingrédient ${i + 1}"
                    class="w-full min-w-0 bg-transparent px-3 py-2.5 tabular-nums outline-none" />
@@ -6909,7 +6988,7 @@
           </span>
           <span data-kcal-ligne class="hidden text-right text-xs text-pierre tabular-nums sm:block"></span>
           <button type="button" data-retirer-ingredient="${i}" data-focus="ingredient|${i}|retirer" aria-label="Retirer l'ingrédient ${i + 1}"
-                  class="grid h-10 w-10 place-items-center rounded-full text-lg text-pierre hover:bg-white hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">×</button>
+                  class="grid h-10 w-10 place-items-center rounded-full text-lg text-pierre hover:bg-carte hover:text-lip focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
         </div>`).join('');
       this.brouillon.ingredients.forEach((_, i) => this.majLigne(i));
     },
@@ -7467,7 +7546,7 @@
       $('stock-filtres').innerHTML = [['tous', 'Tous'], ['manquants', 'À racheter'], ['disponibles', 'En stock']]
         .map(([id, label]) => `
           <button type="button" data-filtre-stock="${id}" aria-pressed="false"
-                  class="rounded-full px-3.5 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:bg-white aria-pressed:bg-encre aria-pressed:text-sauge aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic">${label}</button>`).join('');
+                  class="rounded-full px-3.5 py-2 text-sm font-semibold ring-1 ring-encre/15 hover:bg-carte aria-pressed:bg-panneau aria-pressed:text-surpanneau aria-pressed:ring-encre focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">${label}</button>`).join('');
 
       $('stock-filtres').addEventListener('click', (e) => {
         const bouton = e.target.closest('[data-filtre-stock]');
@@ -7680,7 +7759,7 @@
           ? { texte: `Il manquera ${this.quantite(article.ref, arrondiStock(article.besoin - article.disponible))} pour la semaine`, classe: 'text-lip' }
           : { texte: `Sous le seuil de ${this.quantite(article.ref, article.seuil)}`, classe: 'text-pierre' };
       }
-      return { texte: article.besoin ? 'Couvert par ton stock' : 'En réserve', classe: 'text-basilic' };
+      return { texte: article.besoin ? 'Couvert par ton stock' : 'En réserve', classe: 'text-menthe' };
     },
 
     render() {
@@ -7711,7 +7790,7 @@
         .filter((g) => g.articles.length);
 
       zone.innerHTML = groupes.length ? groupes.map((groupe) => `
-        <section class="rounded-2xl bg-white ring-1 ring-encre/10">
+        <section class="rounded-2xl bg-carte ring-1 ring-encre/10">
           <h3 class="px-4 pt-4 font-extrabold">${groupe.label}</h3>
           <ul class="divide-y divide-encre/10">
             ${groupe.articles.map((a) => {
@@ -7724,7 +7803,7 @@
                 </div>
                 <label class="block">
                   <span class="mb-1 block text-xs text-pierre sm:sr-only">En stock</span>
-                  <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic">
+                  <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus">
                     <input type="number" min="0" step="any" inputmode="decimal" value="${a.disponible}"
                            data-stock-champ="quantite" data-stock-ref="${a.ref}" data-focus="stock|${a.ref}|quantite"
                            aria-label="Quantité en stock de ${esc(a.nom)} en ${a.unite}"
@@ -7734,7 +7813,7 @@
                 </label>
                 <label class="block">
                   <span class="mb-1 block text-xs text-pierre sm:sr-only">Seuil</span>
-                  <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-basilic">
+                  <span class="flex items-center rounded-xl bg-sauge/60 ring-1 ring-encre/10 focus-within:ring-2 focus-within:ring-focus">
                     <input type="number" min="0" step="any" inputmode="decimal" value="${a.seuil}"
                            data-stock-champ="seuil" data-stock-ref="${a.ref}" data-focus="stock|${a.ref}|seuil"
                            aria-label="Seuil de réapprovisionnement de ${esc(a.nom)} en ${a.unite}"
@@ -7745,12 +7824,12 @@
                 <div class="col-span-2 flex items-center justify-end gap-1 sm:col-span-1">
                   <button type="button" data-stock-action="paquet|${a.ref}" data-focus="stock|${a.ref}|paquet"
                           aria-label="Ajouter un conditionnement de ${esc(a.nom)}"
-                          class="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-basilic hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">
+                          class="rounded-lg px-2.5 py-1.5 text-xs font-semibold text-menthe hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
                     ${a.achat ? `+ ${formatQuantiteBrute(a.achat.quantite, a.unite)}` : '+ paquet'}
                   </button>
                   <button type="button" data-stock-action="retirer|${a.ref}" data-focus="stock|${a.ref}|retirer"
                           aria-label="Retirer ${esc(a.nom)} du suivi de stock" ${a.suit ? '' : 'disabled'}
-                          class="grid h-8 w-8 place-items-center rounded-lg text-pierre hover:bg-sauge hover:text-lip disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-basilic">×</button>
+                          class="grid h-8 w-8 place-items-center rounded-lg text-pierre hover:bg-sauge hover:text-lip disabled:opacity-30 disabled:pointer-events-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
                 </div>
               </li>`;
             }).join('')}
@@ -8014,7 +8093,7 @@
       const actions = $('sync-actions');
       const bouton = (cle, texte, principal = false) => `
         <button type="button" data-sync="${cle}"
-                class="rounded-full px-4 py-2.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic ${principal ? 'bg-basilic text-white hover:bg-encre' : 'ring-1 ring-encre/15 hover:bg-sauge'}">${texte}</button>`;
+                class="rounded-full px-4 py-2.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${principal ? 'bg-basilic text-white hover:bg-accentfort' : 'ring-1 ring-encre/15 hover:bg-sauge'}">${texte}</button>`;
 
       if (!this.supporte()) {
         etat.textContent = "Ton navigateur ne permet pas d'écrire directement dans un fichier. Utilise l'export manuel, en l'enregistrant dans ton dossier iCloud ou Drive : l'import depuis un autre appareil fonctionne de la même façon.";
@@ -8076,6 +8155,7 @@
       $('nuage-url').value = config.url;
       $('nuage-cle').value = config.cle;
       $('nuage-id').value = config.identifiant || 'moi';
+      $('nuage-mdp').value = config.motDePasse || '';
       $('nuage-url').focus();
     },
 
@@ -8084,9 +8164,11 @@
       const cle = $('nuage-cle').value.trim();
       const identifiant = $('nuage-id').value.trim() || 'moi';
       const type = $('nuage-type').value;
+      const motDePasse = $('nuage-mdp').value;
       if (!/^https:\/\//.test(url)) { Toast.afficher('Indique une adresse commençant par https://'); return; }
       if (type === 'supabase' && !cle) { Toast.afficher('La clé publique du projet est nécessaire.'); return; }
-      State.update((d) => { d.sauvegarde.nuage = { type, url, cle, identifiant, actif: true, derniereSync: null }; });
+      if (motDePasse && !Chiffrement.disponible()) { Toast.afficher("Ce navigateur ne sait pas chiffrer : laisse le mot de passe vide ou change de navigateur."); return; }
+      State.update((d) => { d.sauvegarde.nuage = { type, url, cle, identifiant, motDePasse, actif: true, derniereSync: null }; });
       this.afficherFormulaire(false);
       this.synchroniser();
     },
@@ -8116,13 +8198,21 @@
       if (reponse.status === 404) return null;
       if (!reponse.ok) throw new Error(`Lecture refusée (${reponse.status})`);
       const donnees = await reponse.json();
-      if (this.config().type === 'supabase') return donnees?.[0]?.contenu || null;
-      return donnees?.contenu || donnees || null;
+      const paquet = this.config().type === 'supabase' ? (donnees?.[0]?.contenu || null) : (donnees?.contenu || donnees || null);
+      if (!paquet?.chiffre) return paquet;
+      const motDePasse = this.config().motDePasse;
+      if (!motDePasse) throw new Error('ces données sont chiffrées, saisis le mot de passe');
+      try {
+        return await Chiffrement.dechiffrer(paquet, motDePasse);
+      } catch (e) {
+        throw new Error('mot de passe de chiffrement incorrect');
+      }
     },
 
     async ecrire() {
-      const { type, url, identifiant } = this.config();
-      const contenu = Sauvegarde.contenu();
+      const { type, url, identifiant, motDePasse } = this.config();
+      const clair = Sauvegarde.contenu();
+      const contenu = motDePasse ? await Chiffrement.chiffrer(clair, motDePasse) : clair;
       const reponse = type === 'supabase'
         ? await fetch(`${url}/rest/v1/sauvegardes`, {
             method: 'POST',
@@ -8138,6 +8228,7 @@
     planifier() {
       if (!this.config().actif || this.enCours) return;
       clearTimeout(this.minuteur);
+      Indicateur.definir('en-attente');
       this.minuteur = setTimeout(() => this.synchroniser({ silencieux: true }), 10000);
     },
 
@@ -8151,6 +8242,7 @@
       if (this.enCours) return;
       this.enCours = true;
       clearTimeout(this.minuteur);
+      Indicateur.definir('en-cours');
       try {
         const distant = await this.lire();
         const dateDistante = distant?.donnees?.sauvegarde?.misAJourLe || distant?.exporteLe || null;
@@ -8166,7 +8258,9 @@
           await this.ecrire();
           Toast.afficher(`Synchronisé avec ton autre appareil : ${resume}.`, { duree: 10000 });
         }
+        Indicateur.definir('a-jour');
       } catch (e) {
+        Indicateur.definir('erreur');
         if (!silencieux) Toast.afficher(`Synchronisation impossible : ${e.message}. Vérifie l'adresse, la clé et ta connexion.`);
         console.warn('Synchronisation en ligne', e);
       } finally {
@@ -8180,19 +8274,114 @@
       const actions = $('nuage-actions');
       const bouton = (cle, texte, principal = false) => `
         <button type="button" data-nuage="${cle}"
-                class="rounded-full px-4 py-2.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-basilic ${principal ? 'bg-basilic text-white hover:bg-encre' : 'ring-1 ring-encre/15 hover:bg-sauge'}">${texte}</button>`;
+                class="rounded-full px-4 py-2.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${principal ? 'bg-basilic text-white hover:bg-accentfort' : 'ring-1 ring-encre/15 hover:bg-sauge'}">${texte}</button>`;
 
       if (config.actif) {
         const quand = config.derniereSync
           ? `Dernier échange le ${new Date(config.derniereSync).toLocaleString('fr-FR', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}.`
           : 'Pas encore synchronisé.';
         etat.innerHTML = `Connecté à <strong>${esc(config.url.replace(/^https:\/\//, ''))}</strong>, carnet « ${esc(config.identifiant)} ». ${quand}
-          Les modifications partent automatiquement dix secondes après ta dernière action, et sont fusionnées avec celles de tes autres appareils.`;
+          Les modifications partent automatiquement dix secondes après ta dernière action, et sont fusionnées avec celles de tes autres appareils.
+          ${config.motDePasse ? 'Elles sont <strong>chiffrées</strong> avant l\'envoi.' : 'Elles partent <strong>en clair</strong> : ajoute un mot de passe de chiffrement pour les protéger.'}`;
         actions.innerHTML = bouton('synchroniser', 'Synchroniser maintenant', true) + bouton('configurer', 'Modifier la connexion') + bouton('deconnecter', 'Déconnecter');
         return;
       }
       etat.textContent = "Relie tes appareils par un petit service en ligne gratuit : ce que tu saisis en salle se retrouve sur ton ordinateur, iPhone compris. Le guide explique la création du projet en quelques minutes.";
       actions.innerHTML = bouton('configurer', 'Configurer la synchronisation', true);
+    },
+  };
+
+  /* =========================================================
+     20 quinquies. CHIFFREMENT DE LA SYNCHRONISATION
+     ========================================================= */
+  /*
+   * Chiffrement AES-GCM avec une clé dérivée du mot de passe (PBKDF2).
+   * Le serveur ne reçoit qu'un bloc illisible : ni lui, ni quelqu'un qui obtiendrait
+   * la clé publique du projet ne peut lire tes données sans le mot de passe.
+   */
+  const Chiffrement = {
+    disponible() { return typeof crypto !== 'undefined' && !!crypto.subtle; },
+
+    versBase64(tampon) {
+      return btoa(String.fromCharCode(...new Uint8Array(tampon)));
+    },
+    depuisBase64(texte) {
+      return Uint8Array.from(atob(texte), (c) => c.charCodeAt(0));
+    },
+
+    async cle(motDePasse, sel) {
+      const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(motDePasse), 'PBKDF2', false, ['deriveKey']);
+      return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: sel, iterations: 150000, hash: 'SHA-256' },
+        base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt'],
+      );
+    },
+
+    async chiffrer(objet, motDePasse) {
+      const sel = crypto.getRandomValues(new Uint8Array(16));
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const cle = await this.cle(motDePasse, sel);
+      const chiffre = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv }, cle, new TextEncoder().encode(JSON.stringify(objet)),
+      );
+      return {
+        application: 'meal-planner',
+        chiffre: true,
+        sel: this.versBase64(sel),
+        iv: this.versBase64(iv),
+        donnees: this.versBase64(chiffre),
+        misAJourLe: objet?.donnees?.sauvegarde?.misAJourLe || null,
+      };
+    },
+
+    async dechiffrer(paquet, motDePasse) {
+      const cle = await this.cle(motDePasse, this.depuisBase64(paquet.sel));
+      const clair = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: this.depuisBase64(paquet.iv) }, cle, this.depuisBase64(paquet.donnees),
+      );
+      return JSON.parse(new TextDecoder().decode(clair));
+    },
+  };
+
+  /* =========================================================
+     20 sexies. INDICATEUR DE SYNCHRONISATION
+     ========================================================= */
+  const Indicateur = {
+    ETATS: {
+      'a-jour': { texte: 'À jour', point: 'bg-prot' },
+      'en-attente': { texte: 'En attente', point: 'bg-gluc' },
+      'en-cours': { texte: 'Envoi…', point: 'bg-gluc animate-pulse' },
+      'hors-ligne': { texte: 'Hors ligne', point: 'bg-pierre' },
+      erreur: { texte: 'Échec', point: 'bg-lip' },
+    },
+    etat: 'a-jour',
+
+    init() {
+      $('indicateur-sync').addEventListener('click', () => {
+        if (!Nuage.config().actif) { Router.aller('profil'); return; }
+        Nuage.synchroniser();
+      });
+      window.addEventListener('online', () => this.definir(Nuage.config().actif ? 'en-attente' : 'a-jour'));
+      window.addEventListener('offline', () => this.definir('hors-ligne'));
+      State.subscribe(() => this.render());
+      this.render();
+    },
+
+    definir(etat) {
+      this.etat = etat;
+      this.render();
+    },
+
+    render() {
+      const bouton = $('indicateur-sync');
+      const actif = Nuage.config().actif;
+      bouton.hidden = !actif;
+      if (!actif) return;
+      const etat = navigator.onLine === false ? 'hors-ligne' : this.etat;
+      const infos = this.ETATS[etat] || this.ETATS['a-jour'];
+      $('indicateur-point').className = `h-2.5 w-2.5 rounded-full ${infos.point}`;
+      $('indicateur-texte').textContent = infos.texte;
+      bouton.setAttribute('aria-label', `Synchronisation : ${infos.texte.toLowerCase()}. Synchroniser maintenant.`);
     },
   };
 
@@ -8596,7 +8785,7 @@
         zone.innerHTML = visibles.length ? visibles.map((g) => {
           const nbCoches = g.articles.filter((a) => this.estCoche(a.ref)).length;
           return `
-            <section aria-labelledby="rayon-${g.rayon}" class="mb-4 break-inside-avoid rounded-2xl bg-white p-3 ring-1 ring-encre/10 print:mb-6 print:p-0 print:ring-0">
+            <section aria-labelledby="rayon-${g.rayon}" class="mb-4 break-inside-avoid rounded-2xl bg-carte p-3 ring-1 ring-encre/10 print:mb-6 print:p-0 print:ring-0">
               <div class="flex items-baseline justify-between gap-3 px-2 pb-1 pt-1">
                 <h3 id="rayon-${g.rayon}" class="font-extrabold">${g.label}</h3>
                 <span class="text-xs text-pierre tabular-nums print:hidden">${nbCoches} sur ${g.articles.length}</span>
@@ -8639,6 +8828,7 @@
     Sauvegarde.init();
     Synchronisation.init();
     Nuage.init();
+    Indicateur.init();
     Stock.init();
     Courses.init();
     Tabs.init();
@@ -8648,6 +8838,7 @@
     ModeSeance.init();
     Performances.init();
     Progression.init();
+    Theme.init();
     Router.init();
     Installation.init();
   });
