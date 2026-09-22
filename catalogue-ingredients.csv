@@ -1,201 +1,218 @@
-﻿Ingrédient;Rayon;Base;kcal;Protéines (g);Glucides (g);Lipides (g);Conditionnement;Prix indicatif (€);Source;Aliment Ciqual correspondant
-Ail;Fruits et légumes;pour 100 g;100;5,31;18,6;0,5;100 g;1,20;Ciqual 2025, code 11000;Ail, cru
-Ananas;Fruits et légumes;pour 100 g;52;0,25;11,7;0,5;1000 g;2,50;Ciqual 2025, code 13002;Ananas, chair sans peau, cru
-Aubergine;Fruits et légumes;pour 100 g;16;0,98;2,7;0,18;350 g;1,30;Ciqual 2025, code 20053;Aubergine, crue
-Avocat;Fruits et légumes;pour 100 g;192;1,56;0;20,6;150 g;1,20;Ciqual 2025, code 13004;Avocat, chair sans peau, sans noyau, cru
-Banane;Fruits et légumes;par pièce;105;1,27;23,64;0,6;1 pièces;0,30;Ciqual 2025, code 13005, pièce de 120 g;Banane, chair sans peau, crue
-Betterave cuite;Fruits et légumes;pour 100 g;38;1,44;7,13;0,4;500 g;1,60;Ciqual 2025, code 20003;Betterave rouge, cuite
-Brocolis;Fruits et légumes;pour 100 g;23;2,9;2,15;0,36;500 g;2,20;Ciqual 2025, code 20057;Brocoli, cru
-Carottes;Fruits et légumes;pour 100 g;28;0,78;5,16;0,5;1000 g;1,50;Ciqual 2025, code 20009;Carotte, crue
-Champignons de Paris;Fruits et légumes;pour 100 g;19;2,11;1,83;0,36;500 g;2,40;Ciqual 2025, code 20056;Champignon de Paris ou champignon de couche, cru
-Chou-fleur;Fruits et légumes;pour 100 g;22;1,81;2,13;0,7;1000 g;2,50;Ciqual 2025, code 20016;Chou-fleur, cru
-Citron;Fruits et légumes;par pièce;12;0,25;1,56;0,5;1 pièces;0,45;Ciqual 2025, code 13009, pièce de 100 g;Citron, chair sans peau, sans pépins, cru
-Citron vert;Fruits et légumes;par pièce;10;0,56;1,57;0,15;1 pièces;0,40;Ciqual 2025, code 13067, pièce de 50 g;Citron vert ou lime, chair sans peau, sans pépins, cru
-Clémentine;Fruits et légumes;par pièce;24;0,45;5,04;0,28;1 pièces;0,25;Ciqual 2025, code 13024, pièce de 55 g;Clémentine ou mandarine, chair sans peau, sans pépins, crue
-Concombre;Fruits et légumes;pour 100 g;15;0,65;2,87;0,11;400 g;0,90;Ciqual 2025, code 20019;Concombre, chair et peau, cru
-Courge butternut;Fruits et légumes;pour 100 g;26;1,0;5,4;0,1;1200 g;2,40;Ciqual 2025, code 20138;Courge butternut (doubeurre), chair sans peau, crue
-Courgette;Fruits et légumes;pour 100 g;15;1,21;1,75;0,32;300 g;1,10;Ciqual 2025, code 20020;Courgette, chair et peau, crue
-Fraises;Fruits et légumes;pour 100 g;31;0,63;6,03;0,5;250 g;2,90;Ciqual 2025, code 13014;Fraise, crue
-Kiwi;Fruits et légumes;par pièce;37;0,62;7,7;0,42;1 pièces;0,35;Ciqual 2025, code 13021, pièce de 70 g;Kiwi, chair sans peau, avec pépins, cru
-Laitue;Fruits et légumes;pour 100 g;12;1,35;1,22;0,2;300 g;1,20;Ciqual 2025, code 20031;Laitue, crue
-Mangue;Fruits et légumes;pour 100 g;64;0,63;14,3;0,5;400 g;1,90;Ciqual 2025, code 13025;Mangue, chair sans peau, sans noyau, crue
-Myrtilles;Fruits et légumes;pour 100 g;49;0,87;10,6;0,33;125 g;2,50;Ciqual 2025, code 13028;Myrtille, crue
-Oignon;Fruits et légumes;par pièce;35;1,1;6,25;0,62;1 pièces;0,35;Ciqual 2025, code 20034, pièce de 100 g;Oignon, cru
-Orange;Fruits et légumes;par pièce;52;0,98;10,44;0,65;1 pièces;0,45;Ciqual 2025, code 13034, pièce de 130 g;Orange, chair sans peau, sans pépins, crue
-Patate douce;Fruits et légumes;pour 100 g;75;1,57;17,1;0,05;1000 g;2,80;Ciqual 2025, code 4101;Patate douce, crue
-Poire;Fruits et légumes;par pièce;74;0,5;17,22;0,38;1 pièces;0,50;Ciqual 2025, code 13037, pièce de 140 g;Poire, chair et peau, crue
-Poireau;Fruits et légumes;pour 100 g;27;1,5;4,55;0,3;1000 g;2,20;Ciqual 2025, code 20039;Poireau, cru
-Poivron rouge;Fruits et légumes;pour 100 g;33;1,06;5,98;0,5;250 g;1,20;Ciqual 2025, code 20087;Poivron rouge, cru
-Pomme;Fruits et légumes;par pièce;70;0,35;16,24;0,35;1 pièces;0,40;Ciqual 2025, code 13039, pièce de 140 g;Pomme, chair et peau, crue
-Pommes de terre grenailles;Fruits et légumes;pour 100 g;74;2,02;16,2;0,09;1000 g;2,60;Ciqual 2025, code 4008;Pomme de terre, sans peau, crue
-Raisin;Fruits et légumes;pour 100 g;67;0,57;15,6;0,25;500 g;2,90;Ciqual 2025, code 13045;Raisin noir, cru
-Tomate;Fruits et légumes;pour 100 g;20;0,5;3,42;0,5;1000 g;2,80;Ciqual 2025, code 20276;Tomate ronde, crue
-Tomates cerises;Fruits et légumes;pour 100 g;32;1,31;5,62;0,5;250 g;2,20;Ciqual 2025, code 20172;Tomate cerise, crue
-Échalote;Fruits et légumes;pour 100 g;61;1,81;12,2;0,5;250 g;1,80;Ciqual 2025, code 20097;Échalote, crue
-Épinards frais;Fruits et légumes;pour 100 g;26;2,68;3,06;0,39;300 g;2,50;Ciqual 2025, code 20059;Épinard, cru
-Blanc de dinde en tranches;Boucherie et poissonnerie;pour 100 g;99;20,9;0,02;1,67;120 g;2,20;Ciqual 2025, code 28964;Jambon de dinde ou blanc de dinde en tranche
-Blanc de poulet;Boucherie et poissonnerie;pour 100 g;107;23,4;0;1,5;500 g;7,50;Ciqual 2025, code 36017;Poulet, filet sans peau cru
-Bœuf haché 15 %;Boucherie et poissonnerie;pour 100 g;216;20,2;0,47;14,8;500 g;5,50;Ciqual 2025, code 6254;Boeuf, steak haché 15% MG cru
-Bœuf haché 5 %;Boucherie et poissonnerie;pour 100 g;130;21,9;0,3;4,59;500 g;6,50;Ciqual 2025, code 6250;Boeuf, steak haché 5% MG cru
-Cabillaud;Boucherie et poissonnerie;pour 100 g;78;18,1;0;0,57;300 g;6,90;Ciqual 2025, code 26043;Cabillaud, cru
-Chorizo;Boucherie et poissonnerie;pour 100 g;424;23,5;1,24;36,1;200 g;2,90;Ciqual 2025, code 30315;Chorizo
-Crevettes décortiquées;Boucherie et poissonnerie;pour 100 g;90;20,5;0,2;0,79;250 g;5,90;Ciqual 2025, code 10007;Crevette, cuite
-Cuisses de poulet désossées;Boucherie et poissonnerie;pour 100 g;114;19,3;0;4,05;500 g;5,50;Ciqual 2025, code 36024;Poulet, cuisse, viande crue
-Escalope de dinde;Boucherie et poissonnerie;pour 100 g;108;23,7;0;1,48;400 g;5,90;Ciqual 2025, code 36304;Dinde, escalope crue
-Escalope de veau;Boucherie et poissonnerie;pour 100 g;114;20,5;0,58;3,28;300 g;9,90;Ciqual 2025, code 6521;Veau, escalope crue
-Filet mignon de porc;Boucherie et poissonnerie;pour 100 g;123;21,2;0,4;4,09;500 g;8,90;Ciqual 2025, code 28204;Porc, filet mignon cru
-Gigot d'agneau;Boucherie et poissonnerie;pour 100 g;128;20,0;0,48;5,13;500 g;12,90;Ciqual 2025, code 21502;Agneau, gigot cru
-Haché de dinde;Boucherie et poissonnerie;pour 100 g;108;22,6;0;1,93;400 g;5,40;Ciqual 2025, code 36301;Dinde, viande crue
-Jambon blanc;Boucherie et poissonnerie;pour 100 g;113;21,0;0,76;2,83;160 g;2,40;Ciqual 2025, code 28900;Jambon cuit, supérieur
-Jambon cru;Boucherie et poissonnerie;pour 100 g;239;25,9;4,27;13,2;100 g;2,90;Ciqual 2025, code 28800;Jambon cru
-Lardons fumés;Boucherie et poissonnerie;pour 100 g;272;16,7;0,35;22,6;200 g;2,30;Ciqual 2025, code 28720;Lardon fumé, cru
-Lieu noir;Boucherie et poissonnerie;pour 100 g;82;18,8;0;0,8;400 g;5,90;Ciqual 2025, code 26134;Lieu noir, cru
-Magret de canard;Boucherie et poissonnerie;pour 100 g;337;17,9;0,1;29,4;350 g;8,90;Ciqual 2025, code 36206;Canard, magret cru
-Merguez;Boucherie et poissonnerie;pour 100 g;301;13,8;1,15;26,8;400 g;4,20;Ciqual 2025, code 30150;Merguez crue
-Pavé de saumon;Boucherie et poissonnerie;pour 100 g;194;20,5;0;12,4;250 g;6,90;Ciqual 2025, code 26036;Saumon, élevage, cru
-Pavé de truite;Boucherie et poissonnerie;pour 100 g;143;19,2;0;7,4;250 g;5,90;Ciqual 2025, code 27021;Truite saumonée, crue
-Pilons de poulet;Boucherie et poissonnerie;pour 100 g;155;18,1;0;9,2;1000 g;5,90;Ciqual 2025, code 36022;Poulet, pilon cru
-Poitrine fumée;Boucherie et poissonnerie;pour 100 g;300;15,6;0,79;26,1;200 g;2,60;Ciqual 2025, code 28502;Poitrine de porc en salaison, fumée, crue
-Rumsteck de bœuf;Boucherie et poissonnerie;pour 100 g;118;23,5;0,4;2,5;300 g;7,20;Ciqual 2025, code 6206;Boeuf, rumsteck cru
-Saucisse de Toulouse;Boucherie et poissonnerie;pour 100 g;321;13,3;0,64;29,5;400 g;4,50;Ciqual 2025, code 30110;Saucisse de Toulouse crue
-Saumon fumé;Boucherie et poissonnerie;pour 100 g;184;22,2;0,13;10,5;150 g;4,50;Ciqual 2025, code 26037;Saumon fumé
-Steak de thon;Boucherie et poissonnerie;pour 100 g;112;25,0;1,0;0,94;250 g;6,50;Ciqual 2025, code 26064;Thon albacore, cru
-Émincés de poulet rôti;Boucherie et poissonnerie;pour 100 g;138;30,1;0;2,0;300 g;4,50;Ciqual 2025, code 36018;Poulet, filet sans peau grillé/poêlé
-Beurre;Crèmerie et œufs;pour 100 g;752;0,64;0,71;83,0;250 g;2,60;Ciqual 2025, code 16400;Beurre à 80% MG minimum, doux
-Blancs d'œufs liquides;Crèmerie et œufs;pour 100 g;48;10,9;0,73;0,17;500 g;3,90;Ciqual 2025, code 22001;Oeuf, blanc (blanc d'oeuf), cru
-Boisson à l'avoine;Crèmerie et œufs;pour 100 ml;42;0,25;7,78;1,1;1000 ml;1,90;Ciqual 2025, code 18899;Boisson à l'avoine, nature, sans sucres ajoutés, non enrichie, préemballée
-Bûche de chèvre;Crèmerie et œufs;pour 100 g;285;18,8;0;23,3;180 g;2,40;Ciqual 2025, code 12812;Fromage de chèvre bûche
-Camembert;Crèmerie et œufs;pour 100 g;275;19,2;1,29;21,5;250 g;2,30;Ciqual 2025, code 12007;Camembert au lait pasteurisé
-Comté;Crèmerie et œufs;pour 100 g;415;27,8;0;33,8;250 g;4,90;Ciqual 2025, code 12110;Comté
-Crème dessert au chocolat;Crèmerie et œufs;pour 100 g;117;3,46;17,9;3,55;500 g;1,90;Ciqual 2025, code 39200;Crème dessert au chocolat, rayon frais
-Crème fraîche 15 %;Crèmerie et œufs;pour 100 ml;173;2,96;4,3;16,0;200 ml;1,30;Ciqual 2025, code 19436;Crème 12 à 20% MG, légère, fluide, rayon frais
-Crème fraîche épaisse 30 %;Crèmerie et œufs;pour 100 g;284;2,32;1,38;29,9;200 g;1,70;Ciqual 2025, code 19410;Crème 30% MG, épaisse, rayon frais
-Crème liquide 30 %;Crèmerie et œufs;pour 100 ml;294;2,2;3,69;30,0;200 ml;1,60;Ciqual 2025, code 19417;Crème 30% MG, fluide, UHT
-Emmental râpé;Crèmerie et œufs;pour 100 g;367;27,6;0,58;28,2;200 g;2,60;Ciqual 2025, code 12118;Emmental ou emmenthal, râpé
-Faisselle;Crèmerie et œufs;pour 100 g;81;4,47;3,36;5,5;400 g;1,90;Ciqual 2025, code 19641;Faisselle, 6% MG environ
-Feta;Crèmerie et œufs;pour 100 g;281;15,1;0,45;24,3;200 g;2,60;Ciqual 2025, code 12066;Feta, au lait de brebis 70% minimum et lait de chèvre 30% maximum
-Fromage blanc 0 %;Crèmerie et œufs;pour 100 g;47;7,34;4,22;0,1;500 g;1,90;Ciqual 2025, code 19644;Fromage blanc, nature, 0% MG
-Fromage blanc 3 %;Crèmerie et œufs;pour 100 g;74;7,28;3,86;3,23;500 g;1,90;Ciqual 2025, code 19646;Fromage blanc, nature, 2-3% MG
-Houmous;Crèmerie et œufs;pour 100 g;247;8,06;9,0;19,9;200 g;2,20;Ciqual 2025, code 25621;Houmous, préemballé
-Lait demi-écrémé;Crèmerie et œufs;pour 100 ml;48;3,48;5,0;1,56;1000 ml;1,10;Ciqual 2025, code 19041;Lait demi-écrémé, UHT
-Lait entier;Crèmerie et œufs;pour 100 ml;65;3,46;4,77;3,55;1000 ml;1,25;Ciqual 2025, code 19023;Lait entier, UHT
-Lait écrémé;Crèmerie et œufs;pour 100 ml;35;3,6;5,01;0,02;1000 ml;1,00;Ciqual 2025, code 19050;Lait écrémé, UHT
-Mascarpone;Crèmerie et œufs;pour 100 g;369;6,0;3,1;37,0;250 g;2,60;Ciqual 2025, code 19584;Mascarpone
-Mozzarella;Crèmerie et œufs;pour 100 g;228;16,5;0,7;17,7;125 g;1,10;Ciqual 2025, code 19590;Mozzarella au lait de vache
-Parmesan;Crèmerie et œufs;pour 100 g;408;31,1;1,14;31,0;100 g;3,20;Ciqual 2025, code 12120;Parmesan
-Petits-suisses 4 %;Crèmerie et œufs;pour 100 g;86;9,71;3,11;3,9;360 g;1,90;Ciqual 2025, code 19664;Fromage frais type petit suisse, nature, 4% MG environ
-Ricotta;Crèmerie et œufs;pour 100 g;145;8,13;4,09;10,7;250 g;2,20;Ciqual 2025, code 19585;Ricotta
-Riz au lait;Crèmerie et œufs;pour 100 g;118;3,0;18,9;3,4;400 g;1,90;Ciqual 2025, code 39212;Riz au lait vanille, cannelle ou nature, rayon frais
-Skyr nature;Crèmerie et œufs;pour 100 g;58;10;4;0,2;450 g;2,60;Valeurs d'étiquette typiques (absent de Ciqual);
-Yaourt nature;Crèmerie et œufs;pour 100 g;47;3,83;4,26;1,68;500 g;1,20;Ciqual 2025, code 19593;Yaourt ou lait fermenté, nature
-Yaourt à la grecque;Crèmerie et œufs;pour 100 g;100;3,02;3,73;8,16;500 g;2,40;Ciqual 2025, code 19860;Yaourt à la grecque nature
-Œufs;Crèmerie et œufs;par pièce;70;6,4;0,03;4,92;6 pièces;2,40;Ciqual 2025, code 22000, pièce de 50 g;Oeuf cru
-Brocolis surgelés;Surgelés;pour 100 g;21;2,78;1,5;0,42;1000 g;2,60;Ciqual 2025, code 20204;Brocoli, surgelé, cru
-Frites au four surgelées;Surgelés;pour 100 g;136;2,38;21,0;4,73;1000 g;2,30;Ciqual 2025, code 4044;Frites de pommes de terre, surgelées, préfrites, pour cuisson au four
-Fruits rouges surgelés;Surgelés;pour 100 g;36;1,0;7,0;0,5;450 g;3,90;Ciqual 2025, code 13997;Fruits rouges, crus (framboises, fraises, groseilles, cassis)
-Haricots verts;Surgelés;pour 100 g;28;1,79;4,76;0,21;1000 g;2,40;Ciqual 2025, code 20070;Haricot vert, surgelé, cru
-Légumes pour wok;Surgelés;pour 100 g;68;1,75;4,0;5,0;600 g;2,60;Ciqual 2025, code 20273;Poêlée de légumes assaisonnés à l'asiatiques ou wok de légumes, surgelée, crue
-Petits pois surgelés;Surgelés;pour 100 g;65;5,86;9,5;0,4;1000 g;2,30;Ciqual 2025, code 20084;Petits pois, surgelés, crus
-Poivrons surgelés;Surgelés;pour 100 g;33;1,06;5,98;0,5;600 g;2,40;Ciqual 2025, code 20087;Poivron rouge, cru
-Pommes de terre grenailles surgelées;Surgelés;pour 100 g;129;2,4;17,9;5,3;750 g;2,60;Ciqual 2025, code 4053;Pomme de terre grenaille, préfrite, surgelée, à cuire
-Poêlée de légumes;Surgelés;pour 100 g;44;2,6;5,0;1,5;750 g;2,40;Ciqual 2025, code 20262;Poêlée de légumes assaisonnés sans champignon, surgelée, crue
-Épinards hachés surgelés;Surgelés;pour 100 g;22;3,32;1,0;0,54;1000 g;2,20;Ciqual 2025, code 20083;Epinard, haché ou purée ou en branches, surgelé, cru
-Baguette;Boulangerie;pour 100 g;279;8,27;58,3;1,4;250 g;1,10;Ciqual 2025, code 7001;Pain blanc (par ex. : baguette, boule…)
-Biscottes;Boulangerie;pour 100 g;382;10,0;73,2;5,43;300 g;1,50;Ciqual 2025, code 7300;Biscotte classique
-Brioche;Boulangerie;pour 100 g;352;7,99;52,7;12,1;500 g;2,40;Ciqual 2025, code 7740;Brioche nature, préemballée
-Croissants;Boulangerie;par pièce;227;3,76;27,42;11,34;6 pièces;2,60;Ciqual 2025, code 7621, pièce de 60 g;Croissant pur beurre, préemballé
-Pain aux céréales;Boulangerie;pour 100 g;255;9,58;46,9;3,2;400 g;2,40;Ciqual 2025, code 7255;Pain aux céréales et/ou graines
-Pain complet;Boulangerie;pour 100 g;215;8,66;41,2;1,7;500 g;2,30;Ciqual 2025, code 7110;Pain complet ou intégral (à la farine T150)
-Pain de campagne;Boulangerie;pour 100 g;242;7,52;50,0;1,3;500 g;2,60;Ciqual 2025, code 7100;Pain de campagne
-Pain de mie complet;Boulangerie;par pièce;63;1,97;11,29;1,11;20 pièces;1,85;Ciqual 2025, code 7111, pièce de 27 g;Pain de mie complet, préemballé
-Pains pita;Boulangerie;par pièce;143;4,49;29,28;0,9;6 pièces;1,70;Ciqual 2025, code 7180, pièce de 60 g;Pain pita
-Pains à burger;Boulangerie;par pièce;199;6,16;35,4;3,68;4 pièces;1,60;Ciqual 2025, code 7259, pièce de 75 g;Pain pour burger ou hot dog (bun), préemballé
-Tortillas de blé;Boulangerie;par pièce;193;4,97;32,86;4,64;8 pièces;1,90;Ciqual 2025, code 7815, pièce de 62 g;Tortilla souple (à garnir), à base de blé
-Abricots secs;Épicerie;pour 100 g;252;2,88;59,1;0,5;250 g;3,40;Ciqual 2025, code 13001;Abricot, dénoyauté, sec
-Amandes;Épicerie;pour 100 g;593;21,4;8,76;52,5;200 g;3,40;Ciqual 2025, code 15041;Amande, émondée, sans sel ajouté
-Beurre de cacahuète;Épicerie;pour 100 g;621;22,2;17,3;51,4;350 g;3,60;Ciqual 2025, code 15202;Beurre de cacahuète ou pâte d'arachide
-Biscuits petit-beurre;Épicerie;pour 100 g;444;7,78;73,4;13,3;200 g;1,40;Ciqual 2025, code 24015;Biscuit sec petit beurre
-Bouillon de volaille;Épicerie;pour 100 ml;7;1,23;0,28;0,13;1000 ml;0,60;Ciqual 2025, code 25947;Bouillon de volaille, déshydraté reconstitué
-Boulgour;Épicerie;pour 100 g;323;11,7;65,8;1,42;500 g;1,80;Ciqual 2025, code 9690;Boulgour de blé, cru
-Cacahuètes grillées;Épicerie;pour 100 g;619;23,5;14,4;51,9;250 g;2,20;Ciqual 2025, code 15053;Cacahuète, grillée, sans sel ajouté
-Cacao en poudre non sucré;Épicerie;pour 100 g;321;22,4;11,6;20,6;250 g;3,20;Ciqual 2025, code 18100;Cacao, sans sucres ajoutés, poudre soluble
-Cerneaux de noix;Épicerie;pour 100 g;686;13,3;6,88;67,3;150 g;3,20;Ciqual 2025, code 15005;Noix, cerneau, séchée
-Chapelure;Épicerie;pour 100 g;349;9,41;74,3;1,6;250 g;1,30;Ciqual 2025, code 7500;Chapelure
-Chocolat au lait;Épicerie;pour 100 g;543;7,5;58,9;30,8;100 g;1,50;Ciqual 2025, code 31004;Chocolat au lait, tablette
-Chocolat en poudre sucré;Épicerie;pour 100 g;359;6,65;75,6;3,29;500 g;3,20;Ciqual 2025, code 18101;Poudre cacaotée ou au chocolat pour boisson, sucrée
-Chocolat noir 70 %;Épicerie;pour 100 g;566;10,4;26,9;46,3;100 g;1,80;Ciqual 2025, code 31074;Chocolat noir 70 % de cacao environ, de dégustation, tablette
-Compote de pomme;Épicerie;pour 100 g;106;0,25;25,8;0,23;400 g;1,60;Ciqual 2025, code 13038;Compote de pomme, préemballée
-Concentré de tomate;Épicerie;pour 100 g;96;3,75;19,3;0,47;140 g;0,90;Ciqual 2025, code 20268;Tomate, double concentré, appertisé
-Confiture;Épicerie;pour 100 g;241;0,33;59,3;0,28;370 g;2,20;Ciqual 2025, code 31006;Confiture ou marmelade ou gelée, tout type de fruits, non allégée en sucres (aliment moyen)
-Coulis de tomate;Épicerie;pour 100 g;40;2,05;7,57;0,2;500 g;1,40;Ciqual 2025, code 20260;Tomate, coulis, appertisé (purée de tomates mi-réduite à 11%)
-Céréales chocolatées;Épicerie;pour 100 g;377;8,19;74,7;5,1;500 g;2,90;Ciqual 2025, code 32001;Céréales pour petit déjeuner chocolatées, non fourrées, enrichies en vitamines et minéraux
-Dattes dénoyautées;Épicerie;pour 100 g;268;1,81;64,7;0,25;250 g;3,40;Ciqual 2025, code 13011;Datte, chair et peau, sans noyau, sèche
-Farine de blé;Épicerie;pour 100 g;335;10,0;71,5;1,0;1000 g;1,10;Ciqual 2025, code 9435;Farine de blé tendre ou froment T65
-Flocons d'avoine;Épicerie;pour 100 g;344;10,6;57,7;7,82;1000 g;2,50;Ciqual 2025, code 32140;Flocons d'avoine
-Galettes de riz;Épicerie;par pièce;30;0,67;6,23;0,24;15 pièces;1,40;Ciqual 2025, code 7352, pièce de 8 g;Galette de riz complet soufflé
-Gnocchis à poêler;Épicerie;pour 100 g;171;4,66;35,0;1,42;300 g;1,60;Ciqual 2025, code 26264;Gnocchi à la pomme de terre, à cuire
-Graines de chia;Épicerie;pour 100 g;373;16,5;7,72;30,7;250 g;3,50;Ciqual 2025, code 15047;Chia, graine, séchée
-Graines de courge;Épicerie;pour 100 g;581;29,5;5,39;49,1;200 g;3,20;Ciqual 2025, code 15064;Courge, graine, séchée
-Granola;Épicerie;pour 100 g;416;9,77;63,3;13,8;500 g;4,20;Ciqual 2025, code 32144;Muesli croustillant aux fruits à coque et/ou graines uniquement, enrichi en vitamines et minéraux
-Haricots blancs égouttés;Épicerie;pour 100 g;72;5,88;10,9;0,5;400 g;1,10;Ciqual 2025, code 20511;Haricot blanc, appertisé, égoutté
-Haricots rouges égouttés;Épicerie;pour 100 g;94;8,31;13,0;0,97;400 g;1,20;Ciqual 2025, code 20524;Haricot rouge, appertisé, égoutté
-Huile d'arachide;Épicerie;pour 100 ml;828;0,23;0,0;91,91;1000 ml;3,60;Ciqual 2025, code 17040, densité 0.92;Huile d'arachide
-Huile d'olive;Épicerie;pour 100 ml;828;0,23;0,0;91,91;750 ml;7,50;Ciqual 2025, code 17270, densité 0.92;Huile d'olive vierge extra
-Huile de coco;Épicerie;pour 100 ml;828;0,15;0,0;91,91;450 ml;5,90;Ciqual 2025, code 16050, densité 0.92;Huile ou graisse de coco, vierge
-Huile de colza;Épicerie;pour 100 ml;828;0,0;0,0;92,0;1000 ml;2,90;Ciqual 2025, code 17130, densité 0.92;Huile de colza
-Huile de sésame;Épicerie;pour 100 ml;828;0,0;0,0;92,0;250 ml;4,80;Ciqual 2025, code 17400, densité 0.92;Huile de sésame
-Huile de tournesol;Épicerie;pour 100 ml;829;0,23;0,0;92,0;1000 ml;2,60;Ciqual 2025, code 17440, densité 0.92;Huile de tournesol
-Ketchup;Épicerie;pour 100 g;101;1,23;23,7;0,16;500 g;2,20;Ciqual 2025, code 11008;Ketchup, préemballé
-Lait concentré sucré;Épicerie;pour 100 g;328;7,7;56,5;7,87;397 g;2,30;Ciqual 2025, code 19027;Lait concentré sucré, entier
-Lait de coco;Épicerie;pour 100 ml;198;1,94;4,29;19,2;400 ml;1,60;Ciqual 2025, code 18041;Lait de coco
-Lentilles corail;Épicerie;pour 100 g;298;27,7;44,9;0,8;500 g;2,20;Ciqual 2025, code 20535;Lentille corail, sèche
-Lentilles cuisinées;Épicerie;pour 100 g;82;6,83;12,3;0,64;500 g;1,90;Ciqual 2025, code 20510;Lentille, cuisinée, appertisée, égouttée
-Maquereau en boîte;Épicerie;pour 100 g;217;20,8;1,5;14,2;169 g;2,10;Ciqual 2025, code 26096;Maquereau, filet sauce moutarde, appertisé, égoutté
-Mayonnaise;Épicerie;pour 100 g;689;1,33;3,41;74,5;235 g;1,90;Ciqual 2025, code 11054;Mayonnaise (70% MG min.), préemballée
-Maïs doux égoutté;Épicerie;pour 100 g;99;2,66;18,3;1,68;280 g;1,40;Ciqual 2025, code 20066;Maïs doux, appertisé, égoutté
-Miel;Épicerie;pour 100 g;331;0,65;82,1;0;250 g;4,50;Ciqual 2025, code 31008;Miel
-Moutarde;Épicerie;pour 100 g;146;6,92;4,33;11,2;200 g;1,20;Ciqual 2025, code 11013;Moutarde
-Muesli aux fruits;Épicerie;pour 100 g;361;9,5;68,9;5,3;750 g;3,40;Ciqual 2025, code 32110;Muesli floconneux aux fruits, fruits à coque et/ou graines, enrichi en vitamines et minéraux
-Mélange paprika fumé et cumin;Épicerie;pour 100 g;248;14,1;18,8;12,9;40 g;1,60;Ciqual 2025, code 11049;Paprika, poudre
-Noisettes;Épicerie;pour 100 g;598;14,4;7,16;56,9;200 g;3,40;Ciqual 2025, code 15004;Noisette, sans sel ajouté
-Noix de cajou;Épicerie;pour 100 g;588;17,4;21,3;48,1;200 g;3,20;Ciqual 2025, code 15054;Noix de cajou, grillée, sans sel ajouté
-Noix de coco râpée;Épicerie;pour 100 g;660;6,83;7,81;66,8;200 g;1,90;Ciqual 2025, code 15007;Noix de coco, chair, sèche
-Nouilles aux œufs;Épicerie;pour 100 g;359;11,9;71,0;3,0;250 g;1,90;Ciqual 2025, code 9863;Pâtes ou nouilles asiatiques sèches, au blé et aux oeufs, nature, crues
-Olives vertes;Épicerie;pour 100 g;156;1,13;0,61;16,6;200 g;1,90;Ciqual 2025, code 13033;Olive verte, en saumure, égouttée
-Pain d'épices;Épicerie;pour 100 g;310;3,14;71,8;1,15;350 g;2,20;Ciqual 2025, code 23200;Pain d'épices, préemballé
-Pesto;Épicerie;pour 100 g;361;3,94;6,6;35,4;190 g;2,80;Ciqual 2025, code 11179;Sauce pesto, préemballée
-Pistaches;Épicerie;pour 100 g;598;18,4;14,9;51,6;200 g;4,20;Ciqual 2025, code 15044;Pistache, grillée, sans sel ajouté
-Pois cassés;Épicerie;pour 100 g;296;23,8;47,5;1,16;500 g;1,90;Ciqual 2025, code 20515;Pois cassé, sec
-Pois chiches égouttés;Épicerie;pour 100 g;111;6,74;15,0;2,68;400 g;1,30;Ciqual 2025, code 20532;Pois chiche, appertisé, égoutté
-Polenta;Épicerie;pour 100 g;344;7,88;74,0;1,8;500 g;1,90;Ciqual 2025, code 9614;Polenta ou semoule de maïs, précuite, à cuire
-Purée de sésame (tahini);Épicerie;pour 100 g;607;17,7;13,8;53,4;250 g;3,90;Ciqual 2025, code 15203;Tahin ou purée de sésame
-Purée en flocons;Épicerie;pour 100 g;330;8,0;73,5;0,41;250 g;1,60;Ciqual 2025, code 4022;Flocons de pomme de terre, nature, déshydratés
-Pâte de curry;Épicerie;pour 100 g;130;2,5;12;8;110 g;2,30;Valeurs d'étiquette typiques (absent de Ciqual);
-Pâte à tartiner chocolat-noisette;Épicerie;pour 100 g;543;5,02;57,9;32,4;400 g;3,40;Ciqual 2025, code 31032;Pâte à tartiner chocolat et noisette
-Pâtes;Épicerie;pour 100 g;353;12,0;72,7;1,6;500 g;1,00;Ciqual 2025, code 9810;Pâtes sèches, standard, crues
-Pâtes complètes;Épicerie;pour 100 g;337;11,8;67,6;2,2;500 g;1,60;Ciqual 2025, code 9870;Pâtes sèches, au blé complet, crues
-Pétales de maïs;Épicerie;pour 100 g;357;6,88;80,0;1,0;500 g;2,30;Ciqual 2025, code 32005;Pétales de maïs nature, enrichis en vitamines et minéraux
-Quinoa;Épicerie;pour 100 g;340;13,2;58,1;6,07;500 g;3,90;Ciqual 2025, code 9340;Quinoa, cru
-Raisins secs;Épicerie;pour 100 g;313;3,0;73,2;0,9;250 g;2,20;Ciqual 2025, code 13046;Raisin sec
-Riz basmati;Épicerie;pour 100 g;348;7,08;78,4;0,63;1000 g;3,20;Ciqual 2025, code 9119;Riz thaï ou basmati, cru
-Riz blanc;Épicerie;pour 100 g;345;7,02;77,5;0,79;1000 g;2,20;Ciqual 2025, code 9100;Riz blanc, cru
-Riz complet;Épicerie;pour 100 g;339;7,02;71,4;2,8;1000 g;2,60;Ciqual 2025, code 9102;Riz complet, cru
-Sardines à l'huile;Épicerie;pour 100 g;218;23,3;0,31;13,7;100 g;1,60;Ciqual 2025, code 26034;Sardine, à l'huile, appertisée, égouttée
-Sauce barbecue;Épicerie;pour 100 g;129;0,56;30,3;0,6;300 g;2,30;Ciqual 2025, code 11100;Sauce barbecue, préemballée
-Sauce soja;Épicerie;pour 100 ml;46;8,34;1,98;0,57;250 ml;2,60;Ciqual 2025, code 11104, densité 1.15;Sauce soja, préemballée
-Sauce teriyaki;Épicerie;pour 100 ml;101;6,82;18,4;0,02;250 ml;2,90;Ciqual 2025, code 11301, densité 1.15;Sauce teriyaki, préemballée
-Semoule de couscous;Épicerie;pour 100 g;338;11,8;69,8;1,28;500 g;1,40;Ciqual 2025, code 9610;Semoule de blé dur, crue
-Sirop d'érable;Épicerie;pour 100 ml;356;0,05;88,7;0,08;250 ml;4,90;Ciqual 2025, code 31034, densité 1.32;Sirop d'érable
-Son d'avoine;Épicerie;pour 100 g;328;16,8;50,6;6,52;500 g;2,40;Ciqual 2025, code 9640;Son d'avoine
-Sucre;Épicerie;pour 100 g;399;0;99,7;0;1000 g;1,30;Ciqual 2025, code 31016;Sucre blanc
-Thon au naturel égoutté;Épicerie;pour 100 g;143;26,8;0;3,94;140 g;1,60;Ciqual 2025, code 26039;Thon, au naturel, appertisé, égoutté
-Thon à l'huile égoutté;Épicerie;pour 100 g;206;23,3;0,76;12,2;140 g;1,90;Ciqual 2025, code 26180;Thon à l'huile de tournesol, entier, appertisé, égoutté
-Tomates concassées;Épicerie;pour 100 g;18;0,79;3,15;0,25;400 g;1,10;Ciqual 2025, code 20137;Tomate, pelée, appertisée, au jus, non égouttée
-Tortilla chips;Épicerie;pour 100 g;477;6,1;62,6;22,5;200 g;1,70;Ciqual 2025, code 38417;Chips de maïs ou tortilla chips, nature
-Vermicelles de riz;Épicerie;pour 100 g;349;6;80;0,6;250 g;1,60;Valeurs d'étiquette typiques (absent de Ciqual);
-Vinaigre balsamique;Épicerie;pour 100 ml;88;0,76;19,8;0,66;250 ml;2,20;Ciqual 2025, code 11091, densité 1.1;Vinaigre balsamique
-Épices chili;Épicerie;pour 100 g;248;14,1;18,8;12,9;30 g;1,10;Ciqual 2025, code 11049;Paprika, poudre
-Barre protéinée;Compléments;par pièce;232;20;20;8;12 pièces;19,90;Valeurs d'étiquette typiques (absent de Ciqual);
-Créatine monohydrate;Compléments;pour 100 g;0;0;0;0;500 g;19,00;Valeurs d'étiquette typiques (absent de Ciqual);
-Gainer en poudre;Compléments;pour 100 g;387;20;70;3;3000 g;34,90;Valeurs d'étiquette typiques (absent de Ciqual);
-Whey protéine;Compléments;pour 100 g;389;80;6;5;900 g;27,00;Valeurs d'étiquette typiques (absent de Ciqual);
+﻿Ingrédient;Rayon;Base;kcal;Protéines (g);Glucides (g);Lipides (g);Conditionnement;Prix indicatif (€);Basique du placard;Source;Aliment Ciqual correspondant
+Ail;Fruits et légumes;pour 100 g;100;5,31;18,6;0,5;100 g;1,20;;Ciqual 2025, code 11000;Ail, cru
+Ananas;Fruits et légumes;pour 100 g;52;0,25;11,7;0,5;1000 g;2,50;;Ciqual 2025, code 13002;Ananas, chair sans peau, cru
+Aubergine;Fruits et légumes;pour 100 g;16;0,98;2,7;0,18;350 g;1,30;;Ciqual 2025, code 20053;Aubergine, crue
+Avocat;Fruits et légumes;pour 100 g;192;1,56;0;20,6;150 g;1,20;;Ciqual 2025, code 13004;Avocat, chair sans peau, sans noyau, cru
+Banane;Fruits et légumes;par pièce;105;1,27;23,64;0,6;1 pièces;0,30;;Ciqual 2025, code 13005, pièce de 120 g;Banane, chair sans peau, crue
+Betterave cuite;Fruits et légumes;pour 100 g;38;1,44;7,13;0,4;500 g;1,60;;Ciqual 2025, code 20003;Betterave rouge, cuite
+Brocolis;Fruits et légumes;pour 100 g;23;2,9;2,15;0,36;500 g;2,20;;Ciqual 2025, code 20057;Brocoli, cru
+Carottes;Fruits et légumes;pour 100 g;28;0,78;5,16;0,5;1000 g;1,50;;Ciqual 2025, code 20009;Carotte, crue
+Champignons de Paris;Fruits et légumes;pour 100 g;19;2,11;1,83;0,36;500 g;2,40;;Ciqual 2025, code 20056;Champignon de Paris ou champignon de couche, cru
+Chou-fleur;Fruits et légumes;pour 100 g;22;1,81;2,13;0,7;1000 g;2,50;;Ciqual 2025, code 20016;Chou-fleur, cru
+Citron;Fruits et légumes;par pièce;12;0,25;1,56;0,5;1 pièces;0,45;;Ciqual 2025, code 13009, pièce de 100 g;Citron, chair sans peau, sans pépins, cru
+Citron vert;Fruits et légumes;par pièce;10;0,56;1,57;0,15;1 pièces;0,40;;Ciqual 2025, code 13067, pièce de 50 g;Citron vert ou lime, chair sans peau, sans pépins, cru
+Clémentine;Fruits et légumes;par pièce;24;0,45;5,04;0,28;1 pièces;0,25;;Ciqual 2025, code 13024, pièce de 55 g;Clémentine ou mandarine, chair sans peau, sans pépins, crue
+Concombre;Fruits et légumes;pour 100 g;15;0,65;2,87;0,11;400 g;0,90;;Ciqual 2025, code 20019;Concombre, chair et peau, cru
+Courge butternut;Fruits et légumes;pour 100 g;26;1,0;5,4;0,1;1200 g;2,40;;Ciqual 2025, code 20138;Courge butternut (doubeurre), chair sans peau, crue
+Courgette;Fruits et légumes;pour 100 g;15;1,21;1,75;0,32;300 g;1,10;;Ciqual 2025, code 20020;Courgette, chair et peau, crue
+Fraises;Fruits et légumes;pour 100 g;31;0,63;6,03;0,5;250 g;2,90;;Ciqual 2025, code 13014;Fraise, crue
+Kiwi;Fruits et légumes;par pièce;37;0,62;7,7;0,42;1 pièces;0,35;;Ciqual 2025, code 13021, pièce de 70 g;Kiwi, chair sans peau, avec pépins, cru
+Laitue;Fruits et légumes;pour 100 g;12;1,35;1,22;0,2;300 g;1,20;;Ciqual 2025, code 20031;Laitue, crue
+Mangue;Fruits et légumes;pour 100 g;64;0,63;14,3;0,5;400 g;1,90;;Ciqual 2025, code 13025;Mangue, chair sans peau, sans noyau, crue
+Myrtilles;Fruits et légumes;pour 100 g;49;0,87;10,6;0,33;125 g;2,50;;Ciqual 2025, code 13028;Myrtille, crue
+Oignon;Fruits et légumes;par pièce;35;1,1;6,25;0,62;1 pièces;0,35;;Ciqual 2025, code 20034, pièce de 100 g;Oignon, cru
+Orange;Fruits et légumes;par pièce;52;0,98;10,44;0,65;1 pièces;0,45;;Ciqual 2025, code 13034, pièce de 130 g;Orange, chair sans peau, sans pépins, crue
+Patate douce;Fruits et légumes;pour 100 g;75;1,57;17,1;0,05;1000 g;2,80;;Ciqual 2025, code 4101;Patate douce, crue
+Persil frais;Fruits et légumes;pour 100 g;34;2,97;4,1;0,63;30 g;0,90;;Ciqual 2025, code 11014;Persil, frais
+Poire;Fruits et légumes;par pièce;74;0,5;17,22;0,38;1 pièces;0,50;;Ciqual 2025, code 13037, pièce de 140 g;Poire, chair et peau, crue
+Poireau;Fruits et légumes;pour 100 g;27;1,5;4,55;0,3;1000 g;2,20;;Ciqual 2025, code 20039;Poireau, cru
+Poivron rouge;Fruits et légumes;pour 100 g;33;1,06;5,98;0,5;250 g;1,20;;Ciqual 2025, code 20087;Poivron rouge, cru
+Pomme;Fruits et légumes;par pièce;70;0,35;16,24;0,35;1 pièces;0,40;;Ciqual 2025, code 13039, pièce de 140 g;Pomme, chair et peau, crue
+Pommes de terre grenailles;Fruits et légumes;pour 100 g;74;2,02;16,2;0,09;1000 g;2,60;;Ciqual 2025, code 4008;Pomme de terre, sans peau, crue
+Raisin;Fruits et légumes;pour 100 g;67;0,57;15,6;0,25;500 g;2,90;;Ciqual 2025, code 13045;Raisin noir, cru
+Tomate;Fruits et légumes;pour 100 g;20;0,5;3,42;0,5;1000 g;2,80;;Ciqual 2025, code 20276;Tomate ronde, crue
+Tomates cerises;Fruits et légumes;pour 100 g;32;1,31;5,62;0,5;250 g;2,20;;Ciqual 2025, code 20172;Tomate cerise, crue
+Échalote;Fruits et légumes;pour 100 g;61;1,81;12,2;0,5;250 g;1,80;;Ciqual 2025, code 20097;Échalote, crue
+Épinards frais;Fruits et légumes;pour 100 g;26;2,68;3,06;0,39;300 g;2,50;;Ciqual 2025, code 20059;Épinard, cru
+Blanc de dinde en tranches;Boucherie et poissonnerie;pour 100 g;99;20,9;0,02;1,67;120 g;2,20;;Ciqual 2025, code 28964;Jambon de dinde ou blanc de dinde en tranche
+Blanc de poulet;Boucherie et poissonnerie;pour 100 g;107;23,4;0;1,5;500 g;7,50;;Ciqual 2025, code 36017;Poulet, filet sans peau cru
+Bœuf haché 15 %;Boucherie et poissonnerie;pour 100 g;216;20,2;0,47;14,8;500 g;5,50;;Ciqual 2025, code 6254;Boeuf, steak haché 15% MG cru
+Bœuf haché 5 %;Boucherie et poissonnerie;pour 100 g;130;21,9;0,3;4,59;500 g;6,50;;Ciqual 2025, code 6250;Boeuf, steak haché 5% MG cru
+Cabillaud;Boucherie et poissonnerie;pour 100 g;78;18,1;0;0,57;300 g;6,90;;Ciqual 2025, code 26043;Cabillaud, cru
+Chorizo;Boucherie et poissonnerie;pour 100 g;424;23,5;1,24;36,1;200 g;2,90;;Ciqual 2025, code 30315;Chorizo
+Crevettes décortiquées;Boucherie et poissonnerie;pour 100 g;90;20,5;0,2;0,79;250 g;5,90;;Ciqual 2025, code 10007;Crevette, cuite
+Cuisses de poulet désossées;Boucherie et poissonnerie;pour 100 g;114;19,3;0;4,05;500 g;5,50;;Ciqual 2025, code 36024;Poulet, cuisse, viande crue
+Escalope de dinde;Boucherie et poissonnerie;pour 100 g;108;23,7;0;1,48;400 g;5,90;;Ciqual 2025, code 36304;Dinde, escalope crue
+Escalope de veau;Boucherie et poissonnerie;pour 100 g;114;20,5;0,58;3,28;300 g;9,90;;Ciqual 2025, code 6521;Veau, escalope crue
+Filet mignon de porc;Boucherie et poissonnerie;pour 100 g;123;21,2;0,4;4,09;500 g;8,90;;Ciqual 2025, code 28204;Porc, filet mignon cru
+Gigot d'agneau;Boucherie et poissonnerie;pour 100 g;128;20,0;0,48;5,13;500 g;12,90;;Ciqual 2025, code 21502;Agneau, gigot cru
+Haché de dinde;Boucherie et poissonnerie;pour 100 g;108;22,6;0;1,93;400 g;5,40;;Ciqual 2025, code 36301;Dinde, viande crue
+Jambon blanc;Boucherie et poissonnerie;pour 100 g;113;21,0;0,76;2,83;160 g;2,40;;Ciqual 2025, code 28900;Jambon cuit, supérieur
+Jambon cru;Boucherie et poissonnerie;pour 100 g;239;25,9;4,27;13,2;100 g;2,90;;Ciqual 2025, code 28800;Jambon cru
+Lardons fumés;Boucherie et poissonnerie;pour 100 g;272;16,7;0,35;22,6;200 g;2,30;;Ciqual 2025, code 28720;Lardon fumé, cru
+Lieu noir;Boucherie et poissonnerie;pour 100 g;82;18,8;0;0,8;400 g;5,90;;Ciqual 2025, code 26134;Lieu noir, cru
+Magret de canard;Boucherie et poissonnerie;pour 100 g;337;17,9;0,1;29,4;350 g;8,90;;Ciqual 2025, code 36206;Canard, magret cru
+Merguez;Boucherie et poissonnerie;pour 100 g;301;13,8;1,15;26,8;400 g;4,20;;Ciqual 2025, code 30150;Merguez crue
+Pavé de saumon;Boucherie et poissonnerie;pour 100 g;194;20,5;0;12,4;250 g;6,90;;Ciqual 2025, code 26036;Saumon, élevage, cru
+Pavé de truite;Boucherie et poissonnerie;pour 100 g;143;19,2;0;7,4;250 g;5,90;;Ciqual 2025, code 27021;Truite saumonée, crue
+Pilons de poulet;Boucherie et poissonnerie;pour 100 g;155;18,1;0;9,2;1000 g;5,90;;Ciqual 2025, code 36022;Poulet, pilon cru
+Poitrine fumée;Boucherie et poissonnerie;pour 100 g;300;15,6;0,79;26,1;200 g;2,60;;Ciqual 2025, code 28502;Poitrine de porc en salaison, fumée, crue
+Rumsteck de bœuf;Boucherie et poissonnerie;pour 100 g;118;23,5;0,4;2,5;300 g;7,20;;Ciqual 2025, code 6206;Boeuf, rumsteck cru
+Saucisse de Toulouse;Boucherie et poissonnerie;pour 100 g;321;13,3;0,64;29,5;400 g;4,50;;Ciqual 2025, code 30110;Saucisse de Toulouse crue
+Saumon fumé;Boucherie et poissonnerie;pour 100 g;184;22,2;0,13;10,5;150 g;4,50;;Ciqual 2025, code 26037;Saumon fumé
+Steak de thon;Boucherie et poissonnerie;pour 100 g;112;25,0;1,0;0,94;250 g;6,50;;Ciqual 2025, code 26064;Thon albacore, cru
+Émincés de poulet rôti;Boucherie et poissonnerie;pour 100 g;138;30,1;0;2,0;300 g;4,50;;Ciqual 2025, code 36018;Poulet, filet sans peau grillé/poêlé
+Beurre;Crèmerie et œufs;pour 100 g;752;0,64;0,71;83,0;250 g;2,60;;Ciqual 2025, code 16400;Beurre à 80% MG minimum, doux
+Blancs d'œufs liquides;Crèmerie et œufs;pour 100 g;48;10,9;0,73;0,17;500 g;3,90;;Ciqual 2025, code 22001;Oeuf, blanc (blanc d'oeuf), cru
+Boisson à l'avoine;Crèmerie et œufs;pour 100 ml;42;0,25;7,78;1,1;1000 ml;1,90;;Ciqual 2025, code 18899;Boisson à l'avoine, nature, sans sucres ajoutés, non enrichie, préemballée
+Bûche de chèvre;Crèmerie et œufs;pour 100 g;285;18,8;0;23,3;180 g;2,40;;Ciqual 2025, code 12812;Fromage de chèvre bûche
+Camembert;Crèmerie et œufs;pour 100 g;275;19,2;1,29;21,5;250 g;2,30;;Ciqual 2025, code 12007;Camembert au lait pasteurisé
+Comté;Crèmerie et œufs;pour 100 g;415;27,8;0;33,8;250 g;4,90;;Ciqual 2025, code 12110;Comté
+Crème dessert au chocolat;Crèmerie et œufs;pour 100 g;117;3,46;17,9;3,55;500 g;1,90;;Ciqual 2025, code 39200;Crème dessert au chocolat, rayon frais
+Crème fraîche 15 %;Crèmerie et œufs;pour 100 ml;173;2,96;4,3;16,0;200 ml;1,30;;Ciqual 2025, code 19436;Crème 12 à 20% MG, légère, fluide, rayon frais
+Crème fraîche épaisse 30 %;Crèmerie et œufs;pour 100 g;284;2,32;1,38;29,9;200 g;1,70;;Ciqual 2025, code 19410;Crème 30% MG, épaisse, rayon frais
+Crème liquide 30 %;Crèmerie et œufs;pour 100 ml;294;2,2;3,69;30,0;200 ml;1,60;;Ciqual 2025, code 19417;Crème 30% MG, fluide, UHT
+Emmental râpé;Crèmerie et œufs;pour 100 g;367;27,6;0,58;28,2;200 g;2,60;;Ciqual 2025, code 12118;Emmental ou emmenthal, râpé
+Faisselle;Crèmerie et œufs;pour 100 g;81;4,47;3,36;5,5;400 g;1,90;;Ciqual 2025, code 19641;Faisselle, 6% MG environ
+Feta;Crèmerie et œufs;pour 100 g;281;15,1;0,45;24,3;200 g;2,60;;Ciqual 2025, code 12066;Feta, au lait de brebis 70% minimum et lait de chèvre 30% maximum
+Fromage blanc 0 %;Crèmerie et œufs;pour 100 g;47;7,34;4,22;0,1;500 g;1,90;;Ciqual 2025, code 19644;Fromage blanc, nature, 0% MG
+Fromage blanc 3 %;Crèmerie et œufs;pour 100 g;74;7,28;3,86;3,23;500 g;1,90;;Ciqual 2025, code 19646;Fromage blanc, nature, 2-3% MG
+Houmous;Crèmerie et œufs;pour 100 g;247;8,06;9,0;19,9;200 g;2,20;;Ciqual 2025, code 25621;Houmous, préemballé
+Lait demi-écrémé;Crèmerie et œufs;pour 100 ml;48;3,48;5,0;1,56;1000 ml;1,10;;Ciqual 2025, code 19041;Lait demi-écrémé, UHT
+Lait entier;Crèmerie et œufs;pour 100 ml;65;3,46;4,77;3,55;1000 ml;1,25;;Ciqual 2025, code 19023;Lait entier, UHT
+Lait écrémé;Crèmerie et œufs;pour 100 ml;35;3,6;5,01;0,02;1000 ml;1,00;;Ciqual 2025, code 19050;Lait écrémé, UHT
+Mascarpone;Crèmerie et œufs;pour 100 g;369;6,0;3,1;37,0;250 g;2,60;;Ciqual 2025, code 19584;Mascarpone
+Mozzarella;Crèmerie et œufs;pour 100 g;228;16,5;0,7;17,7;125 g;1,10;;Ciqual 2025, code 19590;Mozzarella au lait de vache
+Parmesan;Crèmerie et œufs;pour 100 g;408;31,1;1,14;31,0;100 g;3,20;;Ciqual 2025, code 12120;Parmesan
+Petits-suisses 4 %;Crèmerie et œufs;pour 100 g;86;9,71;3,11;3,9;360 g;1,90;;Ciqual 2025, code 19664;Fromage frais type petit suisse, nature, 4% MG environ
+Ricotta;Crèmerie et œufs;pour 100 g;145;8,13;4,09;10,7;250 g;2,20;;Ciqual 2025, code 19585;Ricotta
+Riz au lait;Crèmerie et œufs;pour 100 g;118;3,0;18,9;3,4;400 g;1,90;;Ciqual 2025, code 39212;Riz au lait vanille, cannelle ou nature, rayon frais
+Skyr nature;Crèmerie et œufs;pour 100 g;58;10;4;0,2;450 g;2,60;;Valeurs d'étiquette typiques (absent de Ciqual);
+Yaourt nature;Crèmerie et œufs;pour 100 g;47;3,83;4,26;1,68;500 g;1,20;;Ciqual 2025, code 19593;Yaourt ou lait fermenté, nature
+Yaourt à la grecque;Crèmerie et œufs;pour 100 g;100;3,02;3,73;8,16;500 g;2,40;;Ciqual 2025, code 19860;Yaourt à la grecque nature
+Œufs;Crèmerie et œufs;par pièce;70;6,4;0,03;4,92;6 pièces;2,40;;Ciqual 2025, code 22000, pièce de 50 g;Oeuf cru
+Brocolis surgelés;Surgelés;pour 100 g;21;2,78;1,5;0,42;1000 g;2,60;;Ciqual 2025, code 20204;Brocoli, surgelé, cru
+Frites au four surgelées;Surgelés;pour 100 g;136;2,38;21,0;4,73;1000 g;2,30;;Ciqual 2025, code 4044;Frites de pommes de terre, surgelées, préfrites, pour cuisson au four
+Fruits rouges surgelés;Surgelés;pour 100 g;36;1,0;7,0;0,5;450 g;3,90;;Ciqual 2025, code 13997;Fruits rouges, crus (framboises, fraises, groseilles, cassis)
+Haricots verts;Surgelés;pour 100 g;28;1,79;4,76;0,21;1000 g;2,40;;Ciqual 2025, code 20070;Haricot vert, surgelé, cru
+Légumes pour wok;Surgelés;pour 100 g;68;1,75;4,0;5,0;600 g;2,60;;Ciqual 2025, code 20273;Poêlée de légumes assaisonnés à l'asiatiques ou wok de légumes, surgelée, crue
+Petits pois surgelés;Surgelés;pour 100 g;65;5,86;9,5;0,4;1000 g;2,30;;Ciqual 2025, code 20084;Petits pois, surgelés, crus
+Poivrons surgelés;Surgelés;pour 100 g;33;1,06;5,98;0,5;600 g;2,40;;Ciqual 2025, code 20087;Poivron rouge, cru
+Pommes de terre grenailles surgelées;Surgelés;pour 100 g;129;2,4;17,9;5,3;750 g;2,60;;Ciqual 2025, code 4053;Pomme de terre grenaille, préfrite, surgelée, à cuire
+Poêlée de légumes;Surgelés;pour 100 g;44;2,6;5,0;1,5;750 g;2,40;;Ciqual 2025, code 20262;Poêlée de légumes assaisonnés sans champignon, surgelée, crue
+Épinards hachés surgelés;Surgelés;pour 100 g;22;3,32;1,0;0,54;1000 g;2,20;;Ciqual 2025, code 20083;Epinard, haché ou purée ou en branches, surgelé, cru
+Baguette;Boulangerie;pour 100 g;279;8,27;58,3;1,4;250 g;1,10;;Ciqual 2025, code 7001;Pain blanc (par ex. : baguette, boule…)
+Biscottes;Boulangerie;pour 100 g;382;10,0;73,2;5,43;300 g;1,50;;Ciqual 2025, code 7300;Biscotte classique
+Brioche;Boulangerie;pour 100 g;352;7,99;52,7;12,1;500 g;2,40;;Ciqual 2025, code 7740;Brioche nature, préemballée
+Croissants;Boulangerie;par pièce;227;3,76;27,42;11,34;6 pièces;2,60;;Ciqual 2025, code 7621, pièce de 60 g;Croissant pur beurre, préemballé
+Pain aux céréales;Boulangerie;pour 100 g;255;9,58;46,9;3,2;400 g;2,40;;Ciqual 2025, code 7255;Pain aux céréales et/ou graines
+Pain complet;Boulangerie;pour 100 g;215;8,66;41,2;1,7;500 g;2,30;;Ciqual 2025, code 7110;Pain complet ou intégral (à la farine T150)
+Pain de campagne;Boulangerie;pour 100 g;242;7,52;50,0;1,3;500 g;2,60;;Ciqual 2025, code 7100;Pain de campagne
+Pain de mie complet;Boulangerie;par pièce;63;1,97;11,29;1,11;20 pièces;1,85;;Ciqual 2025, code 7111, pièce de 27 g;Pain de mie complet, préemballé
+Pains pita;Boulangerie;par pièce;143;4,49;29,28;0,9;6 pièces;1,70;;Ciqual 2025, code 7180, pièce de 60 g;Pain pita
+Pains à burger;Boulangerie;par pièce;199;6,16;35,4;3,68;4 pièces;1,60;;Ciqual 2025, code 7259, pièce de 75 g;Pain pour burger ou hot dog (bun), préemballé
+Tortillas de blé;Boulangerie;par pièce;193;4,97;32,86;4,64;8 pièces;1,90;;Ciqual 2025, code 7815, pièce de 62 g;Tortilla souple (à garnir), à base de blé
+Abricots secs;Épicerie;pour 100 g;252;2,88;59,1;0,5;250 g;3,40;;Ciqual 2025, code 13001;Abricot, dénoyauté, sec
+Amandes;Épicerie;pour 100 g;593;21,4;8,76;52,5;200 g;3,40;;Ciqual 2025, code 15041;Amande, émondée, sans sel ajouté
+Basilic séché;Épicerie;pour 100 g;169;23,0;10,1;4,07;15 g;1,40;oui;Ciqual 2025, code 11032;Basilic, séché
+Beurre de cacahuète;Épicerie;pour 100 g;621;22,2;17,3;51,4;350 g;3,60;;Ciqual 2025, code 15202;Beurre de cacahuète ou pâte d'arachide
+Biscuits petit-beurre;Épicerie;pour 100 g;444;7,78;73,4;13,3;200 g;1,40;;Ciqual 2025, code 24015;Biscuit sec petit beurre
+Bouillon de volaille;Épicerie;pour 100 ml;7;1,23;0,28;0,13;1000 ml;0,60;;Ciqual 2025, code 25947;Bouillon de volaille, déshydraté reconstitué
+Boulgour;Épicerie;pour 100 g;323;11,7;65,8;1,42;500 g;1,80;;Ciqual 2025, code 9690;Boulgour de blé, cru
+Cacahuètes grillées;Épicerie;pour 100 g;619;23,5;14,4;51,9;250 g;2,20;;Ciqual 2025, code 15053;Cacahuète, grillée, sans sel ajouté
+Cacao en poudre non sucré;Épicerie;pour 100 g;321;22,4;11,6;20,6;250 g;3,20;;Ciqual 2025, code 18100;Cacao, sans sucres ajoutés, poudre soluble
+Cannelle;Épicerie;pour 100 g;137;3,99;27,5;1,24;40 g;1,60;oui;Ciqual 2025, code 11025;Cannelle, poudre
+Cerneaux de noix;Épicerie;pour 100 g;686;13,3;6,88;67,3;150 g;3,20;;Ciqual 2025, code 15005;Noix, cerneau, séchée
+Chapelure;Épicerie;pour 100 g;349;9,41;74,3;1,6;250 g;1,30;;Ciqual 2025, code 7500;Chapelure
+Chocolat au lait;Épicerie;pour 100 g;543;7,5;58,9;30,8;100 g;1,50;;Ciqual 2025, code 31004;Chocolat au lait, tablette
+Chocolat en poudre sucré;Épicerie;pour 100 g;359;6,65;75,6;3,29;500 g;3,20;;Ciqual 2025, code 18101;Poudre cacaotée ou au chocolat pour boisson, sucrée
+Chocolat noir 70 %;Épicerie;pour 100 g;566;10,4;26,9;46,3;100 g;1,80;;Ciqual 2025, code 31074;Chocolat noir 70 % de cacao environ, de dégustation, tablette
+Compote de pomme;Épicerie;pour 100 g;106;0,25;25,8;0,23;400 g;1,60;;Ciqual 2025, code 13038;Compote de pomme, préemballée
+Concentré de tomate;Épicerie;pour 100 g;96;3,75;19,3;0,47;140 g;0,90;;Ciqual 2025, code 20268;Tomate, double concentré, appertisé
+Confiture;Épicerie;pour 100 g;241;0,33;59,3;0,28;370 g;2,20;;Ciqual 2025, code 31006;Confiture ou marmelade ou gelée, tout type de fruits, non allégée en sucres (aliment moyen)
+Cornichons;Épicerie;pour 100 g;13;1,06;0,78;0,6;350 g;1,90;;Ciqual 2025, code 11004;Cornichon, au vinaigre
+Coulis de tomate;Épicerie;pour 100 g;40;2,05;7,57;0,2;500 g;1,40;;Ciqual 2025, code 20260;Tomate, coulis, appertisé (purée de tomates mi-réduite à 11%)
+Cumin;Épicerie;pour 100 g;407;17,8;33,7;22,3;40 g;1,60;oui;Ciqual 2025, code 11042;Cumin, graine
+Curry en poudre;Épicerie;pour 100 g;195;14,5;2,63;14,0;50 g;1,60;oui;Ciqual 2025, code 11005;Curry, poudre
+Céréales chocolatées;Épicerie;pour 100 g;377;8,19;74,7;5,1;500 g;2,90;;Ciqual 2025, code 32001;Céréales pour petit déjeuner chocolatées, non fourrées, enrichies en vitamines et minéraux
+Dattes dénoyautées;Épicerie;pour 100 g;268;1,81;64,7;0,25;250 g;3,40;;Ciqual 2025, code 13011;Datte, chair et peau, sans noyau, sèche
+Extrait de vanille;Épicerie;pour 100 ml;58;0,03;14,4;0;50 ml;3,40;oui;Ciqual 2025, code 11098;Vanille, extrait aqueux
+Farine de blé;Épicerie;pour 100 g;335;10,0;71,5;1,0;1000 g;1,10;;Ciqual 2025, code 9435;Farine de blé tendre ou froment T65
+Flocons d'avoine;Épicerie;pour 100 g;344;10,6;57,7;7,82;1000 g;2,50;;Ciqual 2025, code 32140;Flocons d'avoine
+Galettes de riz;Épicerie;par pièce;30;0,67;6,23;0,24;15 pièces;1,40;;Ciqual 2025, code 7352, pièce de 8 g;Galette de riz complet soufflé
+Gingembre en poudre;Épicerie;pour 100 g;307;8,98;58,3;4,24;30 g;1,60;oui;Ciqual 2025, code 11006;Gingembre, poudre
+Gnocchis à poêler;Épicerie;pour 100 g;171;4,66;35,0;1,42;300 g;1,60;;Ciqual 2025, code 26264;Gnocchi à la pomme de terre, à cuire
+Graines de chia;Épicerie;pour 100 g;373;16,5;7,72;30,7;250 g;3,50;;Ciqual 2025, code 15047;Chia, graine, séchée
+Graines de courge;Épicerie;pour 100 g;581;29,5;5,39;49,1;200 g;3,20;;Ciqual 2025, code 15064;Courge, graine, séchée
+Granola;Épicerie;pour 100 g;416;9,77;63,3;13,8;500 g;4,20;;Ciqual 2025, code 32144;Muesli croustillant aux fruits à coque et/ou graines uniquement, enrichi en vitamines et minéraux
+Haricots blancs égouttés;Épicerie;pour 100 g;72;5,88;10,9;0,5;400 g;1,10;;Ciqual 2025, code 20511;Haricot blanc, appertisé, égoutté
+Haricots rouges égouttés;Épicerie;pour 100 g;94;8,31;13,0;0,97;400 g;1,20;;Ciqual 2025, code 20524;Haricot rouge, appertisé, égoutté
+Harissa;Épicerie;pour 100 g;66;2,72;7,3;2,9;140 g;1,60;;Ciqual 2025, code 11112;Harissa (sauce au piment), préemballée
+Herbes de Provence;Épicerie;pour 100 g;203;11,5;23,1;7,2;30 g;1,50;oui;Ciqual 2025, code 11060;Herbes de Provence, séchées
+Huile d'arachide;Épicerie;pour 100 ml;828;0,23;0,0;91,91;1000 ml;3,60;;Ciqual 2025, code 17040, densité 0.92;Huile d'arachide
+Huile d'olive;Épicerie;pour 100 ml;828;0,23;0,0;91,91;750 ml;7,50;;Ciqual 2025, code 17270, densité 0.92;Huile d'olive vierge extra
+Huile de coco;Épicerie;pour 100 ml;828;0,15;0,0;91,91;450 ml;5,90;;Ciqual 2025, code 16050, densité 0.92;Huile ou graisse de coco, vierge
+Huile de colza;Épicerie;pour 100 ml;828;0,0;0,0;92,0;1000 ml;2,90;;Ciqual 2025, code 17130, densité 0.92;Huile de colza
+Huile de sésame;Épicerie;pour 100 ml;828;0,0;0,0;92,0;250 ml;4,80;;Ciqual 2025, code 17400, densité 0.92;Huile de sésame
+Huile de tournesol;Épicerie;pour 100 ml;829;0,23;0,0;92,0;1000 ml;2,60;;Ciqual 2025, code 17440, densité 0.92;Huile de tournesol
+Ketchup;Épicerie;pour 100 g;101;1,23;23,7;0,16;500 g;2,20;;Ciqual 2025, code 11008;Ketchup, préemballé
+Lait concentré sucré;Épicerie;pour 100 g;328;7,7;56,5;7,87;397 g;2,30;;Ciqual 2025, code 19027;Lait concentré sucré, entier
+Lait de coco;Épicerie;pour 100 ml;198;1,94;4,29;19,2;400 ml;1,60;;Ciqual 2025, code 18041;Lait de coco
+Lentilles corail;Épicerie;pour 100 g;298;27,7;44,9;0,8;500 g;2,20;;Ciqual 2025, code 20535;Lentille corail, sèche
+Lentilles cuisinées;Épicerie;pour 100 g;82;6,83;12,3;0,64;500 g;1,90;;Ciqual 2025, code 20510;Lentille, cuisinée, appertisée, égouttée
+Levure boulangère sèche;Épicerie;pour 100 g;287;42,7;14,3;6,56;33 g;1,30;;Ciqual 2025, code 11045;Levure de boulanger déshydratée
+Levure chimique;Épicerie;pour 100 g;108;0,1;26,9;0;55 g;0,90;oui;Ciqual 2025, code 11046;Levure chimique ou poudre à lever
+Maquereau en boîte;Épicerie;pour 100 g;217;20,8;1,5;14,2;169 g;2,10;;Ciqual 2025, code 26096;Maquereau, filet sauce moutarde, appertisé, égoutté
+Mayonnaise;Épicerie;pour 100 g;689;1,33;3,41;74,5;235 g;1,90;;Ciqual 2025, code 11054;Mayonnaise (70% MG min.), préemballée
+Maïs doux égoutté;Épicerie;pour 100 g;99;2,66;18,3;1,68;280 g;1,40;;Ciqual 2025, code 20066;Maïs doux, appertisé, égoutté
+Miel;Épicerie;pour 100 g;331;0,65;82,1;0;250 g;4,50;;Ciqual 2025, code 31008;Miel
+Moutarde;Épicerie;pour 100 g;146;6,92;4,33;11,2;200 g;1,20;;Ciqual 2025, code 11013;Moutarde
+Muesli aux fruits;Épicerie;pour 100 g;361;9,5;68,9;5,3;750 g;3,40;;Ciqual 2025, code 32110;Muesli floconneux aux fruits, fruits à coque et/ou graines, enrichi en vitamines et minéraux
+Mélange d'épices (paprika fumé, cumin);Épicerie;pour 100 g;248;14,1;18,8;12,9;40 g;1,60;;Ciqual 2025, code 11049;Paprika, poudre
+Noisettes;Épicerie;pour 100 g;598;14,4;7,16;56,9;200 g;3,40;;Ciqual 2025, code 15004;Noisette, sans sel ajouté
+Noix de cajou;Épicerie;pour 100 g;588;17,4;21,3;48,1;200 g;3,20;;Ciqual 2025, code 15054;Noix de cajou, grillée, sans sel ajouté
+Noix de coco râpée;Épicerie;pour 100 g;660;6,83;7,81;66,8;200 g;1,90;;Ciqual 2025, code 15007;Noix de coco, chair, sèche
+Nouilles aux œufs;Épicerie;pour 100 g;359;11,9;71,0;3,0;250 g;1,90;;Ciqual 2025, code 9863;Pâtes ou nouilles asiatiques sèches, au blé et aux oeufs, nature, crues
+Olives vertes;Épicerie;pour 100 g;156;1,13;0,61;16,6;200 g;1,90;;Ciqual 2025, code 13033;Olive verte, en saumure, égouttée
+Pain d'épices;Épicerie;pour 100 g;310;3,14;71,8;1,15;350 g;2,20;;Ciqual 2025, code 23200;Pain d'épices, préemballé
+Paprika;Épicerie;pour 100 g;248;14,1;18,8;12,9;50 g;1,60;oui;Ciqual 2025, code 11049;Paprika, poudre
+Pesto;Épicerie;pour 100 g;361;3,94;6,6;35,4;190 g;2,80;;Ciqual 2025, code 11179;Sauce pesto, préemballée
+Pistaches;Épicerie;pour 100 g;598;18,4;14,9;51,6;200 g;4,20;;Ciqual 2025, code 15044;Pistache, grillée, sans sel ajouté
+Pois cassés;Épicerie;pour 100 g;296;23,8;47,5;1,16;500 g;1,90;;Ciqual 2025, code 20515;Pois cassé, sec
+Pois chiches égouttés;Épicerie;pour 100 g;111;6,74;15,0;2,68;400 g;1,30;;Ciqual 2025, code 20532;Pois chiche, appertisé, égoutté
+Poivre noir moulu;Épicerie;pour 100 g;280;13,3;39,9;7,5;50 g;2,20;oui;Ciqual 2025, code 11015;Poivre noir, poudre
+Polenta;Épicerie;pour 100 g;344;7,88;74,0;1,8;500 g;1,90;;Ciqual 2025, code 9614;Polenta ou semoule de maïs, précuite, à cuire
+Purée de sésame (tahini);Épicerie;pour 100 g;607;17,7;13,8;53,4;250 g;3,90;;Ciqual 2025, code 15203;Tahin ou purée de sésame
+Purée en flocons;Épicerie;pour 100 g;330;8,0;73,5;0,41;250 g;1,60;;Ciqual 2025, code 4022;Flocons de pomme de terre, nature, déshydratés
+Pâte de curry;Épicerie;pour 100 g;130;2,5;12;8;110 g;2,30;;Valeurs d'étiquette typiques (absent de Ciqual);
+Pâte à tartiner chocolat-noisette;Épicerie;pour 100 g;543;5,02;57,9;32,4;400 g;3,40;;Ciqual 2025, code 31032;Pâte à tartiner chocolat et noisette
+Pâtes;Épicerie;pour 100 g;353;12,0;72,7;1,6;500 g;1,00;;Ciqual 2025, code 9810;Pâtes sèches, standard, crues
+Pâtes complètes;Épicerie;pour 100 g;337;11,8;67,6;2,2;500 g;1,60;;Ciqual 2025, code 9870;Pâtes sèches, au blé complet, crues
+Pétales de maïs;Épicerie;pour 100 g;357;6,88;80,0;1,0;500 g;2,30;;Ciqual 2025, code 32005;Pétales de maïs nature, enrichis en vitamines et minéraux
+Quinoa;Épicerie;pour 100 g;340;13,2;58,1;6,07;500 g;3,90;;Ciqual 2025, code 9340;Quinoa, cru
+Raisins secs;Épicerie;pour 100 g;313;3,0;73,2;0,9;250 g;2,20;;Ciqual 2025, code 13046;Raisin sec
+Riz basmati;Épicerie;pour 100 g;348;7,08;78,4;0,63;1000 g;3,20;;Ciqual 2025, code 9119;Riz thaï ou basmati, cru
+Riz blanc;Épicerie;pour 100 g;345;7,02;77,5;0,79;1000 g;2,20;;Ciqual 2025, code 9100;Riz blanc, cru
+Riz complet;Épicerie;pour 100 g;339;7,02;71,4;2,8;1000 g;2,60;;Ciqual 2025, code 9102;Riz complet, cru
+Sardines à l'huile;Épicerie;pour 100 g;218;23,3;0,31;13,7;100 g;1,60;;Ciqual 2025, code 26034;Sardine, à l'huile, appertisée, égouttée
+Sauce barbecue;Épicerie;pour 100 g;129;0,56;30,3;0,6;300 g;2,30;;Ciqual 2025, code 11100;Sauce barbecue, préemballée
+Sauce soja;Épicerie;pour 100 ml;46;8,34;1,98;0,57;250 ml;2,60;;Ciqual 2025, code 11104, densité 1.15;Sauce soja, préemballée
+Sauce teriyaki;Épicerie;pour 100 ml;101;6,82;18,4;0,02;250 ml;2,90;;Ciqual 2025, code 11301, densité 1.15;Sauce teriyaki, préemballée
+Sel;Épicerie;pour 100 g;0;0;0;0;1000 g;0,60;oui;Ciqual 2025, code 11058;Sel blanc alimentaire, iodé, non fluoré (marin, ignigène ou gemme)
+Semoule de couscous;Épicerie;pour 100 g;338;11,8;69,8;1,28;500 g;1,40;;Ciqual 2025, code 9610;Semoule de blé dur, crue
+Sirop d'érable;Épicerie;pour 100 ml;356;0,05;88,7;0,08;250 ml;4,90;;Ciqual 2025, code 31034, densité 1.32;Sirop d'érable
+Son d'avoine;Épicerie;pour 100 g;328;16,8;50,6;6,52;500 g;2,40;;Ciqual 2025, code 9640;Son d'avoine
+Sucre;Épicerie;pour 100 g;399;0;99,7;0;1000 g;1,30;;Ciqual 2025, code 31016;Sucre blanc
+Thon au naturel égoutté;Épicerie;pour 100 g;143;26,8;0;3,94;140 g;1,60;;Ciqual 2025, code 26039;Thon, au naturel, appertisé, égoutté
+Thon à l'huile égoutté;Épicerie;pour 100 g;206;23,3;0,76;12,2;140 g;1,90;;Ciqual 2025, code 26180;Thon à l'huile de tournesol, entier, appertisé, égoutté
+Thym séché;Épicerie;pour 100 g;211;9,11;26,9;7,43;20 g;1,40;oui;Ciqual 2025, code 11038;Thym, séché
+Tomates concassées;Épicerie;pour 100 g;18;0,79;3,15;0,25;400 g;1,10;;Ciqual 2025, code 20137;Tomate, pelée, appertisée, au jus, non égouttée
+Tortilla chips;Épicerie;pour 100 g;477;6,1;62,6;22,5;200 g;1,70;;Ciqual 2025, code 38417;Chips de maïs ou tortilla chips, nature
+Vermicelles de riz;Épicerie;pour 100 g;349;6;80;0,6;250 g;1,60;;Valeurs d'étiquette typiques (absent de Ciqual);
+Vinaigre balsamique;Épicerie;pour 100 ml;88;0,76;19,8;0,66;250 ml;2,20;;Ciqual 2025, code 11091, densité 1.1;Vinaigre balsamique
+Vinaigre de vin;Épicerie;pour 100 ml;1;0,25;0;0;500 ml;1,10;oui;Ciqual 2025, code 11220;Vinaigre de vin rouge
+Épices chili;Épicerie;pour 100 g;248;14,1;18,8;12,9;30 g;1,10;;Ciqual 2025, code 11049;Paprika, poudre
+Barre protéinée;Compléments;par pièce;232;20;20;8;12 pièces;19,90;;Valeurs d'étiquette typiques (absent de Ciqual);
+Créatine monohydrate;Compléments;pour 100 g;0;0;0;0;500 g;19,00;;Valeurs d'étiquette typiques (absent de Ciqual);
+Gainer en poudre;Compléments;pour 100 g;387;20;70;3;3000 g;34,90;;Valeurs d'étiquette typiques (absent de Ciqual);
+Whey protéine;Compléments;pour 100 g;389;80;6;5;900 g;27,00;;Valeurs d'étiquette typiques (absent de Ciqual);

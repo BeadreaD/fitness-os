@@ -23,6 +23,13 @@
     body { padding-bottom: env(safe-area-inset-bottom, 0px); }
     header { padding-top: env(safe-area-inset-top, 0px); }
     #toast { bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+    /* Bouton micro : au-dessus de la barre d'accueil, et remonté quand une notification s'affiche */
+    #voix-bouton { bottom: calc(1rem + env(safe-area-inset-bottom, 0px)); }
+    body:has(#toast:not(.opacity-0)) #voix-bouton { bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)); }
+    @media (min-width: 640px) { body:has(#toast:not(.opacity-0)) #voix-bouton { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); } }
+    @media (max-width: 1023px) {
+      body:has(#profil-barre:not(.translate-y-full)) #voix-bouton { bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
+    }
     /* Sur téléphone, la barre de résumé du profil ne doit pas masquer la notification */
     @media (max-width: 1023px) {
       body:has(#profil-barre:not(.translate-y-full)) #toast { bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px)); }
@@ -648,6 +655,7 @@
         <div>
           <h2 class="text-2xl font-extrabold tracking-tight">Mes recettes</h2>
           <p id="recettes-compte" class="mt-2 text-pierre"></p>
+          <div id="recettes-revision" class="mt-4 max-w-3xl rounded-2xl bg-beurre/90 p-4 text-sm text-nuit" hidden></div>
         </div>
         <button type="button" id="btn-nouvelle-recette"
                 class="self-start rounded-full bg-basilic px-5 py-2.5 text-sm font-semibold text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus sm:self-auto">
@@ -825,6 +833,7 @@
         </div>
 
         <div id="courses-liste" class="mt-6 gap-4 md:columns-2 print:columns-2 print:gap-8"></div>
+        <p id="courses-basiques" class="mt-4 max-w-prose text-sm text-pierre" hidden></p>
       </div>
 
       <div id="courses-vide" class="mt-6 max-w-prose rounded-2xl border-2 border-dashed border-encre/15 p-8" hidden>
@@ -1171,6 +1180,18 @@
     </div>
   </dialog>
 
+  <!-- ============ COMMANDES VOCALES ============ -->
+  <button type="button" id="voix-bouton" aria-label="Commande vocale : planifier un repas à la voix"
+          class="print:hidden fixed right-4 z-40 grid h-14 w-14 place-items-center rounded-full bg-basilic text-white shadow-lg ring-4 ring-sauge transition-[bottom] duration-200 hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus">
+    <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke-linecap="round" />
+    </svg>
+  </button>
+  <dialog id="modale-voix" aria-labelledby="voix-titre"
+          class="m-auto w-[min(calc(100%-2rem),32rem)] rounded-3xl bg-carte p-0 text-encre backdrop:bg-nuit/50 max-sm:mb-0 max-sm:mt-auto max-sm:w-full max-sm:max-w-none max-sm:rounded-b-none">
+    <div id="voix-contenu" class="space-y-4 p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))]"></div>
+  </dialog>
+
   <!-- ============ NOTIFICATION ============ -->
   <div id="toast" role="status" aria-live="polite"
        class="print:hidden fixed inset-x-3 bottom-6 z-50 flex max-w-[34rem] translate-y-4 flex-col gap-2 rounded-2xl bg-panneau p-3 text-surpanneau opacity-0 shadow-lg pointer-events-none transition duration-200 sm:left-1/2 sm:right-auto sm:-translate-x-1/2 sm:flex-row sm:items-center sm:gap-3 sm:py-2 sm:pl-5 sm:pr-2">
@@ -1309,6 +1330,9 @@
     'citron-vert': { nom: 'Citron vert', unite: 'pièce', rayon: 'fruits-legumes',
       nutrition: { proteines: 0.56, glucides: 1.57, lipides: 0.15 },
       achat: { quantite: 1, prix: 0.40 }, source: 'Ciqual 2025, code 13067, pièce de 50 g' },
+    'persil': { nom: 'Persil frais', unite: 'g', rayon: 'fruits-legumes',
+      nutrition: { proteines: 2.97, glucides: 4.1, lipides: 0.63 },
+      achat: { quantite: 30, prix: 0.90, nom: 'bouquet' }, source: 'Ciqual 2025, code 11014' },
     // boucherie-poissonnerie
     'blanc-poulet': { nom: 'Blanc de poulet', unite: 'g', rayon: 'boucherie-poissonnerie',
       nutrition: { proteines: 23.4, glucides: 0, lipides: 1.5 },
@@ -1641,7 +1665,7 @@
     'epices-chili': { nom: 'Épices chili', unite: 'g', rayon: 'epicerie',
       nutrition: { proteines: 14.1, glucides: 18.8, lipides: 12.9 },
       achat: { quantite: 30, prix: 1.10, nom: 'sachet' }, source: 'Ciqual 2025, code 11049' },
-    'epices-melange': { nom: 'Mélange paprika fumé et cumin', unite: 'g', rayon: 'epicerie',
+    'epices-melange': { nom: 'Mélange d\'épices (paprika fumé, cumin)', unite: 'g', rayon: 'epicerie',
       nutrition: { proteines: 14.1, glucides: 18.8, lipides: 12.9 },
       achat: { quantite: 40, prix: 1.60, nom: 'sachet' }, source: 'Ciqual 2025, code 11049' },
     'cacao-poudre': { nom: 'Cacao en poudre non sucré', unite: 'g', rayon: 'epicerie',
@@ -1800,6 +1824,54 @@
     'huile-arachide': { nom: 'Huile d\'arachide', unite: 'ml', rayon: 'epicerie',
       nutrition: { proteines: 0.23, glucides: 0, lipides: 91.91 },
       achat: { quantite: 1000, prix: 3.60, nom: 'bouteille' }, source: 'Ciqual 2025, code 17040, densité 0.92' },
+    'sel': { nom: 'Sel', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 0, glucides: 0, lipides: 0 },
+      achat: { quantite: 1000, prix: 0.60, nom: 'paquet' }, source: 'Ciqual 2025, code 11058', placard: true },
+    'poivre': { nom: 'Poivre noir moulu', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 13.3, glucides: 39.9, lipides: 7.5 },
+      achat: { quantite: 50, prix: 2.20, nom: 'pot' }, source: 'Ciqual 2025, code 11015', placard: true },
+    'paprika': { nom: 'Paprika', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 14.1, glucides: 18.8, lipides: 12.9 },
+      achat: { quantite: 50, prix: 1.60, nom: 'pot' }, source: 'Ciqual 2025, code 11049', placard: true },
+    'herbes-provence': { nom: 'Herbes de Provence', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 11.5, glucides: 23.1, lipides: 7.2 },
+      achat: { quantite: 30, prix: 1.50, nom: 'pot' }, source: 'Ciqual 2025, code 11060', placard: true },
+    'thym': { nom: 'Thym séché', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 9.11, glucides: 26.9, lipides: 7.43 },
+      achat: { quantite: 20, prix: 1.40, nom: 'pot' }, source: 'Ciqual 2025, code 11038', placard: true },
+    'cannelle': { nom: 'Cannelle', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 3.99, glucides: 27.5, lipides: 1.24 },
+      achat: { quantite: 40, prix: 1.60, nom: 'pot' }, source: 'Ciqual 2025, code 11025', placard: true },
+    'curry-poudre': { nom: 'Curry en poudre', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 14.5, glucides: 2.63, lipides: 14 },
+      achat: { quantite: 50, prix: 1.60, nom: 'pot' }, source: 'Ciqual 2025, code 11005', placard: true },
+    'cumin': { nom: 'Cumin', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 17.8, glucides: 33.7, lipides: 22.3 },
+      achat: { quantite: 40, prix: 1.60, nom: 'pot' }, source: 'Ciqual 2025, code 11042', placard: true },
+    'gingembre': { nom: 'Gingembre en poudre', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 8.98, glucides: 58.3, lipides: 4.24 },
+      achat: { quantite: 30, prix: 1.60, nom: 'pot' }, source: 'Ciqual 2025, code 11006', placard: true },
+    'basilic': { nom: 'Basilic séché', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 23, glucides: 10.1, lipides: 4.07 },
+      achat: { quantite: 15, prix: 1.40, nom: 'pot' }, source: 'Ciqual 2025, code 11032', placard: true },
+    'levure-chimique': { nom: 'Levure chimique', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 0.1, glucides: 26.9, lipides: 0 },
+      achat: { quantite: 55, prix: 0.90, nom: 'sachets' }, source: 'Ciqual 2025, code 11046', placard: true },
+    'levure-boulangere': { nom: 'Levure boulangère sèche', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 42.7, glucides: 14.3, lipides: 6.56 },
+      achat: { quantite: 33, prix: 1.30, nom: 'sachets' }, source: 'Ciqual 2025, code 11045' },
+    'vinaigre-vin': { nom: 'Vinaigre de vin', unite: 'ml', rayon: 'epicerie',
+      nutrition: { proteines: 0.25, glucides: 0, lipides: 0 },
+      achat: { quantite: 500, prix: 1.10, nom: 'bouteille' }, source: 'Ciqual 2025, code 11220', placard: true },
+    'vanille': { nom: 'Extrait de vanille', unite: 'ml', rayon: 'epicerie',
+      nutrition: { proteines: 0.03, glucides: 14.4, lipides: 0 },
+      achat: { quantite: 50, prix: 3.40, nom: 'flacon' }, source: 'Ciqual 2025, code 11098', placard: true },
+    'harissa': { nom: 'Harissa', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 2.72, glucides: 7.3, lipides: 2.9 },
+      achat: { quantite: 140, prix: 1.60, nom: 'tube' }, source: 'Ciqual 2025, code 11112' },
+    'cornichons': { nom: 'Cornichons', unite: 'g', rayon: 'epicerie',
+      nutrition: { proteines: 1.06, glucides: 0.78, lipides: 0.6 },
+      achat: { quantite: 350, prix: 1.90, nom: 'bocal' }, source: 'Ciqual 2025, code 11004' },
     // complements
     'whey': { nom: 'Whey protéine', unite: 'g', rayon: 'complements',
       nutrition: { proteines: 80, glucides: 6, lipides: 5 },
@@ -1843,15 +1915,19 @@
         { ref: 'saumon', quantite: 150 },
         { ref: 'patate-douce', quantite: 250 },
         { ref: 'epinards', quantite: 100 },
-        { ref: 'huile-olive', quantite: 5 },
+        { ref: 'huile-olive', quantite: 10 },
         { ref: 'citron', quantite: 0.5 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'sel', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Préchauffer le four à 200 °C.',
-        'Couper la patate douce en cubes, l\'enrober d\'huile d\'olive et enfourner 25 minutes.',
-        'Ajouter le pavé de saumon sur la plaque pour les 12 dernières minutes.',
-        'Faire tomber les épinards 2 minutes à la poêle.',
-        'Servir le tout arrosé du jus de citron.',
+        'Préchauffe le four à 200 °C.',
+        'Épluche la patate douce, coupe-la en cubes de 2 cm, mélange-la avec la moitié de l\'huile d\'olive, du sel et du poivre, puis étale-la sur une plaque.',
+        'Enfourne 15 minutes.',
+        'Pose le pavé de saumon sur la plaque, côté peau en dessous, sale et poivre, puis poursuis la cuisson 12 minutes.',
+        'Pendant ce temps, fais revenir l\'ail émincé 1 minute dans le reste d\'huile, ajoute les épinards et laisse-les tomber 2 minutes.',
+        'Dresse l\'assiette et arrose le saumon du jus de citron.',
       ],
     },
     {
@@ -1866,15 +1942,20 @@
         { ref: 'boeuf-hache-5', quantite: 150 },
         { ref: 'coulis-tomate', quantite: 200 },
         { ref: 'oignon', quantite: 0.5 },
+        { ref: 'ail', quantite: 5 },
         { ref: 'huile-olive', quantite: 5 },
         { ref: 'parmesan', quantite: 15 },
+        { ref: 'herbes-provence', quantite: 2 },
+        { ref: 'sel', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Émincer l\'oignon et le faire revenir 3 minutes dans l\'huile d\'olive.',
-        'Ajouter le bœuf haché et le cuire 5 minutes en l\'émiettant.',
-        'Verser le coulis de tomate, saler, poivrer et laisser mijoter 15 minutes.',
-        'Cuire les pâtes selon le temps indiqué sur le paquet, puis les égoutter.',
-        'Servir la sauce sur les pâtes et parsemer de parmesan.',
+        'Émince l\'oignon et l\'ail.',
+        'Fais-les revenir 3 minutes dans l\'huile d\'olive à feu moyen.',
+        'Ajoute le bœuf haché et cuis-le 5 minutes en l\'émiettant.',
+        'Verse le coulis de tomate, ajoute les herbes de Provence, sale, poivre et laisse mijoter 15 minutes à feu doux.',
+        'Pendant ce temps, cuis les pâtes complètes dans une grande casserole d\'eau salée selon le temps indiqué sur le paquet, puis égoutte-les.',
+        'Sers la sauce sur les pâtes et parsème de parmesan.',
       ],
     },
     {
@@ -1893,9 +1974,11 @@
         { ref: 'creatine', quantite: 5 },
       ],
       instructions: [
-        'Place tous les ingrédients dans un blender.',
-        'Mixe à pleine puissance pendant 45 secondes jusqu\'à obtenir une texture lisse.',
-        'Consomme immédiatement, en route vers la salle ou pendant ton échauffement.',
+        'Verse le lait entier dans le bol du blender.',
+        'Ajoute les flocons d\'avoine et laisse-les gonfler 1 minute.',
+        'Ajoute la banane coupée en morceaux, le beurre de cacahuète, la whey et la créatine.',
+        'Mixe à pleine puissance 45 secondes, jusqu\'à obtenir une texture lisse.',
+        'Bois aussitôt, en route vers la salle ou pendant ton échauffement.',
       ],
     },
     {
@@ -1911,12 +1994,15 @@
         { ref: 'oeufs', quantite: 2 },
         { ref: 'chocolat-noir-70', quantite: 20 },
         { ref: 'amandes', quantite: 15 },
+        { ref: 'cannelle', quantite: 1 },
+        { ref: 'sel', quantite: 0.5 },
       ],
       instructions: [
-        'Mets l\'avoine et le lait dans la cuve du Ninja Foodi.',
-        'Utilise le mode Sear/Sauté à température moyenne pendant 5 minutes en remuant.',
-        'Quand le mélange épaissit, coupe la chauffe et incorpore vigoureusement les œufs battus.',
-        'Sers dans un bol et garnis avec le chocolat noir, qui va fondre, et les amandes effilées.',
+        'Mets les flocons d\'avoine, le lait entier, la cannelle et une pincée de sel dans la cuve du Ninja Foodi.',
+        'Lance le mode Sear/Sauté à température moyenne et remue 5 minutes, jusqu\'à ce que le mélange épaississe.',
+        'Bats les œufs dans un bol.',
+        'Coupe la chauffe et incorpore vigoureusement les œufs battus pendant 1 minute : le porridge devient onctueux.',
+        'Verse dans un bol, ajoute le chocolat noir en morceaux, qui va fondre, et parsème d\'amandes concassées.',
       ],
     },
     {
@@ -1933,12 +2019,15 @@
         { ref: 'lait-entier', quantite: 100 },
         { ref: 'miel', quantite: 20 },
         { ref: 'huile-coco', quantite: 5 },
+        { ref: 'levure-chimique', quantite: 4 },
       ],
       instructions: [
-        'Mixe l\'avoine pour en faire de la farine.',
-        'Mélange la farine d\'avoine, la whey, les œufs et le lait jusqu\'à obtenir une pâte homogène.',
-        'Fais chauffer une poêle avec un peu d\'huile de coco.',
-        'Cuis 3 à 4 gros pancakes, 2 minutes par face, et verse le miel par-dessus.',
+        'Mixe les flocons d\'avoine en farine fine.',
+        'Mélange la farine d\'avoine, la whey et la levure chimique.',
+        'Ajoute les œufs et le lait entier, puis fouette jusqu\'à obtenir une pâte homogène. Laisse reposer 5 minutes.',
+        'Fais chauffer une poêle à feu moyen avec l\'huile de coco.',
+        'Verse une louche de pâte par pancake et cuis 2 minutes par face, jusqu\'à ce que des bulles se forment puis que le dessous soit doré.',
+        'Empile les 3 ou 4 pancakes et verse le miel par-dessus.',
       ],
     },
     {
@@ -1953,12 +2042,17 @@
         { ref: 'pain-de-mie-complet', quantite: 4 },
         { ref: 'avocat', quantite: 75 },
         { ref: 'huile-olive', quantite: 15 },
+        { ref: 'citron', quantite: 0.25 },
+        { ref: 'sel', quantite: 1 },
+        { ref: 'poivre', quantite: 0.5 },
       ],
       instructions: [
         'Fais griller les tranches de pain de mie complet.',
-        'Écrase l\'avocat et étale-le sur deux des tranches.',
-        'Fais chauffer l\'huile d\'olive dans une poêle, bats les œufs et fais-les brouiller doucement.',
-        'Sers les œufs sur les tartines restantes, sale et poivre.',
+        'Écrase l\'avocat avec le jus de citron, du sel et du poivre.',
+        'Étale l\'avocat sur deux des tartines.',
+        'Bats les œufs avec une pincée de sel et de poivre.',
+        'Fais chauffer l\'huile d\'olive à feu doux et cuis les œufs 3 minutes en remuant sans arrêt, jusqu\'à ce qu\'ils soient crémeux.',
+        'Sers les œufs brouillés sur les tartines restantes.',
       ],
     },
     {
@@ -1967,20 +2061,26 @@
       nom: 'Poulet, riz et brocolis au Ninja Foodi',
       creneaux: ['midi', 'soir'],
       portions: 2,
-      tempsPreparation: 20,
+      tempsPreparation: 25,
       ingredients: [
         { ref: 'blanc-poulet', quantite: 400 },
         { ref: 'riz-basmati', quantite: 300 },
         { ref: 'brocolis-surgeles', quantite: 400 },
         { ref: 'huile-olive', quantite: 30 },
         { ref: 'bouillon-volaille', quantite: 400 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'paprika', quantite: 3 },
+        { ref: 'sel', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe le poulet en dés, puis mets le poulet, le riz, l\'huile et le bouillon dans la cuve du Ninja Foodi.',
-        'Ferme le couvercle et lance le mode Pressure (High) pendant 4 minutes.',
-        'Fais une libération rapide de la pression, puis ajoute les brocolis surgelés sur le dessus.',
-        'Ferme le couvercle sans pression et laisse la chaleur résiduelle cuire les brocolis pendant 5 minutes.',
-        'Mélange et divise en 2 tupperwares.',
+        'Coupe le poulet en dés et mélange-le avec le paprika, le sel et le poivre.',
+        'Rince le riz basmati sous l\'eau froide jusqu\'à ce qu\'elle soit claire.',
+        'Dans la cuve du Ninja Foodi, fais dorer le poulet et l\'ail émincé 3 minutes dans l\'huile d\'olive, en mode Sauté.',
+        'Ajoute le riz et le bouillon de volaille, ferme le couvercle et lance le mode Pressure (High) pendant 4 minutes.',
+        'Fais une libération rapide de la pression, puis dépose les brocolis surgelés sur le dessus.',
+        'Referme sans pression et laisse la chaleur résiduelle cuire les brocolis pendant 5 minutes.',
+        'Mélange et répartis dans 2 boîtes.',
       ],
     },
     {
@@ -1995,12 +2095,18 @@
         { ref: 'pommes-de-terre', quantite: 700 },
         { ref: 'haricots-verts', quantite: 300 },
         { ref: 'huile-olive', quantite: 30 },
+        { ref: 'paprika', quantite: 4 },
+        { ref: 'oignon', quantite: 1 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe les pommes de terre en deux et mélange-les avec l\'huile, le sel et le paprika.',
-        'Place-les dans le panier Air Fryer du Ninja Foodi, à 200 °C pendant 15 minutes.',
-        'Pendant ce temps, cuis le bœuf haché et les haricots verts à la poêle.',
-        'Mélange le tout et divise en 2 portions égales.',
+        'Lave les pommes de terre et coupe-les en deux.',
+        'Mélange-les avec 20 ml d\'huile d\'olive, le paprika, du sel et du poivre.',
+        'Place les pommes de terre dans le panier Air Fryer du Ninja Foodi et cuis 15 minutes à 200 °C, en secouant à mi-cuisson.',
+        'Pendant ce temps, fais revenir l\'oignon émincé dans le reste d\'huile, puis ajoute le bœuf haché et cuis 6 minutes en l\'émiettant.',
+        'Ajoute les haricots verts, couvre et laisse cuire 8 minutes en remuant de temps en temps. Sale et poivre.',
+        'Mélange le tout et répartis en 2 portions égales.',
       ],
     },
     {
@@ -2015,13 +2121,18 @@
         { ref: 'thon-naturel', quantite: 280 },
         { ref: 'coulis-tomate', quantite: 400 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
         { ref: 'huile-olive', quantite: 15 },
+        { ref: 'basilic', quantite: 1 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais cuire les pâtes dans l\'eau bouillante selon les instructions du paquet.',
-        'Dans une poêle ou le Ninja Foodi en mode Sauté, fais revenir l\'oignon émincé dans l\'huile.',
-        'Ajoute le coulis de tomate et le thon égoutté, puis laisse mijoter 5 minutes.',
-        'Mélange la sauce aux pâtes et divise en 2 portions.',
+        'Porte une grande casserole d\'eau salée à ébullition et fais cuire les pâtes selon le temps indiqué sur le paquet.',
+        'Émince l\'oignon et l\'ail.',
+        'Dans une poêle ou le Ninja Foodi en mode Sauté, fais revenir l\'oignon et l\'ail 3 minutes dans l\'huile d\'olive.',
+        'Ajoute le coulis de tomate, le basilic et le thon égoutté et émietté. Sale, poivre et laisse mijoter 5 minutes.',
+        'Égoutte les pâtes, mélange-les à la sauce et divise en 2 portions.',
       ],
     },
     {
@@ -2030,19 +2141,25 @@
       nom: 'Chili con carne express',
       creneaux: ['midi', 'soir'],
       portions: 2,
-      tempsPreparation: 20,
+      tempsPreparation: 30,
       ingredients: [
         { ref: 'boeuf-hache-15', quantite: 300 },
         { ref: 'haricots-rouges', quantite: 400 },
         { ref: 'riz-blanc', quantite: 250 },
         { ref: 'tomates-concassees', quantite: 400 },
         { ref: 'epices-chili', quantite: 20 },
+        { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Cuis le riz à part, ou utilise un sachet micro-ondes pour aller vite.',
-        'Dans le Ninja Foodi en mode Sauté, fais dorer la viande hachée avec les épices.',
-        'Ajoute les tomates concassées et les haricots rouges égouttés.',
-        'Laisse mijoter 10 minutes, puis sers la viande sur le riz, réparti dans 2 récipients.',
+        'Lance la cuisson du riz : 12 minutes dans une fois et demie son volume d\'eau salée, à couvert.',
+        'Émince l\'oignon et l\'ail.',
+        'Dans le Ninja Foodi en mode Sauté, fais revenir l\'oignon et l\'ail 2 minutes dans l\'huile d\'olive.',
+        'Ajoute la viande hachée et les épices chili, puis fais dorer 5 minutes en émiettant.',
+        'Verse les tomates concassées et les haricots rouges égouttés, sale et laisse mijoter 10 minutes.',
+        'Sers le chili sur le riz, réparti dans 2 récipients.',
       ],
     },
     {
@@ -2051,19 +2168,26 @@
       nom: 'Boulettes de dinde et frites de patate douce',
       creneaux: ['midi', 'soir'],
       portions: 2,
-      tempsPreparation: 30,
+      tempsPreparation: 35,
       ingredients: [
         { ref: 'hache-dinde', quantite: 400 },
         { ref: 'patate-douce', quantite: 600 },
         { ref: 'chapelure', quantite: 40 },
         { ref: 'oeufs', quantite: 1 },
         { ref: 'huile-olive', quantite: 30 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'herbes-provence', quantite: 2 },
+        { ref: 'paprika', quantite: 3 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Épluche et coupe les patates douces en frites, mélange-les avec la moitié de l\'huile et enfourne à l\'Air Fryer à 190 °C pendant 18 minutes.',
-        'Mélange la dinde, l\'œuf et la chapelure, puis forme des boulettes.',
-        'Ajoute les boulettes dans le panier pour les 10 dernières minutes de cuisson des frites.',
-        'Divise en 2 repas.',
+        'Épluche les patates douces et coupe-les en frites épaisses.',
+        'Mélange les frites avec 15 ml d\'huile d\'olive, le paprika et une pincée de sel.',
+        'Enfourne les frites de patate douce à l\'Air Fryer à 190 °C pour 18 minutes, en secouant à mi-cuisson.',
+        'Mélange la dinde, l\'œuf, la chapelure, l\'ail haché, les herbes de Provence, du sel et du poivre, puis forme une douzaine de boulettes.',
+        'Badigeonne les boulettes du reste d\'huile et ajoute-les dans le panier pour les 10 dernières minutes de cuisson.',
+        'Vérifie que les boulettes sont cuites à cœur, puis divise en 2 repas.',
       ],
     },
     {
@@ -2072,7 +2196,7 @@
       nom: 'Riz frit aux œufs et dés de poulet',
       creneaux: ['midi', 'soir'],
       portions: 2,
-      tempsPreparation: 15,
+      tempsPreparation: 20,
       ingredients: [
         { ref: 'riz-blanc', quantite: 200 },
         { ref: 'blanc-poulet', quantite: 300 },
@@ -2080,11 +2204,14 @@
         { ref: 'petits-pois-surgeles', quantite: 150 },
         { ref: 'sauce-soja', quantite: 60 },
         { ref: 'huile-tournesol', quantite: 15 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'gingembre', quantite: 2 },
       ],
       instructions: [
         'La veille, cuis le riz et laisse-le refroidir au réfrigérateur : c\'est indispensable pour qu\'il ne colle pas.',
-        'Utilise le mode Sear/Sauté vif du Ninja Foodi.',
-        'Fais dorer les dés de poulet avec un peu d\'huile, puis ajoute les petits pois.',
+        'Coupe le poulet en petits dés.',
+        'Lance le mode Sear/Sauté vif du Ninja Foodi avec l\'huile de tournesol.',
+        'Fais dorer le poulet 5 minutes avec l\'ail haché et le gingembre, puis ajoute les petits pois et poursuis 2 minutes.',
         'Pousse les ingrédients sur le côté, casse les œufs et brouille-les rapidement.',
         'Ajoute le riz froid et la sauce soja, puis mélange vigoureusement pendant 3 minutes.',
         'Sépare en 2 portions égales.',
@@ -2103,12 +2230,19 @@
         { ref: 'mais-doux', quantite: 280 },
         { ref: 'tomates-cerises', quantite: 200 },
         { ref: 'huile-olive', quantite: 45 },
+        { ref: 'vinaigre-vin', quantite: 15 },
+        { ref: 'moutarde', quantite: 10 },
+        { ref: 'echalote', quantite: 20 },
+        { ref: 'sel', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
         'Égoutte et rince les lentilles et le maïs.',
-        'Dans un grand saladier, mélange les lentilles, le maïs et les tomates cerises coupées en deux.',
-        'Émiette le maquereau sur le dessus, puis ajoute l\'huile et un filet de vinaigre.',
-        'Parfait pour les jours sans accès à un micro-ondes. Divise en 2 tupperwares.',
+        'Prépare la vinaigrette : fouette la moutarde avec le vinaigre, du sel et du poivre, puis ajoute l\'huile d\'olive.',
+        'Émince finement l\'échalote et coupe les tomates cerises en deux.',
+        'Dans un grand saladier, mélange les lentilles, le maïs, les tomates cerises, l\'échalote et la vinaigrette.',
+        'Émiette le maquereau sur le dessus.',
+        'Divise en 2 tupperwares : parfait pour les jours sans micro-ondes.',
       ],
     },
     {
@@ -2124,10 +2258,14 @@
         { ref: 'poivrons-surgeles', quantite: 300 },
         { ref: 'huile-sesame', quantite: 30 },
         { ref: 'sauce-teriyaki', quantite: 60 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'gingembre', quantite: 2 },
       ],
       instructions: [
-        'Fais cuire les nouilles 4 minutes dans l\'eau bouillante, puis égoutte.',
-        'Coupe le porc en fines lamelles et cuis-le avec les poivrons dans l\'huile, en mode Sauté.',
+        'Fais cuire les nouilles 4 minutes dans l\'eau bouillante, puis égoutte-les et passe-les sous l\'eau froide.',
+        'Coupe le porc en fines lamelles.',
+        'Dans le Ninja Foodi en mode Sauté vif, fais chauffer l\'huile de sésame et saisis le porc 3 minutes avec l\'ail haché et le gingembre.',
+        'Ajoute les poivrons et poursuis la cuisson 4 minutes.',
         'Ajoute les nouilles et la sauce teriyaki, puis mélange pendant 2 minutes.',
         'Répartis dans tes 2 boîtes à lunch.',
       ],
@@ -2138,18 +2276,23 @@
       nom: 'Poulet curry au lait de coco',
       creneaux: ['midi', 'soir'],
       portions: 2,
-      tempsPreparation: 25,
+      tempsPreparation: 30,
       ingredients: [
         { ref: 'blanc-poulet', quantite: 350 },
         { ref: 'riz-basmati', quantite: 300 },
         { ref: 'lait-coco', quantite: 200 },
         { ref: 'pate-curry', quantite: 30 },
         { ref: 'carottes', quantite: 200 },
+        { ref: 'oignon', quantite: 1 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Lance la cuisson de ton riz à part.',
-        'Dans le Ninja Foodi en mode Sauté, fais revenir la pâte de curry pendant 1 minute, puis ajoute le poulet en morceaux.',
-        'Ajoute les carottes et verse le lait de coco, puis laisse mijoter 12 minutes jusqu\'à épaississement.',
+        'Lance la cuisson du riz basmati : 12 minutes dans une fois et demie son volume d\'eau salée.',
+        'Émince l\'oignon, coupe les carottes en rondelles et le poulet en morceaux.',
+        'Dans le Ninja Foodi en mode Sauté, fais revenir l\'oignon dans l\'huile d\'olive, puis ajoute la pâte de curry et remue 1 minute.',
+        'Ajoute le poulet et fais-le dorer 4 minutes.',
+        'Ajoute les carottes et verse le lait de coco, sale, puis laisse mijoter 12 minutes jusqu\'à épaississement.',
         'Sers le poulet en sauce sur le riz. Prépare 2 portions.',
       ],
     },
@@ -2167,10 +2310,16 @@
         { ref: 'creme-fraiche-15', quantite: 60 },
         { ref: 'parmesan', quantite: 30 },
         { ref: 'huile-olive', quantite: 15 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'sel', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe la courgette en dés, puis place les gnocchis et la courgette dans l\'Air Fryer avec l\'huile, à 200 °C pendant 10 minutes.',
-        'Dans une poêle, chauffe le poulet, puis ajoute la crème et le parmesan.',
+        'Coupe la courgette en dés.',
+        'Mélange les gnocchis et la courgette avec l\'huile d\'olive, du sel et du poivre.',
+        'Fais-les dorer à l\'Air Fryer à 200 °C pendant 10 minutes, en secouant à mi-cuisson.',
+        'Dans une poêle, fais revenir l\'ail haché 1 minute, ajoute le poulet et réchauffe-le 3 minutes.',
+        'Ajoute la crème fraîche et le parmesan, puis laisse épaissir 1 minute.',
         'Mélange les gnocchis dorés dans la sauce et sépare en 2 repas.',
       ],
     },
@@ -2188,9 +2337,10 @@
         { ref: 'creatine', quantite: 5 },
       ],
       instructions: [
-        'Mélange la whey et la créatine dans ton shaker avec de l\'eau.',
+        'Verse 300 ml d\'eau froide dans ton shaker.',
+        'Ajoute la whey et la créatine, ferme et secoue 20 secondes.',
         'Étale le miel sur les galettes de riz.',
-        'Idéal juste après la salle, pour le pic d\'insuline et la recharge glycogénique.',
+        'Consomme juste après la salle : les glucides rapides rechargent le glycogène, la whey lance la récupération.',
       ],
     },
     {
@@ -2206,12 +2356,14 @@
         { ref: 'whey', quantite: 20 },
         { ref: 'creatine', quantite: 5 },
         { ref: 'miel', quantite: 15 },
+        { ref: 'cannelle', quantite: 1 },
       ],
       instructions: [
-        'Mélange tous les ingrédients secs dans un bol.',
-        'Ajoute le beurre de cacahuète, le miel et quelques gouttes d\'eau.',
-        'Malaxe à la main jusqu\'à obtenir une pâte, puis forme 4 boules.',
-        'Conserve au frais et emporte-les pour une pause entre deux cours.',
+        'Dans un bol, mélange les ingrédients secs : flocons d\'avoine, whey, créatine et cannelle.',
+        'Ajoute le beurre de cacahuète et le miel.',
+        'Malaxe à la main en ajoutant quelques gouttes d\'eau jusqu\'à obtenir une pâte qui se tient.',
+        'Forme 4 boules de taille égale.',
+        'Conserve-les au frais et emporte-les pour une pause entre deux cours.',
       ],
     },
     {
@@ -2225,11 +2377,13 @@
         { ref: 'skyr', quantite: 300 },
         { ref: 'banane', quantite: 1 },
         { ref: 'amandes', quantite: 30 },
+        { ref: 'miel', quantite: 10 },
       ],
       instructions: [
         'Mets le skyr dans un bol ou un tupperware.',
         'Coupe la banane en rondelles et ajoute-la.',
-        'Concasse légèrement les amandes et parsème-les sur le dessus.',
+        'Concasse grossièrement les amandes au couteau.',
+        'Parsème les amandes sur le dessus et arrose d\'un filet de miel.',
       ],
     },
     {
@@ -2242,12 +2396,15 @@
       ingredients: [
         { ref: 'pois-chiches', quantite: 300 },
         { ref: 'huile-olive', quantite: 15 },
-        { ref: 'epices-melange', quantite: 6 },
+        { ref: 'epices-melange', quantite: 4 },
+        { ref: 'cumin', quantite: 2 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Sèche bien les pois chiches avec un essuie-tout.',
-        'Mélange-les dans un bol avec l\'huile et les épices.',
+        'Rince les pois chiches, puis sèche-les soigneusement avec un essuie-tout : c\'est ce qui les rend croustillants.',
+        'Mélange-les dans un bol avec l\'huile d\'olive, le mélange d\'épices, le cumin et le sel.',
         'Mets-les dans l\'Air Fryer à 200 °C pendant 15 minutes, en secouant à mi-cuisson.',
+        'Laisse-les refroidir 5 minutes : ils finissent de croustiller.',
         'Parfait pour une collation salée à grignoter en cours.',
       ],
     },
@@ -2264,11 +2421,14 @@
         { ref: 'flocons-avoine', quantite: 80 },
         { ref: 'huile-olive', quantite: 15 },
         { ref: 'cacao-poudre', quantite: 10 },
+        { ref: 'banane', quantite: 1 },
       ],
       instructions: [
-        'Mixe d\'abord l\'avoine à sec si ce n\'est pas déjà de la farine.',
-        'Ajoute tous les autres ingrédients dans le blender.',
-        'Mixe fortement. C\'est la collation la plus dense si tu as du mal à atteindre ton objectif.',
+        'Mixe d\'abord les flocons d\'avoine à sec pour en faire une poudre fine.',
+        'Ajoute le lait entier, la whey, le cacao en poudre et la banane.',
+        'Verse l\'huile d\'olive : elle ne se sent pas, mais apporte près de 130 kcal.',
+        'Mixe fortement 45 secondes.',
+        'Bois dans l\'heure : c\'est la collation la plus dense si tu as du mal à atteindre ton objectif.',
       ],
     },
     {
@@ -2282,11 +2442,14 @@
         { ref: 'pain-de-mie-complet', quantite: 4 },
         { ref: 'blanc-dinde-tranches', quantite: 100 },
         { ref: 'beurre-cacahuete', quantite: 25 },
+        { ref: 'laitue', quantite: 20 },
       ],
       instructions: [
-        'Tartine le beurre de cacahuète sur deux tranches de pain : le salé-sucré surprend, mais fonctionne très bien.',
-        'Ajoute les tranches de blanc de dinde.',
-        'Ferme les sandwichs, coupe-les en triangles et emballe-les pour tes pauses entre les cours.',
+        'Fais légèrement griller les tranches de pain de mie complet.',
+        'Tartine le beurre de cacahuète sur deux tranches : le salé-sucré surprend, mais fonctionne très bien.',
+        'Ajoute les tranches de blanc de dinde et une feuille de laitue.',
+        'Ferme les sandwichs avec les deux autres tranches.',
+        'Coupe en triangles et emballe dans du papier pour tes pauses entre les cours.',
       ],
     },
     {
@@ -2303,14 +2466,20 @@
         { ref: 'patate-douce', quantite: 500 },
         { ref: 'oignon', quantite: 1 },
         { ref: 'huile-olive', quantite: 25 },
-        { ref: 'coulis-tomate', quantite: 40 },
+        { ref: 'ketchup', quantite: 30 },
+        { ref: 'laitue', quantite: 30 },
+        { ref: 'tomate', quantite: 100 },
+        { ref: 'paprika', quantite: 2 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe les patates douces en frites, mélange-les avec la moitié de l\'huile et enfourne à l\'Air Fryer à 190 °C pendant 18 minutes.',
-        'Forme deux gros steaks avec le bœuf haché, sale et poivre.',
-        'Cuis les steaks 4 minutes par face dans le reste d\'huile, avec l\'oignon émincé.',
-        'Pose le fromage râpé sur les steaks en fin de cuisson pour le faire fondre.',
-        'Garnis les pains, ajoute le coulis de tomate et sers avec les frites.',
+        'Épluche les patates douces et coupe-les en frites.',
+        'Mélange les frites de patate douce avec 15 ml d\'huile, le paprika et du sel, puis enfourne à l\'Air Fryer à 190 °C pendant 18 minutes.',
+        'Forme deux gros steaks avec le bœuf haché, sale et poivre des deux côtés.',
+        'Cuis les steaks 4 minutes par face dans le reste d\'huile, avec l\'oignon émincé à côté.',
+        'Pose le fromage râpé sur les steaks pour la dernière minute et couvre pour le faire fondre.',
+        'Toaste les pains, garnis-les de ketchup, laitue, tranches de tomate, steak et oignon, puis sers avec les frites.',
       ],
     },
     {
@@ -2326,12 +2495,16 @@
         { ref: 'haricots-verts', quantite: 300 },
         { ref: 'huile-olive', quantite: 30 },
         { ref: 'epices-melange', quantite: 6 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Mélange les cuisses de poulet avec la moitié de l\'huile et les épices.',
-        'Coupe les patates douces en frites et enrobe-les du reste d\'huile.',
-        'Enfourne le tout à l\'Air Fryer à 200 °C pendant 20 minutes, en secouant à mi-cuisson.',
-        'Fais cuire les haricots verts 6 minutes à la poêle ou à la vapeur.',
+        'Mélange les cuisses de poulet avec 10 ml d\'huile, les épices, l\'ail haché, du sel et du poivre.',
+        'Épluche les patates douces, coupe-les en frites et enrobe-les de 15 ml d\'huile et d\'une pincée de sel.',
+        'Enfourne le poulet et les frites de patate douce à l\'Air Fryer à 200 °C pendant 20 minutes, en secouant à mi-cuisson.',
+        'Vérifie la cuisson du poulet : le jus doit être clair.',
+        'Pendant ce temps, cuis les haricots verts 6 minutes à la poêle dans le reste d\'huile.',
         'Répartis dans 2 boîtes.',
       ],
     },
@@ -2349,11 +2522,16 @@
         { ref: 'fromage-rape', quantite: 60 },
         { ref: 'tomates-cerises', quantite: 150 },
         { ref: 'creme-fraiche-15', quantite: 40 },
+        { ref: 'citron', quantite: 0.25 },
+        { ref: 'sel', quantite: 1 },
+        { ref: 'poivre', quantite: 0.5 },
       ],
       instructions: [
-        'Écrase l\'avocat avec la crème fraîche, du sel et du poivre.',
-        'Étale ce mélange sur les tortillas.',
-        'Répartis le poulet, les tomates cerises coupées en deux et le fromage râpé.',
+        'Écrase l\'avocat avec la crème fraîche, le jus de citron, du sel et du poivre.',
+        'Coupe les tomates cerises en deux.',
+        'Réchauffe les tortillas 20 secondes à la poêle pour les assouplir.',
+        'Étale le mélange à l\'avocat sur les tortillas.',
+        'Répartis le poulet, les tomates cerises et le fromage râpé.',
         'Roule serré, coupe en deux et emballe dans du papier aluminium.',
       ],
     },
@@ -2371,13 +2549,16 @@
         { ref: 'petits-pois-surgeles', quantite: 150 },
         { ref: 'sauce-soja', quantite: 40 },
         { ref: 'huile-sesame', quantite: 25 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'gingembre', quantite: 2 },
       ],
       instructions: [
         'Cuis le riz la veille et laisse-le refroidir au réfrigérateur.',
-        'Fais sauter les crevettes 3 minutes dans l\'huile de sésame, en mode Sauté vif.',
-        'Ajoute les petits pois, pousse le tout sur le côté et brouille les œufs.',
-        'Verse le riz froid et la sauce soja, mélange vigoureusement pendant 3 minutes.',
-        'Sépare en 2 portions.',
+        'En mode Sauté vif, fais chauffer l\'huile de sésame avec l\'ail haché et le gingembre 30 secondes.',
+        'Ajoute les crevettes et fais-les sauter 3 minutes.',
+        'Ajoute les petits pois et poursuis 2 minutes.',
+        'Pousse le tout sur le côté et brouille les œufs.',
+        'Verse le riz froid et la sauce soja, mélange vigoureusement pendant 3 minutes, puis sépare en 2 portions.',
       ],
     },
     {
@@ -2394,12 +2575,16 @@
         { ref: 'mozzarella', quantite: 125 },
         { ref: 'tomates-cerises', quantite: 200 },
         { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais cuire les pâtes selon le temps indiqué sur le paquet.',
-        'Pendant ce temps, saisis le poulet en lanières dans l\'huile d\'olive.',
+        'Fais cuire les pâtes dans une grande casserole d\'eau salée selon le temps indiqué sur le paquet.',
+        'Pendant ce temps, coupe le poulet en lanières, sale et poivre.',
+        'Saisis le poulet 6 minutes dans l\'huile d\'olive.',
         'Ajoute les tomates cerises coupées en deux et laisse 2 minutes.',
-        'Hors du feu, mélange les pâtes avec le pesto, le poulet et la mozzarella en morceaux.',
+        'Égoutte les pâtes en gardant une louche d\'eau de cuisson.',
+        'Hors du feu, mélange les pâtes avec le pesto, un peu d\'eau de cuisson, le poulet et la mozzarella en morceaux.',
       ],
     },
     {
@@ -2416,12 +2601,17 @@
         { ref: 'tomates-concassees', quantite: 400 },
         { ref: 'epices-chili', quantite: 20 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Rince le quinoa et cuis-le 12 minutes dans deux fois son volume d\'eau.',
-        'Fais dorer l\'oignon émincé puis le bœuf haché avec les épices, en mode Sauté.',
+        'Rince le quinoa et cuis-le 12 minutes dans deux fois son volume d\'eau salée.',
+        'Émince l\'oignon et l\'ail.',
+        'En mode Sauté, fais revenir l\'oignon et l\'ail 2 minutes dans l\'huile, puis ajoute le bœuf haché et les épices chili et fais dorer 5 minutes.',
         'Ajoute les tomates concassées et les haricots rouges égouttés.',
-        'Laisse mijoter 12 minutes, puis sers sur le quinoa. Prépare 2 portions.',
+        'Sale et laisse mijoter 12 minutes.',
+        'Sers sur le quinoa égoutté. Prépare 2 portions.',
       ],
     },
     {
@@ -2437,12 +2627,15 @@
         { ref: 'brocolis-surgeles', quantite: 400 },
         { ref: 'sauce-teriyaki', quantite: 60 },
         { ref: 'huile-sesame', quantite: 15 },
+        { ref: 'graines-courge', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Cuis le riz dans 1,5 fois son volume d\'eau salée.',
-        'Saisis les pavés de saumon 3 minutes par face dans l\'huile de sésame.',
-        'Verse la sauce teriyaki et laisse caraméliser 2 minutes.',
-        'Cuis les brocolis 6 minutes à la vapeur et dresse les 2 portions.',
+        'Cuis le riz basmati 12 minutes dans une fois et demie son volume d\'eau salée.',
+        'Cuis les brocolis 6 minutes à la vapeur.',
+        'Saisis les pavés de saumon 3 minutes par face dans l\'huile de sésame, côté peau d\'abord.',
+        'Verse la sauce teriyaki et laisse caraméliser 2 minutes en arrosant le saumon.',
+        'Dresse les 2 portions et parsème de graines de courge.',
       ],
     },
     {
@@ -2451,22 +2644,27 @@
       nom: 'Couscous express poulet et pois chiches',
       creneaux: ['midi', 'soir'],
       portions: 2,
-      tempsPreparation: 25,
+      tempsPreparation: 30,
       ingredients: [
         { ref: 'semoule', quantite: 250 },
         { ref: 'blanc-poulet', quantite: 350 },
         { ref: 'pois-chiches', quantite: 400 },
         { ref: 'carottes', quantite: 200 },
+        { ref: 'courgette', quantite: 200 },
         { ref: 'coulis-tomate', quantite: 300 },
         { ref: 'huile-olive', quantite: 20 },
         { ref: 'epices-melange', quantite: 6 },
+        { ref: 'cumin', quantite: 2 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais revenir le poulet en morceaux avec les épices dans l\'huile d\'olive.',
-        'Ajoute les carottes en rondelles, le coulis de tomate et 200 ml d\'eau, puis laisse mijoter 12 minutes.',
-        'Ajoute les pois chiches égouttés en fin de cuisson.',
-        'Verse la semoule dans un saladier, couvre d\'eau bouillante à hauteur et laisse gonfler 5 minutes.',
-        'Sers le bouillon sur la semoule, en 2 portions.',
+        'Coupe le poulet en morceaux, les carottes en rondelles et la courgette en dés.',
+        'Fais revenir le poulet 4 minutes avec les épices et le cumin dans 10 ml d\'huile d\'olive.',
+        'Ajoute les carottes, la courgette, le coulis de tomate et 200 ml d\'eau. Sale, poivre et laisse mijoter 12 minutes.',
+        'Ajoute les pois chiches égouttés pour les 3 dernières minutes.',
+        'Verse la semoule dans un saladier avec le reste d\'huile et une pincée de sel, couvre d\'eau bouillante à hauteur et laisse gonfler 5 minutes à couvert.',
+        'Égraine la semoule à la fourchette et sers le bouillon dessus, en 2 portions.',
       ],
     },
     {
@@ -2483,12 +2681,17 @@
         { ref: 'fromage-rape', quantite: 80 },
         { ref: 'coulis-tomate', quantite: 200 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'herbes-provence', quantite: 2 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Préchauffe le four à 200 °C et fais cuire les pâtes 2 minutes de moins que le temps indiqué.',
-        'Mélange le thon égoutté, la crème, le coulis de tomate et l\'oignon émincé.',
-        'Réunis les pâtes et la sauce dans un plat, couvre de fromage râpé.',
-        'Enfourne 20 minutes, jusqu\'à ce que le dessus soit doré. Divise en 2 parts.',
+        'Préchauffe le four à 200 °C.',
+        'Fais cuire les pâtes dans l\'eau salée 2 minutes de moins que le temps indiqué, puis égoutte-les.',
+        'Émince l\'oignon et mélange-le avec le thon égoutté, la crème fraîche, le coulis de tomate, les herbes, du sel et du poivre.',
+        'Réunis les pâtes et la sauce dans un plat à gratin.',
+        'Couvre de fromage râpé et enfourne 20 minutes, jusqu\'à ce que le dessus soit doré.',
+        'Divise en 2 parts.',
       ],
     },
     {
@@ -2505,12 +2708,16 @@
         { ref: 'oignon', quantite: 1 },
         { ref: 'huile-olive', quantite: 25 },
         { ref: 'fromage-rape', quantite: 60 },
+        { ref: 'persil', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe les pommes de terre en fines rondelles et cuis-les 12 minutes dans l\'huile, à couvert.',
+        'Épluche les pommes de terre et coupe-les en fines rondelles.',
+        'Cuis-les 12 minutes à couvert dans l\'huile d\'olive, dans une grande poêle, en remuant de temps en temps.',
         'Ajoute les lardons et l\'oignon émincé, puis fais dorer 5 minutes.',
-        'Bats les œufs, sale et poivre, puis verse-les dans la poêle.',
-        'Parsème de fromage râpé, laisse prendre 6 minutes à feu doux, retourne et poursuis 3 minutes.',
+        'Bats les œufs avec le persil ciselé, peu de sel (les lardons sont salés) et du poivre, puis verse-les dans la poêle.',
+        'Parsème de fromage râpé, laisse prendre 6 minutes à feu doux, retourne à l\'aide d\'une assiette et poursuis 3 minutes.',
         'Coupe en deux parts égales.',
       ],
     },
@@ -2528,12 +2735,17 @@
         { ref: 'epinards', quantite: 100 },
         { ref: 'huile-olive', quantite: 20 },
         { ref: 'citron', quantite: 0.5 },
+        { ref: 'cumin', quantite: 2 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe la patate douce en cubes, enrobe d\'huile et enfourne à 200 °C pendant 25 minutes.',
-        'Fais cuire le bœuf haché 6 minutes à la poêle, sale et poivre.',
-        'Fais tomber les épinards 2 minutes.',
-        'Dresse les bols : patate douce, bœuf, épinards, une grosse cuillère de houmous et un filet de citron.',
+        'Préchauffe le four à 200 °C.',
+        'Épluche la patate douce, coupe-la en cubes, enrobe-la de 15 ml d\'huile, de cumin et de sel, puis enfourne 25 minutes.',
+        'Fais cuire le bœuf haché 6 minutes à la poêle dans le reste d\'huile, sale et poivre.',
+        'Fais tomber les épinards 2 minutes dans la même poêle.',
+        'Dresse les bols : patate douce, bœuf et épinards.',
+        'Ajoute une grosse cuillère de houmous et un filet de citron.',
       ],
     },
     {
@@ -2550,11 +2762,14 @@
         { ref: 'sauce-soja', quantite: 40 },
         { ref: 'huile-tournesol', quantite: 20 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'gingembre', quantite: 2 },
       ],
       instructions: [
-        'Cuis les nouilles 4 minutes puis égoutte-les.',
-        'Fais dorer le porc en lamelles dans l\'huile, en mode Sauté vif.',
-        'Ajoute les champignons émincés et l\'oignon, et laisse 5 minutes.',
+        'Cuis les nouilles 4 minutes dans l\'eau bouillante, puis égoutte-les.',
+        'Coupe le porc en lamelles, émince l\'oignon et les champignons.',
+        'Fais dorer le porc 4 minutes dans l\'huile de tournesol, en mode Sauté vif, avec l\'ail haché et le gingembre.',
+        'Ajoute les champignons et l\'oignon, puis laisse 5 minutes.',
         'Verse les nouilles et la sauce soja, mélange 2 minutes et sépare en 2 boîtes.',
       ],
     },
@@ -2573,12 +2788,17 @@
         { ref: 'pate-curry', quantite: 30 },
         { ref: 'epinards', quantite: 100 },
         { ref: 'carottes', quantite: 150 },
+        { ref: 'oignon', quantite: 1 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Lance la cuisson du riz.',
-        'Fais revenir la pâte de curry 1 minute, puis ajoute les carottes en rondelles.',
-        'Verse le lait de coco et les pois chiches égouttés, puis laisse mijoter 12 minutes.',
-        'Ajoute les lentilles et les épinards en fin de cuisson, puis sers sur le riz, en 2 portions.',
+        'Lance la cuisson du riz basmati : 12 minutes dans une fois et demie son volume d\'eau salée.',
+        'Émince l\'oignon et fais-le revenir 3 minutes dans l\'huile d\'olive.',
+        'Ajoute la pâte de curry et remue 1 minute, puis les carottes en rondelles.',
+        'Verse le lait de coco et les pois chiches égouttés, sale, puis laisse mijoter 12 minutes.',
+        'Ajoute les lentilles et les épinards en fin de cuisson, le temps qu\'ils tombent.',
+        'Sers sur le riz, en 2 portions.',
       ],
     },
     {
@@ -2595,12 +2815,16 @@
         { ref: 'poivrons-surgeles', quantite: 200 },
         { ref: 'huile-olive', quantite: 25 },
         { ref: 'epices-melange', quantite: 6 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe la courgette en dés, mélange avec les poivrons, l\'huile et les épices, puis enfourne à l\'Air Fryer 15 minutes à 200 °C.',
-        'Fais cuire la dinde hachée 7 minutes à la poêle.',
-        'Prépare la semoule avec un volume égal d\'eau bouillante, laisse gonfler 5 minutes.',
-        'Mélange le tout et répartis en 2 portions.',
+        'Coupe la courgette en dés et mélange-la avec les poivrons, 15 ml d\'huile, les épices et une pincée de sel.',
+        'Enfourne les légumes à l\'Air Fryer 15 minutes à 200 °C, en secouant à mi-cuisson.',
+        'Fais cuire la dinde hachée 7 minutes à la poêle avec l\'ail haché et le reste d\'huile, sale et poivre.',
+        'Verse la semoule dans un saladier, ajoute un volume égal d\'eau bouillante salée, couvre et laisse gonfler 5 minutes.',
+        'Égraine la semoule, mélange avec la dinde et les légumes, puis répartis en 2 portions.',
       ],
     },
     {
@@ -2618,12 +2842,15 @@
         { ref: 'sirop-erable', quantite: 30 },
         { ref: 'beurre', quantite: 10 },
         { ref: 'whey', quantite: 20 },
+        { ref: 'levure-chimique', quantite: 4 },
       ],
       instructions: [
         'Mixe les flocons d\'avoine en farine.',
-        'Ajoute les œufs, la banane, le lait et la whey, puis mixe jusqu\'à obtenir une pâte lisse.',
-        'Fais fondre le beurre dans une poêle chaude.',
-        'Cuis 4 gros pancakes, 2 minutes par face, et nappe de sirop d\'érable.',
+        'Ajoute les œufs, la banane, le lait entier, la whey et la levure chimique, puis mixe jusqu\'à obtenir une pâte lisse.',
+        'Laisse reposer 5 minutes.',
+        'Fais fondre un peu de beurre dans une poêle chaude.',
+        'Cuis 4 gros pancakes, 2 minutes par face, en rajoutant du beurre entre chaque fournée.',
+        'Nappe de sirop d\'érable.',
       ],
     },
     {
@@ -2642,8 +2869,10 @@
       ],
       instructions: [
         'Verse le skyr dans un grand bol.',
-        'Coupe les dattes en morceaux et concasse les noix de cajou.',
-        'Ajoute le granola au dernier moment pour qu\'il reste croustillant, puis le miel.',
+        'Coupe les dattes en morceaux.',
+        'Concasse grossièrement les noix de cajou.',
+        'Ajoute les dattes et les noix de cajou sur le skyr.',
+        'Ajoute le granola au dernier moment pour qu\'il reste croustillant, puis arrose de miel.',
       ],
     },
     {
@@ -2659,12 +2888,16 @@
         { ref: 'saumon-fume', quantite: 100 },
         { ref: 'oeufs', quantite: 2 },
         { ref: 'citron', quantite: 0.5 },
+        { ref: 'vinaigre-vin', quantite: 15 },
+        { ref: 'sel', quantite: 1 },
+        { ref: 'poivre', quantite: 0.5 },
       ],
       instructions: [
         'Fais griller les tranches de pain complet.',
         'Écrase l\'avocat avec le jus de citron, du sel et du poivre.',
-        'Cuis les œufs au plat ou pochés.',
-        'Monte les tartines : avocat, saumon fumé, puis les œufs par-dessus.',
+        'Porte une casserole d\'eau à frémissement avec le vinaigre, puis poche les œufs 3 minutes.',
+        'Étale l\'avocat sur les tartines.',
+        'Dépose le saumon fumé, puis les œufs pochés par-dessus, et poivre.',
       ],
     },
     {
@@ -2681,13 +2914,15 @@
         { ref: 'beurre-cacahuete', quantite: 60 },
         { ref: 'whey', quantite: 30 },
         { ref: 'miel', quantite: 20 },
+        { ref: 'sel', quantite: 0.5 },
       ],
       instructions: [
-        'Mixe les dattes en pâte avec une cuillère d\'eau.',
-        'Mélange les flocons, la whey, les noix de cajou concassées, le beurre de cacahuète et le miel.',
-        'Incorpore la pâte de dattes et malaxe jusqu\'à obtenir un ensemble compact.',
-        'Étale dans un plat sur 2 cm d\'épaisseur et réserve 2 heures au frais.',
-        'Découpe 6 barres et conserve-les au réfrigérateur.',
+        'Mixe les dattes en pâte avec une cuillère à soupe d\'eau.',
+        'Concasse les noix de cajou.',
+        'Dans un saladier, mélange les flocons d\'avoine, la whey, les noix de cajou et une pincée de sel.',
+        'Ajoute le beurre de cacahuète, le miel et la pâte de dattes, puis malaxe jusqu\'à obtenir un ensemble compact.',
+        'Tasse le mélange dans un plat chemisé de papier cuisson, sur 2 cm d\'épaisseur, et réserve 2 heures au frais.',
+        'Découpe 6 barres et conserve-les au réfrigérateur, emballées une par une.',
       ],
     },
     {
@@ -2701,12 +2936,18 @@
         { ref: 'magret-canard', quantite: 350 },
         { ref: 'grenailles-surgelees', quantite: 600 },
         { ref: 'haricots-verts', quantite: 300 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'persil', quantite: 10 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Quadrille la peau du magret et démarre-le côté peau, à froid, dans une poêle.',
-        'Cuis 8 minutes côté peau en retirant la graisse, puis 4 minutes côté chair.',
-        'Fais dorer les grenailles 20 minutes à l\'Air Fryer à 200 °C.',
-        'Cuis les haricots verts 6 minutes, tranche le magret et répartis en 2 portions.',
+        'Mets les grenailles à dorer à l\'Air Fryer à 200 °C pendant 20 minutes, en secouant deux fois.',
+        'Quadrille la peau du magret au couteau sans entailler la chair, puis sale et poivre.',
+        'Démarre le magret côté peau, à froid, dans une poêle, et cuis 8 minutes à feu moyen en retirant la graisse au fur et à mesure.',
+        'Retourne-le et cuis 4 minutes côté chair, puis laisse-le reposer 5 minutes sous une feuille d\'aluminium.',
+        'Pendant le repos, fais sauter les haricots verts 5 minutes dans une cuillère de graisse de canard avec l\'ail haché et le persil.',
+        'Tranche le magret et répartis en 2 portions.',
       ],
     },
     {
@@ -2723,12 +2964,18 @@
         { ref: 'ricotta', quantite: 250 },
         { ref: 'fromage-rape', quantite: 80 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'herbes-provence', quantite: 2 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais revenir l\'oignon et le bœuf haché, puis ajoute le coulis et laisse mijoter 10 minutes.',
-        'Cuis les pâtes 2 minutes de moins que le temps indiqué.',
-        'Dans un plat, alterne pâtes, sauce et ricotta, puis couvre de fromage râpé.',
-        'Enfourne 20 minutes à 200 °C et divise en 2 parts.',
+        'Préchauffe le four à 200 °C.',
+        'Fais revenir l\'oignon et l\'ail émincés, ajoute le bœuf haché et fais-le dorer 5 minutes.',
+        'Verse le coulis, ajoute les herbes, sale, poivre et laisse mijoter 10 minutes.',
+        'Pendant ce temps, cuis les pâtes dans l\'eau salée 2 minutes de moins que le temps indiqué, puis égoutte-les.',
+        'Dans un plat, alterne des couches de pâtes, de sauce et de ricotta, puis couvre de fromage râpé.',
+        'Enfourne 20 minutes et divise en 2 parts.',
       ],
     },
     {
@@ -2744,12 +2991,16 @@
         { ref: 'oeufs', quantite: 3 },
         { ref: 'parmesan', quantite: 50 },
         { ref: 'creme-liquide-30', quantite: 100 },
+        { ref: 'poivre', quantite: 2 },
+        { ref: 'sel', quantite: 3 },
       ],
       instructions: [
-        'Fais cuire les pâtes selon le temps indiqué sur le paquet.',
-        'Fais dorer les lardons à sec dans une grande poêle.',
-        'Bats les œufs avec le parmesan et la crème, poivre généreusement.',
-        'Hors du feu, mélange les pâtes égouttées aux lardons, puis verse le mélange aux œufs en remuant vivement.',
+        'Porte une grande casserole d\'eau salée à ébullition et fais cuire les pâtes selon le temps indiqué.',
+        'Pendant ce temps, fais dorer les lardons à sec dans une grande poêle.',
+        'Bats les œufs avec le parmesan, la crème et beaucoup de poivre.',
+        'Égoutte les pâtes en gardant une louche d\'eau de cuisson, puis verse-les dans la poêle des lardons, feu éteint.',
+        'Ajoute le mélange aux œufs et un peu d\'eau de cuisson, et remue vivement 1 minute : la sauce doit napper sans que les œufs cuisent.',
+        'Sers aussitôt.',
       ],
     },
     {
@@ -2766,11 +3017,17 @@
         { ref: 'courgette', quantite: 250 },
         { ref: 'huile-olive', quantite: 20 },
         { ref: 'epices-melange', quantite: 6 },
+        { ref: 'cumin', quantite: 2 },
+        { ref: 'oignon', quantite: 1 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe l\'agneau en cubes et fais-le dorer avec l\'huile et les épices.',
-        'Ajoute la courgette en dés, les pois chiches et 200 ml d\'eau, puis laisse mijoter 20 minutes.',
-        'Fais gonfler la semoule 5 minutes dans un volume égal d\'eau bouillante.',
+        'Coupe l\'agneau en cubes, émince l\'oignon et coupe la courgette en dés.',
+        'Fais dorer l\'agneau 5 minutes dans l\'huile avec l\'oignon, les épices et le cumin.',
+        'Ajoute la courgette, les pois chiches égouttés et 200 ml d\'eau. Sale, poivre et laisse mijoter 20 minutes à couvert.',
+        'Verse la semoule dans un saladier avec une pincée de sel, couvre d\'eau bouillante à hauteur et laisse gonfler 5 minutes.',
+        'Égraine la semoule à la fourchette.',
         'Sers la viande et ses légumes sur la semoule, en 2 portions.',
       ],
     },
@@ -2786,11 +3043,14 @@
         { ref: 'pommes-de-terre', quantite: 800 },
         { ref: 'lait-entier', quantite: 150 },
         { ref: 'beurre', quantite: 30 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Épluche les pommes de terre et cuis-les 20 minutes à l\'eau salée.',
-        'Pendant ce temps, cuis les saucisses 15 minutes à la poêle en les retournant.',
-        'Écrase les pommes de terre avec le lait chaud et le beurre.',
+        'Épluche les pommes de terre, coupe-les en morceaux et cuis-les 20 minutes dans l\'eau salée.',
+        'Pendant ce temps, pique les saucisses et cuis-les 15 minutes à la poêle à feu moyen, en les retournant régulièrement.',
+        'Fais chauffer le lait entier.',
+        'Égoutte les pommes de terre et écrase-les avec le lait chaud et le beurre. Sale et poivre.',
         'Répartis la purée et les saucisses en 2 portions.',
       ],
     },
@@ -2806,12 +3066,15 @@
         { ref: 'semoule', quantite: 250 },
         { ref: 'poelee-legumes', quantite: 400 },
         { ref: 'huile-olive', quantite: 10 },
+        { ref: 'harissa', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Grille les merguez 10 minutes à la poêle ou à l\'Air Fryer.',
-        'Fais sauter la poêlée de légumes 10 minutes dans l\'huile.',
-        'Fais gonfler la semoule 5 minutes dans un volume égal d\'eau bouillante salée.',
-        'Dresse 2 portions.',
+        'Grille les merguez 10 minutes à la poêle ou à l\'Air Fryer à 200 °C.',
+        'Fais sauter la poêlée de légumes 10 minutes dans l\'huile d\'olive.',
+        'Verse la semoule dans un saladier avec une pincée de sel, couvre d\'un volume égal d\'eau bouillante et laisse gonfler 5 minutes.',
+        'Égraine la semoule et mélange-la aux légumes.',
+        'Dresse 2 portions avec les merguez et une pointe de harissa selon ton goût.',
       ],
     },
     {
@@ -2820,7 +3083,7 @@
       nom: 'Poke bowl thon, riz complet et avocat',
       creneaux: ['midi', 'soir'],
       portions: 2,
-      tempsPreparation: 30,
+      tempsPreparation: 35,
       ingredients: [
         { ref: 'thon-frais', quantite: 300 },
         { ref: 'riz-complet', quantite: 250 },
@@ -2829,12 +3092,15 @@
         { ref: 'mais-doux', quantite: 140 },
         { ref: 'sauce-soja', quantite: 40 },
         { ref: 'huile-sesame', quantite: 15 },
+        { ref: 'citron-vert', quantite: 1 },
+        { ref: 'graines-courge', quantite: 10 },
       ],
       instructions: [
-        'Cuis le riz complet 25 minutes, puis laisse-le tiédir.',
-        'Coupe le thon en cubes et fais-le mariner 10 minutes dans la sauce soja et l\'huile de sésame.',
-        'Coupe l\'avocat et le concombre, égoutte le maïs.',
-        'Compose 2 bols : riz, thon, avocat, concombre et maïs.',
+        'Cuis le riz complet 25 minutes dans deux fois son volume d\'eau, puis laisse-le tiédir.',
+        'Coupe le thon en cubes et fais-le mariner 10 minutes au frais dans la sauce soja, l\'huile de sésame et le jus du citron vert.',
+        'Coupe l\'avocat et le concombre en dés, égoutte le maïs.',
+        'Compose 2 bols : riz, thon mariné, avocat, concombre et maïs.',
+        'Arrose du reste de marinade et parsème de graines de courge. Consomme le jour même, le thon étant cru.',
       ],
     },
     {
@@ -2851,12 +3117,16 @@
         { ref: 'beurre', quantite: 40 },
         { ref: 'creme-liquide-30', quantite: 100 },
         { ref: 'huile-olive', quantite: 10 },
+        { ref: 'citron', quantite: 0.5 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Cuis la patate douce en cubes 15 minutes à la vapeur, puis écrase-la avec la crème et la moitié du beurre.',
-        'Réchauffe les épinards 5 minutes à la poêle.',
-        'Cuis le cabillaud 4 minutes par face dans le reste de beurre.',
-        'Dresse 2 portions.',
+        'Épluche la patate douce, coupe-la en cubes et cuis-la 15 minutes à la vapeur.',
+        'Écrase-la avec la crème et la moitié du beurre, sale et poivre.',
+        'Réchauffe les épinards 5 minutes à la poêle dans l\'huile d\'olive, avec une pincée de sel.',
+        'Sale et poivre le cabillaud, puis cuis-le 4 minutes par face dans le reste de beurre.',
+        'Arrose le poisson de jus de citron et dresse 2 portions.',
       ],
     },
     {
@@ -2872,12 +3142,16 @@
         { ref: 'champignons', quantite: 250 },
         { ref: 'creme-epaisse-30', quantite: 120 },
         { ref: 'huile-olive', quantite: 10 },
+        { ref: 'echalote', quantite: 20 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais cuire les pâtes selon le temps indiqué.',
-        'Saisis les escalopes 2 minutes par face dans l\'huile, puis réserve-les.',
-        'Dans la même poêle, fais dorer les champignons émincés 5 minutes.',
-        'Ajoute la crème, remets la viande et laisse réduire 3 minutes. Sers avec les pâtes.',
+        'Fais cuire les pâtes dans l\'eau salée selon le temps indiqué.',
+        'Sale et poivre les escalopes, puis saisis-les 2 minutes par face dans l\'huile. Réserve-les.',
+        'Dans la même poêle, fais revenir l\'échalote émincée 1 minute, puis les champignons émincés 5 minutes.',
+        'Ajoute la crème, remets la viande et laisse réduire 3 minutes.',
+        'Sers avec les pâtes égouttées, en 2 portions.',
       ],
     },
     {
@@ -2894,12 +3168,18 @@
         { ref: 'riz-basmati', quantite: 280 },
         { ref: 'lait-coco', quantite: 100 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'gingembre', quantite: 2 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Mélange le poulet en morceaux avec le yaourt et la pâte de curry.',
-        'Lance la cuisson du riz.',
-        'Fais revenir l\'oignon, ajoute le poulet mariné et cuis 10 minutes.',
-        'Verse le lait de coco, laisse mijoter 5 minutes et sers sur le riz, en 2 portions.',
+        'Coupe le poulet en morceaux et mélange-le avec le yaourt, la pâte de curry, l\'ail haché, le gingembre et le sel. Laisse mariner au moins 10 minutes.',
+        'Lance la cuisson du riz basmati : 12 minutes dans une fois et demie son volume d\'eau salée.',
+        'Fais revenir l\'oignon émincé 3 minutes dans l\'huile.',
+        'Ajoute le poulet mariné et cuis 10 minutes en remuant.',
+        'Verse le lait de coco et laisse mijoter 5 minutes.',
+        'Sers sur le riz, en 2 portions.',
       ],
     },
     {
@@ -2916,12 +3196,17 @@
         { ref: 'beurre', quantite: 30 },
         { ref: 'fromage-rape', quantite: 60 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Cuis les pommes de terre épluchées 20 minutes à l\'eau, puis écrase-les avec le lait et le beurre.',
-        'Fais revenir l\'oignon et le bœuf haché 8 minutes, sale et poivre.',
+        'Épluche les pommes de terre, coupe-les et cuis-les 20 minutes dans l\'eau salée.',
+        'Préchauffe le four à 200 °C.',
+        'Écrase les pommes de terre avec le lait chaud et le beurre, sale et poivre.',
+        'Fais revenir l\'oignon et l\'ail émincés, puis le bœuf haché 8 minutes. Sale et poivre.',
         'Étale la viande dans un plat, couvre de purée puis de fromage râpé.',
-        'Enfourne 20 minutes à 200 °C et divise en 2 parts.',
+        'Enfourne 20 minutes et divise en 2 parts.',
       ],
     },
     {
@@ -2937,12 +3222,16 @@
         { ref: 'oignon', quantite: 1 },
         { ref: 'creme-epaisse-30', quantite: 100 },
         { ref: 'camembert', quantite: 250 },
+        { ref: 'poivre', quantite: 1 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Cuis les pommes de terre 15 minutes à l\'eau, puis coupe-les en rondelles.',
-        'Fais dorer les lardons et l\'oignon émincé.',
-        'Mélange pommes de terre, lardons et crème dans un plat, puis pose le camembert coupé en deux.',
-        'Enfourne 20 minutes à 200 °C et divise en 2 parts.',
+        'Cuis les pommes de terre entières 15 minutes à l\'eau salée, puis épluche-les et coupe-les en rondelles.',
+        'Préchauffe le four à 200 °C.',
+        'Fais dorer les lardons et l\'oignon émincé 5 minutes.',
+        'Mélange pommes de terre, lardons, oignon et crème dans un plat, puis poivre.',
+        'Coupe le camembert en deux dans l\'épaisseur et pose les moitiés, croûte vers le haut.',
+        'Enfourne 20 minutes et divise en 2 parts.',
       ],
     },
     {
@@ -2960,12 +3249,18 @@
         { ref: 'tomate', quantite: 200 },
         { ref: 'avocat', quantite: 100 },
         { ref: 'epices-chili', quantite: 6 },
+        { ref: 'oignon', quantite: 1 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'citron-vert', quantite: 1 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Fais cuire le bœuf haché avec les épices 8 minutes.',
+        'Émince l\'oignon et fais-le revenir 2 minutes dans l\'huile.',
+        'Ajoute le bœuf haché et les épices chili, puis cuis 8 minutes. Sale.',
         'Ajoute les haricots rouges égouttés et réchauffe 3 minutes.',
-        'Coupe la tomate et l\'avocat en dés.',
-        'Garnis les tortillas chaudes de viande, légumes et fromage râpé.',
+        'Coupe la tomate et l\'avocat en dés, et arrose l\'avocat de jus de citron vert.',
+        'Réchauffe les tortillas 20 secondes à la poêle.',
+        'Garnis-les de viande, de tomate, d\'avocat et de fromage râpé.',
       ],
     },
     {
@@ -2984,12 +3279,16 @@
         { ref: 'fromage-rape', quantite: 60 },
         { ref: 'huile-olive', quantite: 15 },
         { ref: 'epices-melange', quantite: 6 },
+        { ref: 'citron-vert', quantite: 1 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
         'Coupe le poulet, le poivron et l\'oignon en lanières.',
-        'Fais-les sauter 10 minutes à feu vif dans l\'huile avec les épices.',
+        'Mélange le poulet avec les épices, le sel et le jus du citron vert.',
+        'Fais sauter le tout 10 minutes à feu vif dans l\'huile d\'olive.',
         'Réchauffe les tortillas 20 secondes à la poêle.',
-        'Garnis de poulet, de crème et de fromage râpé, puis roule.',
+        'Garnis de poulet et de légumes, puis ajoute la crème et le fromage râpé.',
+        'Roule et sers aussitôt.',
       ],
     },
     {
@@ -3006,12 +3305,14 @@
         { ref: 'petits-pois-surgeles', quantite: 200 },
         { ref: 'huile-arachide', quantite: 25 },
         { ref: 'sauce-soja', quantite: 30 },
+        { ref: 'oignon', quantite: 1 },
       ],
       instructions: [
         'Cuis le riz la veille et laisse-le refroidir au réfrigérateur.',
-        'Brouille les œufs dans un peu d\'huile, puis réserve-les.',
-        'Fais sauter le riz, les petits pois et le jambon en dés 5 minutes dans le reste d\'huile.',
-        'Ajoute les œufs et la sauce soja, mélange et sépare en 2 portions.',
+        'Bats les œufs et fais-les cuire en omelette fine dans un peu d\'huile, puis coupe-la en lanières.',
+        'Fais revenir l\'oignon émincé 2 minutes dans le reste d\'huile.',
+        'Ajoute le riz, les petits pois et le jambon en dés, puis fais sauter 5 minutes.',
+        'Ajoute l\'omelette et la sauce soja, mélange et sépare en 2 portions.',
       ],
     },
     {
@@ -3030,12 +3331,17 @@
         { ref: 'bouillon-volaille', quantite: 600 },
         { ref: 'huile-olive', quantite: 20 },
         { ref: 'epices-melange', quantite: 4 },
+        { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'citron', quantite: 0.5 },
       ],
       instructions: [
-        'Fais dorer le poulet en morceaux et le chorizo en rondelles dans l\'huile.',
-        'Ajoute le riz et les épices, remue 1 minute pour le nacrer.',
-        'Verse le bouillon chaud et laisse cuire 18 minutes sans remuer.',
-        'Ajoute les crevettes et les petits pois pour les 5 dernières minutes, puis divise en 2 portions.',
+        'Coupe le poulet en morceaux, le chorizo en rondelles, et émince l\'oignon et l\'ail.',
+        'Fais dorer le poulet et le chorizo 5 minutes dans l\'huile, dans une grande poêle.',
+        'Ajoute l\'oignon, l\'ail, le riz et les épices, puis remue 1 minute pour nacrer le riz.',
+        'Verse le bouillon chaud et laisse cuire 18 minutes à feu moyen, sans remuer.',
+        'Ajoute les crevettes et les petits pois pour les 5 dernières minutes.',
+        'Arrose de citron et divise en 2 portions.',
       ],
     },
     {
@@ -3052,12 +3358,16 @@
         { ref: 'jambon-blanc', quantite: 200 },
         { ref: 'fromage-rape', quantite: 60 },
         { ref: 'ail', quantite: 5 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Préchauffe le four à 180 °C et frotte un plat avec l\'ail.',
-        'Coupe les pommes de terre en fines rondelles et range-les dans le plat.',
-        'Verse le lait et la crème, sale, poivre et parsème de fromage râpé.',
-        'Enfourne 50 minutes et sers avec le jambon, en 2 portions.',
+        'Préchauffe le four à 180 °C et frotte un plat à gratin avec la gousse d\'ail coupée en deux.',
+        'Épluche les pommes de terre et coupe-les en fines rondelles, sans les laver pour garder l\'amidon.',
+        'Range-les en couches dans le plat, en salant et poivrant chaque couche.',
+        'Verse le lait et la crème mélangés, jusqu\'à hauteur.',
+        'Parsème de fromage râpé et enfourne 50 minutes, jusqu\'à ce que la pointe d\'un couteau s\'enfonce sans résistance.',
+        'Sers avec le jambon, en 2 portions.',
       ],
     },
     {
@@ -3075,12 +3385,15 @@
         { ref: 'beurre', quantite: 20 },
         { ref: 'bouillon-volaille', quantite: 800 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais revenir l\'oignon, le poulet en dés et les champignons dans le beurre.',
-        'Ajoute le riz et remue 2 minutes.',
-        'Verse le bouillon chaud louche par louche, en remuant, pendant 18 minutes.',
-        'Hors du feu, incorpore le parmesan et sers en 2 portions.',
+        'Fais chauffer le bouillon dans une casserole et garde-le frémissant.',
+        'Dans une autre casserole, fais revenir l\'oignon émincé, le poulet en dés et les champignons émincés dans la moitié du beurre, 5 minutes.',
+        'Ajoute le riz et remue 2 minutes, jusqu\'à ce qu\'il devienne translucide.',
+        'Verse le bouillon louche par louche, en remuant et en attendant qu\'il soit absorbé avant la suivante, pendant 18 minutes.',
+        'Hors du feu, incorpore le reste de beurre et le parmesan, puis poivre.',
+        'Couvre 2 minutes et sers en 2 portions.',
       ],
     },
     {
@@ -3098,12 +3411,16 @@
         { ref: 'concombre', quantite: 200 },
         { ref: 'huile-olive', quantite: 25 },
         { ref: 'citron', quantite: 0.5 },
+        { ref: 'persil', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Cuis le boulgour 10 minutes dans deux fois son volume d\'eau.',
-        'Saisis la dinde en lanières 6 minutes dans la moitié de l\'huile.',
-        'Coupe tomate, concombre et feta en dés.',
-        'Mélange le tout avec le reste d\'huile et le jus de citron, en 2 portions.',
+        'Cuis le boulgour 10 minutes dans deux fois son volume d\'eau salée, puis laisse-le tiédir.',
+        'Coupe la dinde en lanières, sale, poivre et saisis-la 6 minutes dans 10 ml d\'huile.',
+        'Coupe la tomate, le concombre et la feta en dés, et cisèle le persil.',
+        'Mélange le reste d\'huile avec le jus de citron.',
+        'Réunis le boulgour, la dinde, les légumes, la feta et le persil, arrose de la sauce au citron et répartis en 2 portions.',
       ],
     },
     {
@@ -3120,10 +3437,16 @@
         { ref: 'tomates-concassees', quantite: 400 },
         { ref: 'pate-curry', quantite: 20 },
         { ref: 'oignon', quantite: 1 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'gingembre', quantite: 2 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 3 },
       ],
       instructions: [
-        'Fais revenir l\'oignon et la pâte de curry 2 minutes.',
-        'Ajoute les lentilles rincées, les tomates, le lait de coco et 300 ml d\'eau.',
+        'Rince les lentilles corail jusqu\'à ce que l\'eau soit claire.',
+        'Lance la cuisson du riz basmati : 12 minutes dans une fois et demie son volume d\'eau salée.',
+        'Fais revenir l\'oignon, l\'ail et le gingembre 3 minutes dans l\'huile, puis ajoute la pâte de curry et remue 1 minute.',
+        'Ajoute les lentilles, les tomates, le lait de coco et 300 ml d\'eau. Sale.',
         'Laisse mijoter 20 minutes en remuant, jusqu\'à obtenir une texture crémeuse.',
         'Sers sur le riz, en 2 portions.',
       ],
@@ -3142,12 +3465,18 @@
         { ref: 'oeufs', quantite: 1 },
         { ref: 'coulis-tomate', quantite: 500 },
         { ref: 'parmesan', quantite: 30 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'basilic', quantite: 1 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Mélange le bœuf, l\'œuf et la chapelure, puis forme une quinzaine de boulettes.',
-        'Fais-les dorer 8 minutes à la poêle.',
-        'Ajoute le coulis et laisse mijoter 15 minutes.',
-        'Sers sur les spaghettis avec le parmesan, en 2 portions.',
+        'Mélange le bœuf, l\'œuf, la chapelure, l\'ail haché, du sel et du poivre, puis forme une quinzaine de boulettes.',
+        'Fais-les dorer 8 minutes dans l\'huile d\'olive en les retournant.',
+        'Ajoute le coulis et le basilic, puis laisse mijoter 15 minutes à couvert.',
+        'Pendant ce temps, cuis les spaghettis dans l\'eau salée selon le temps indiqué.',
+        'Sers les boulettes et leur sauce sur les pâtes égouttées, avec le parmesan, en 2 portions.',
       ],
     },
     {
@@ -3164,12 +3493,17 @@
         { ref: 'sauce-soja', quantite: 40 },
         { ref: 'oignon', quantite: 1 },
         { ref: 'huile-tournesol', quantite: 15 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'gingembre', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Lance la cuisson du riz.',
-        'Fais fondre le sucre à sec jusqu\'à obtenir un caramel blond.',
-        'Ajoute l\'huile, le porc en cubes et l\'oignon, puis fais dorer 8 minutes.',
-        'Verse la sauce soja et 100 ml d\'eau, laisse réduire 10 minutes et sers en 2 portions.',
+        'Lance la cuisson du riz : 12 minutes dans une fois et demie son volume d\'eau.',
+        'Coupe le porc en cubes et émince l\'oignon.',
+        'Fais fondre le sucre à sec dans une sauteuse, sans remuer, jusqu\'à obtenir un caramel blond.',
+        'Hors du feu, ajoute l\'huile, puis remets sur le feu avec le porc, l\'oignon, l\'ail et le gingembre. Fais dorer 8 minutes.',
+        'Verse la sauce soja et 100 ml d\'eau, poivre et laisse réduire 10 minutes jusqu\'à ce que la sauce soit sirupeuse.',
+        'Sers sur le riz, en 2 portions.',
       ],
     },
     {
@@ -3186,11 +3520,18 @@
         { ref: 'tomates-concassees', quantite: 400 },
         { ref: 'oignon', quantite: 1 },
         { ref: 'huile-olive', quantite: 20 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'paprika', quantite: 3 },
+        { ref: 'thym', quantite: 1 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais dorer les pilons dans l\'huile 10 minutes.',
-        'Ajoute l\'oignon et le poivron émincés, puis les tomates.',
-        'Couvre et laisse mijoter 25 minutes.',
+        'Sale, poivre et saupoudre les pilons de paprika.',
+        'Fais-les dorer 10 minutes dans l\'huile d\'olive, dans une cocotte.',
+        'Ajoute l\'oignon, l\'ail et le poivron émincés, puis laisse 5 minutes.',
+        'Verse les tomates et le thym, couvre et laisse mijoter 25 minutes.',
+        'Pendant ce temps, cuis le riz 12 minutes dans une fois et demie son volume d\'eau salée.',
         'Sers avec le riz, en 2 portions.',
       ],
     },
@@ -3207,11 +3548,15 @@
         { ref: 'butternut', quantite: 600 },
         { ref: 'huile-olive', quantite: 30 },
         { ref: 'citron', quantite: 0.5 },
+        { ref: 'thym', quantite: 1 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe la butternut en cubes, enrobe de la moitié de l\'huile et enfourne 25 minutes à 200 °C.',
-        'Cuis le quinoa 12 minutes dans deux fois son volume d\'eau.',
-        'Cuis les pavés de truite 4 minutes par face dans le reste d\'huile.',
+        'Préchauffe le four à 200 °C.',
+        'Épluche la butternut, coupe-la en cubes, enrobe de 20 ml d\'huile, de thym et de sel, puis enfourne 25 minutes.',
+        'Rince le quinoa et cuis-le 12 minutes dans deux fois son volume d\'eau salée.',
+        'Sale et poivre les pavés de truite, puis cuis-les 4 minutes par face dans le reste d\'huile.',
         'Arrose de citron et dresse 2 portions.',
       ],
     },
@@ -3230,12 +3575,17 @@
         { ref: 'frites-four', quantite: 700 },
         { ref: 'huile-tournesol', quantite: 20 },
         { ref: 'mayonnaise', quantite: 40 },
+        { ref: 'citron', quantite: 0.5 },
+        { ref: 'sel', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
         'Enfourne les frites 20 minutes à 220 °C.',
-        'Coupe le poisson en bâtonnets, passe-les dans la farine, l\'œuf battu puis la chapelure.',
-        'Fais-les dorer 3 minutes par face dans l\'huile.',
-        'Sers avec les frites et la mayonnaise, en 2 portions.',
+        'Coupe le poisson en bâtonnets, sale et poivre.',
+        'Prépare trois assiettes : la farine, l\'œuf battu, la chapelure.',
+        'Passe chaque bâtonnet dans la farine, l\'œuf, puis la chapelure.',
+        'Fais-les dorer 3 minutes par face dans l\'huile de tournesol.',
+        'Sers avec les frites, la mayonnaise et un quartier de citron, en 2 portions.',
       ],
     },
     {
@@ -3252,12 +3602,15 @@
         { ref: 'beurre', quantite: 20 },
         { ref: 'creme-epaisse-30', quantite: 40 },
         { ref: 'oeufs', quantite: 2 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Beurre les tranches de pain de mie.',
-        'Garnis 5 tranches de jambon et d\'une partie du fromage, puis referme.',
-        'Nappe de crème et du reste de fromage.',
-        'Enfourne 10 minutes à 220 °C, puis coiffe chaque assiette d\'un œuf au plat.',
+        'Préchauffe le four à 220 °C.',
+        'Beurre les tranches de pain de mie sur une face.',
+        'Garnis 5 tranches de jambon et d\'une partie du fromage, puis referme avec les autres tranches, face beurrée à l\'extérieur.',
+        'Nappe le dessus de crème, parsème du reste de fromage et poivre.',
+        'Enfourne 10 minutes, jusqu\'à ce que le dessus soit doré.',
+        'Pendant ce temps, cuis les œufs au plat et coiffe chaque assiette d\'un œuf.',
       ],
     },
     {
@@ -3269,16 +3622,21 @@
       tempsPreparation: 45,
       ingredients: [
         { ref: 'farine', quantite: 300 },
+        { ref: 'levure-boulangere', quantite: 7 },
         { ref: 'huile-olive', quantite: 25 },
         { ref: 'coulis-tomate', quantite: 200 },
         { ref: 'jambon-blanc', quantite: 150 },
         { ref: 'mozzarella', quantite: 250 },
+        { ref: 'herbes-provence', quantite: 2 },
+        { ref: 'sel', quantite: 4 },
       ],
       instructions: [
-        'Mélange la farine, un sachet de levure boulangère, l\'huile, une pincée de sel et 180 ml d\'eau tiède, puis pétris 5 minutes.',
-        'Laisse lever 20 minutes, puis étale la pâte sur une plaque.',
-        'Garnis de coulis, de jambon et de mozzarella.',
-        'Enfourne 15 minutes à 240 °C et coupe en 2 parts.',
+        'Mélange la farine, la levure boulangère et le sel, puis ajoute l\'huile d\'olive et 180 ml d\'eau tiède.',
+        'Pétris 5 minutes, jusqu\'à obtenir une pâte souple, puis laisse lever 30 minutes sous un torchon.',
+        'Préchauffe le four à 240 °C.',
+        'Étale la pâte sur une plaque farinée.',
+        'Garnis de coulis, d\'herbes de Provence, de jambon et de mozzarella en morceaux.',
+        'Enfourne 15 minutes et coupe en 2 parts.',
       ],
     },
     {
@@ -3294,12 +3652,15 @@
         { ref: 'legumes-wok', quantite: 500 },
         { ref: 'sauce-soja', quantite: 40 },
         { ref: 'huile-sesame', quantite: 20 },
+        { ref: 'ail', quantite: 5 },
+        { ref: 'gingembre', quantite: 2 },
       ],
       instructions: [
         'Cuis les nouilles 4 minutes, puis égoutte-les.',
-        'Saisis le bœuf en fines lamelles 2 minutes à feu très vif dans l\'huile, puis réserve.',
-        'Fais sauter les légumes 6 minutes.',
-        'Ajoute nouilles, bœuf et sauce soja, mélange 1 minute et sers en 2 portions.',
+        'Coupe le rumsteck en fines lamelles.',
+        'Saisis le bœuf 2 minutes à feu très vif dans l\'huile de sésame, avec l\'ail et le gingembre, puis réserve-le.',
+        'Fais sauter les légumes 6 minutes dans le même wok.',
+        'Ajoute les nouilles, le bœuf et la sauce soja, mélange 1 minute et sers en 2 portions.',
       ],
     },
     {
@@ -3315,12 +3676,16 @@
         { ref: 'mais-doux', quantite: 280 },
         { ref: 'tomate', quantite: 300 },
         { ref: 'mayonnaise', quantite: 60 },
+        { ref: 'moutarde', quantite: 5 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais cuire les pâtes, puis refroidis-les sous l\'eau froide.',
-        'Égoutte le thon et le maïs, coupe les tomates en dés.',
-        'Mélange le tout avec la mayonnaise, sale et poivre.',
-        'Répartis dans 2 boîtes : parfait à emporter.',
+        'Fais cuire les pâtes dans l\'eau salée, puis refroidis-les sous l\'eau froide et égoutte-les bien.',
+        'Égoutte le thon et le maïs, et coupe les tomates en dés.',
+        'Mélange la mayonnaise avec la moutarde, du sel et du poivre.',
+        'Réunis le tout dans un saladier et mélange.',
+        'Répartis dans 2 boîtes, parfait à emporter.',
       ],
     },
     {
@@ -3338,12 +3703,16 @@
         { ref: 'fromage-rape', quantite: 60 },
         { ref: 'creme-epaisse-30', quantite: 60 },
         { ref: 'epices-chili', quantite: 6 },
+        { ref: 'huile-olive', quantite: 10 },
+        { ref: 'sel', quantite: 2 },
       ],
       instructions: [
-        'Cuis le riz.',
-        'Fais sauter le poulet en dés avec les épices 8 minutes, puis ajoute les haricots.',
-        'Garnis les tortillas de riz, de poulet, de crème et de fromage.',
-        'Roule serré et fais dorer 2 minutes par face à la poêle.',
+        'Cuis le riz 12 minutes dans une fois et demie son volume d\'eau salée.',
+        'Coupe le poulet en dés et fais-le sauter 8 minutes dans l\'huile avec les épices et le sel.',
+        'Ajoute les haricots rouges égouttés et réchauffe 2 minutes.',
+        'Garnis les tortillas de riz, de poulet, de crème et de fromage râpé.',
+        'Replie les côtés et roule serré.',
+        'Fais dorer les burritos 2 minutes par face à la poêle, côté soudure d\'abord.',
       ],
     },
     {
@@ -3358,13 +3727,18 @@
         { ref: 'lardons', quantite: 200 },
         { ref: 'carottes', quantite: 200 },
         { ref: 'poireau', quantite: 200 },
+        { ref: 'oignon', quantite: 1 },
         { ref: 'pain-campagne', quantite: 150 },
+        { ref: 'thym', quantite: 1 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Fais dorer les lardons au fond d\'une grande casserole.',
-        'Ajoute les pois cassés rincés, les carottes et le poireau émincés, puis 1,2 litre d\'eau.',
-        'Laisse mijoter 50 minutes à couvert, puis mixe grossièrement.',
-        'Sers avec le pain de campagne, en 2 portions.',
+        'Rince les pois cassés.',
+        'Émince l\'oignon, le poireau et les carottes.',
+        'Fais dorer les lardons au fond d\'une grande casserole, puis ajoute l\'oignon et le poireau 3 minutes.',
+        'Ajoute les pois cassés, les carottes, le thym et 1,2 litre d\'eau. Laisse mijoter 50 minutes à couvert, sans saler (les lardons suffisent).',
+        'Mixe grossièrement et poivre.',
+        'Sers avec le pain de campagne grillé, en 2 portions.',
       ],
     },
     {
@@ -3381,12 +3755,18 @@
         { ref: 'avocat', quantite: 150 },
         { ref: 'huile-olive', quantite: 30 },
         { ref: 'beurre', quantite: 15 },
+        { ref: 'vinaigre-vin', quantite: 10 },
+        { ref: 'moutarde', quantite: 5 },
+        { ref: 'sel', quantite: 3 },
+        { ref: 'poivre', quantite: 1 },
       ],
       instructions: [
-        'Coupe les patates douces en frites, enrobe de l\'huile et enfourne à l\'Air Fryer 18 minutes à 190 °C.',
+        'Épluche les patates douces, coupe-les en frites et enrobe-les de 20 ml d\'huile et d\'une pincée de sel.',
+        'Enfourne les frites de patate douce à l\'Air Fryer 18 minutes à 190 °C, en secouant à mi-cuisson.',
         'Sors la viande du réfrigérateur 15 minutes avant la cuisson.',
-        'Saisis le rumsteck au beurre, 3 minutes par face pour une cuisson saignante.',
-        'Laisse reposer 3 minutes, puis sers avec les frites et la salade à l\'avocat.',
+        'Prépare la vinaigrette avec la moutarde, le vinaigre, le reste d\'huile, du sel et du poivre, puis mélange-la à la laitue et à l\'avocat en dés.',
+        'Sale le rumsteck et saisis-le au beurre, 3 minutes par face pour une cuisson saignante.',
+        'Laisse reposer 3 minutes, poivre, puis sers avec les frites et la salade à l\'avocat.',
       ],
     },
     {
@@ -3403,11 +3783,13 @@
         { ref: 'whey', quantite: 20 },
         { ref: 'sirop-erable', quantite: 25 },
         { ref: 'beurre', quantite: 10 },
+        { ref: 'cannelle', quantite: 1 },
       ],
       instructions: [
-        'Bats les œufs avec le lait et la whey.',
-        'Trempe les tranches de brioche dans le mélange.',
-        'Fais-les dorer 2 minutes par face dans le beurre.',
+        'Coupe la brioche en tranches épaisses.',
+        'Bats les œufs avec le lait, la whey et la cannelle.',
+        'Trempe les tranches de brioche dans le mélange, quelques secondes de chaque côté.',
+        'Fais-les dorer 2 minutes par face dans le beurre, à feu moyen.',
         'Nappe de sirop d\'érable.',
       ],
     },
@@ -3424,12 +3806,15 @@
         { ref: 'fromage-rape', quantite: 40 },
         { ref: 'pain-campagne', quantite: 100 },
         { ref: 'beurre', quantite: 10 },
+        { ref: 'sel', quantite: 1 },
+        { ref: 'poivre', quantite: 0.5 },
       ],
       instructions: [
-        'Bats les œufs, sale et poivre.',
-        'Fais fondre le beurre et verse les œufs.',
-        'Ajoute le jambon en dés et le fromage, puis replie l\'omelette.',
-        'Sers avec le pain grillé.',
+        'Fais griller le pain de campagne.',
+        'Bats les œufs avec une pincée de sel et de poivre.',
+        'Fais fondre le beurre dans une poêle et verse les œufs.',
+        'Quand l\'omelette commence à prendre, ajoute le jambon en dés et le fromage.',
+        'Replie l\'omelette et sers avec le pain.',
       ],
     },
     {
@@ -3448,9 +3833,10 @@
         { ref: 'graines-chia', quantite: 15 },
       ],
       instructions: [
-        'La veille, mélange les flocons, le lait, la whey, le cacao et les graines de chia dans un bocal.',
-        'Ferme et laisse une nuit au réfrigérateur.',
-        'Le matin, ajoute la banane en rondelles.',
+        'La veille au soir, verse les flocons d\'avoine, la whey, le cacao et les graines de chia dans un bocal.',
+        'Ajoute le lait entier et mélange bien pour éviter les grumeaux.',
+        'Ferme et laisse une nuit au réfrigérateur : les flocons et la chia gonflent.',
+        'Le matin, mélange de nouveau et ajoute la banane en rondelles.',
       ],
     },
     {
@@ -3468,8 +3854,10 @@
         { ref: 'noix', quantite: 20 },
       ],
       instructions: [
-        'Verse le yaourt dans un bol.',
-        'Ajoute les fraises coupées et les noix concassées.',
+        'Verse le yaourt grec dans un bol.',
+        'Lave et coupe les fraises en quartiers.',
+        'Concasse les cerneaux de noix.',
+        'Ajoute les fraises et les noix sur le yaourt.',
         'Parsème de muesli et arrose de miel.',
       ],
     },
@@ -3487,12 +3875,14 @@
         { ref: 'whey', quantite: 30 },
         { ref: 'beurre', quantite: 10 },
         { ref: 'pate-tartiner', quantite: 30 },
+        { ref: 'sel', quantite: 0.5 },
       ],
       instructions: [
-        'Mélange la farine et la whey, puis ajoute les œufs et le lait peu à peu en fouettant.',
+        'Mélange la farine, la whey et une pincée de sel dans un saladier.',
+        'Creuse un puits, ajoute les œufs, puis verse le lait peu à peu en fouettant pour éviter les grumeaux.',
         'Laisse reposer la pâte 10 minutes.',
-        'Cuis 4 à 5 crêpes dans une poêle beurrée.',
-        'Garnis de pâte à tartiner.',
+        'Graisse une poêle chaude avec un peu de beurre et cuis 4 à 5 crêpes, 1 minute par face.',
+        'Garnis-les de pâte à tartiner.',
       ],
     },
     {
@@ -3507,11 +3897,13 @@
         { ref: 'beurre-cacahuete', quantite: 40 },
         { ref: 'banane', quantite: 1 },
         { ref: 'miel', quantite: 20 },
+        { ref: 'cannelle', quantite: 0.5 },
       ],
       instructions: [
-        'Fais griller le pain.',
+        'Fais griller les tranches de pain complet.',
         'Tartine le beurre de cacahuète.',
-        'Ajoute la banane en rondelles et le miel.',
+        'Coupe la banane en rondelles et dispose-la sur les tartines.',
+        'Arrose de miel et saupoudre d\'une pincée de cannelle.',
       ],
     },
     {
@@ -3528,9 +3920,10 @@
         { ref: 'amandes', quantite: 20 },
       ],
       instructions: [
-        'Verse les céréales dans un grand bol.',
+        'Verse les pétales de maïs dans un grand bol.',
+        'Concasse grossièrement les amandes.',
         'Ajoute les raisins secs et les amandes.',
-        'Couvre de lait froid.',
+        'Couvre de lait entier froid au moment de manger, pour que les céréales restent croustillantes.',
       ],
     },
     {
@@ -3545,10 +3938,12 @@
         { ref: 'flocons-avoine', quantite: 60 },
         { ref: 'compote', quantite: 100 },
         { ref: 'noix-cajou', quantite: 20 },
+        { ref: 'cannelle', quantite: 0.5 },
       ],
       instructions: [
-        'Mélange le fromage blanc et les flocons d\'avoine.',
-        'Ajoute la compote par-dessus.',
+        'Mélange le fromage blanc et les flocons d\'avoine dans un bol.',
+        'Laisse reposer 2 minutes pour que les flocons s\'imprègnent.',
+        'Ajoute la compote par-dessus et saupoudre de cannelle.',
         'Parsème de noix de cajou concassées.',
       ],
     },
@@ -3565,11 +3960,15 @@
         { ref: 'beurre', quantite: 10 },
         { ref: 'orange', quantite: 1 },
         { ref: 'lait-entier', quantite: 200 },
+        { ref: 'sel', quantite: 0.5 },
+        { ref: 'poivre', quantite: 0.5 },
       ],
       instructions: [
-        'Brouille les œufs doucement dans le beurre.',
-        'Réchauffe le croissant 3 minutes au four.',
-        'Sers avec l\'orange et un verre de lait.',
+        'Réchauffe le croissant 3 minutes au four à 180 °C.',
+        'Bats les œufs avec une pincée de sel et de poivre.',
+        'Fais fondre le beurre à feu doux et brouille les œufs 3 minutes en remuant sans arrêt.',
+        'Épluche l\'orange et coupe-la en quartiers.',
+        'Sers avec un verre de lait entier.',
       ],
     },
     {
@@ -3585,12 +3984,14 @@
         { ref: 'dattes', quantite: 100 },
         { ref: 'cacao-poudre', quantite: 15 },
         { ref: 'beurre-cacahuete', quantite: 40 },
+        { ref: 'sel', quantite: 0.5 },
       ],
       instructions: [
         'Mixe les noisettes grossièrement.',
-        'Ajoute les dattes, les flocons, le cacao et le beurre de cacahuète, puis mixe jusqu\'à obtenir une pâte.',
-        'Forme 12 boules, soit 3 par portion.',
-        'Conserve-les au réfrigérateur.',
+        'Ajoute les dattes et mixe jusqu\'à obtenir une pâte collante.',
+        'Ajoute les flocons d\'avoine, le cacao, le beurre de cacahuète et une pincée de sel, puis mixe par à-coups.',
+        'Forme 12 boules avec les mains légèrement humides, soit 3 par portion.',
+        'Conserve-les au réfrigérateur dans une boîte fermée.',
       ],
     },
     {
@@ -3608,7 +4009,9 @@
         { ref: 'miel', quantite: 15 },
       ],
       instructions: [
-        'Place tous les ingrédients dans le blender.',
+        'Épluche la mangue et coupe sa chair en morceaux.',
+        'Verse le lait entier dans le blender, puis ajoute les flocons d\'avoine.',
+        'Ajoute la mangue, le yaourt grec et le miel.',
         'Mixe 45 secondes jusqu\'à obtenir une texture lisse.',
         'Bois aussitôt.',
       ],
@@ -3626,8 +4029,10 @@
         { ref: 'banane', quantite: 1 },
       ],
       instructions: [
-        'Tartine les tranches de pain d\'épices de beurre de cacahuète.',
-        'Ajoute la banane en rondelles.',
+        'Coupe le pain d\'épices en tranches.',
+        'Tartine-les de beurre de cacahuète.',
+        'Coupe la banane en rondelles.',
+        'Dispose les rondelles sur les tranches.',
       ],
     },
     {
@@ -3645,9 +4050,10 @@
         { ref: 'abricots-secs', quantite: 80 },
       ],
       instructions: [
-        'Coupe le chocolat et les abricots en morceaux.',
-        'Mélange tous les ingrédients.',
-        'Répartis dans 4 petits sachets, un par collation.',
+        'Coupe le chocolat noir en pépites et les abricots secs en morceaux.',
+        'Dans un grand bol, mélange les cacahuètes, les noix de cajou et les raisins secs.',
+        'Ajoute le chocolat et les abricots.',
+        'Répartis dans 4 petits sachets ou boîtes, un par collation. Conserve au sec.',
       ],
     },
     {
@@ -3656,15 +4062,18 @@
       nom: 'Riz au lait protéiné aux raisins',
       creneaux: ['collation'],
       portions: 1,
-      tempsPreparation: 2,
+      tempsPreparation: 3,
       ingredients: [
         { ref: 'riz-au-lait', quantite: 250 },
         { ref: 'whey', quantite: 20 },
         { ref: 'raisins-secs', quantite: 20 },
+        { ref: 'cannelle', quantite: 0.5 },
       ],
       instructions: [
-        'Mélange la whey au riz au lait jusqu\'à ce qu\'elle soit bien dissoute.',
+        'Verse le riz au lait dans un bol.',
+        'Ajoute la whey et mélange jusqu\'à ce qu\'elle soit bien dissoute.',
         'Ajoute les raisins secs.',
+        'Saupoudre de cannelle.',
       ],
     },
     {
@@ -3679,11 +4088,13 @@
         { ref: 'houmous', quantite: 60 },
         { ref: 'poulet-roti-emince', quantite: 100 },
         { ref: 'laitue', quantite: 30 },
+        { ref: 'tomate', quantite: 60 },
       ],
       instructions: [
         'Étale le houmous sur la tortilla.',
-        'Ajoute le poulet et la salade.',
-        'Roule serré et emballe.',
+        'Ajoute la laitue et la tomate en rondelles.',
+        'Répartis le poulet par-dessus.',
+        'Replie le bas, roule serré et emballe dans du papier aluminium.',
       ],
     },
     {
@@ -3700,9 +4111,11 @@
         { ref: 'banane', quantite: 1 },
       ],
       instructions: [
-        'Place tous les ingrédients dans le blender.',
+        'Verse le lait entier dans le blender.',
+        'Ajoute le gainer en poudre et le beurre de cacahuète.',
+        'Ajoute la banane coupée en morceaux.',
         'Mixe 45 secondes.',
-        'Bois dans l\'heure qui suit l\'entraînement, ou en collation dans l\'après-midi.',
+        'Bois dans l\'heure qui suit l\'entraînement, ou en collation l\'après-midi.',
       ],
     },
     {
@@ -3716,10 +4129,13 @@
         { ref: 'petit-suisse', quantite: 240 },
         { ref: 'granola', quantite: 60 },
         { ref: 'miel', quantite: 20 },
+        { ref: 'fraises', quantite: 80 },
       ],
       instructions: [
         'Démoule les petits-suisses dans un bol.',
-        'Ajoute le granola et le miel.',
+        'Coupe les fraises en morceaux et ajoute-les.',
+        'Parsème de granola au dernier moment.',
+        'Arrose de miel.',
       ],
     },
     {
@@ -3734,14 +4150,21 @@
         { ref: 'jambon-blanc', quantite: 80 },
         { ref: 'beurre', quantite: 15 },
         { ref: 'comte', quantite: 40 },
+        { ref: 'cornichons', quantite: 20 },
       ],
       instructions: [
-        'Ouvre la baguette en deux et beurre-la.',
-        'Garnis de jambon et de lamelles de comté.',
-        'Emballe dans du papier pour l\'emporter.',
+        'Ouvre la baguette en deux dans la longueur.',
+        'Beurre les deux faces.',
+        'Coupe le comté en fines lamelles et les cornichons en rondelles.',
+        'Garnis de jambon, de comté et de cornichons.',
+        'Referme et emballe dans du papier pour l\'emporter.',
       ],
     },
   ];
+
+  // Empreintes des recettes d'exemple de la version précédente (bibliothèque v4) :
+  // une copie identique n'a pas été modifiée par l'utilisateur et peut être remplacée par la version révisée.
+  const EMPREINTES_EXEMPLES_V4 = { 'saumon-patate-douce-epinards': '1ff6u24', 'bolognaise-pates-completes': '9z3wta', 'shake-express-pre-entrainement': 'zy04dr', 'bowl-porridge-massif': '1sex3ph', 'pancakes-proteines-du-dimanche': '1f0yza8', 'oeufs-brouilles-tartines-avocat': '1srcv5q', 'poulet-riz-brocolis-ninja': '1dl1cqz', 'boeuf-hache-pommes-de-terre-air-fryer': '1pw7w1z', 'pates-au-thon-sauce-tomate': '1tvjdut', 'chili-con-carne-express': '1o19jul', 'boulettes-dinde-frites-patate-douce': '15ursyi', 'riz-frit-oeufs-poulet': '17ndpmv', 'salade-lentilles-maquereau': '1k9m58k', 'saute-de-porc-nouilles': '1wh0wgb', 'poulet-curry-lait-de-coco': '1off1e1', 'gnocchis-dores-et-poulet': 'yx546x', 'collation-post-workout': 'uwsyd0', 'boules-energie-creatine-cacahuete': 'j30dyu', 'fromage-blanc-banane-amandes': '1ie0wa4', 'pois-chiches-grilles-epices': '12in9lp', 'gainer-maison': 'b9kba9', 'club-sandwich-dinde-cacahuete': '1fcj477', 'burger-maison-frites-patate-douce': 'sztuox', 'poulet-roti-frites-patate-douce': '87d63f', 'wraps-poulet-avocat': '1ncst1l', 'riz-saute-crevettes': '1ywvyyf', 'pates-pesto-poulet-mozzarella': 'zh7a4l', 'chili-boeuf-quinoa': '124a752', 'saumon-teriyaki-riz': '1ijmknc', 'couscous-poulet-pois-chiches': '6gn124', 'gratin-pates-thon': '17prgpk', 'omelette-geante-lardons': '12npewp', 'bowl-boeuf-patate-douce-houmous': '1ajd1ll', 'poelee-porc-nouilles-champignons': '3ci40x', 'curry-pois-chiches-coco': 'dpuxny', 'dinde-semoule-legumes-rotis': '1k8jg8z', 'pancakes-banane-erable': '15593bj', 'bol-skyr-dattes-cajou': '11aza1o', 'tartines-saumon-fume-oeufs': '1ieh250', 'barres-avoine-dattes-cajou': 'mmptto', 'magret-grenailles-haricots': '1m08yqu', 'lasagnes-boeuf-ricotta': 'mlopkw', 'carbonara-lardons': 'btole0', 'agneau-semoule-pois-chiches': '1u8p8us', 'saucisses-puree-maison': 'fuhoe6', 'merguez-semoule-legumes': '1y9oeu3', 'poke-bowl-thon': '15dz5ue', 'cabillaud-puree-patate-douce': '121m73z', 'veau-creme-champignons-pates': '1hzhre5', 'poulet-tikka-riz': 't1uvm4', 'hachis-parmentier': '1pdz7my', 'tartiflette-camembert': '1mgcy6i', 'tacos-boeuf-haricots': 'g95s1e', 'fajitas-poulet-poivrons': 'ei34pz', 'riz-cantonais': '1e2ykg4', 'paella-express': 's0q25a', 'gratin-dauphinois-jambon': '17458zb', 'risotto-poulet-champignons': '15xofe6', 'boulgour-dinde-feta': '6mazy1', 'dahl-lentilles-corail': '8deafo', 'spaghettis-boulettes': '257w4e', 'porc-caramel-riz': 'mbqjl0', 'poulet-basquaise-riz': '11fornx', 'truite-quinoa-butternut': '1wume6n', 'lieu-pane-frites-four': '15wvqd1', 'croque-madame-gratines': '1oex74q', 'pizza-maison-jambon': 'pk8k42', 'wok-boeuf-nouilles': 'i4mhp4', 'salade-pates-thon-mais': '1qrl38p', 'burritos-poulet-riz': '1af3q47', 'soupe-pois-casses-lardons': '1jgs2va', 'rumsteck-frites-patate-douce': '1uytk3l', 'pain-perdu-proteine': '1qh27ng', 'omelette-jambon-fromage': '1dto0ym', 'overnight-oats-chocolat': '7xm1vo', 'yaourt-grec-muesli-fraises': '1jwrdjb', 'crepes-proteinees': '1loy667', 'tartines-cacahuete-banane': '4dyc88', 'cereales-lait-fruits-secs': '1kpt88t', 'bol-fromage-blanc-compote': '1vl57uc', 'petit-dej-croissant-oeufs': 'd5j4p7', 'energy-balls-chocolat-noisette': '1t76pp8', 'smoothie-mangue-avoine': '17s1tde', 'pain-epices-cacahuete': '1k75h4s', 'trail-mix': '153mgen', 'riz-au-lait-proteine': 'fi5ml7', 'wrap-houmous-poulet': 'fsk604', 'shake-gainer-cacahuete': 'sj6g6n', 'petits-suisses-granola': '1caik6z', 'sandwich-jambon-beurre-comte': '1jhja7h' };
 
 
   const UNITES = ['g', 'ml', 'pièce'];
@@ -4061,6 +4484,15 @@
   }
 
   // Renvoie une recette propre, ou null si un élément indispensable manque
+  // Empreinte d'une recette : permet de savoir si une recette d'exemple a été modifiée par l'utilisateur
+  function empreinteRecette(r) {
+    const texte = JSON.stringify([r.nom, r.creneaux, r.portions, r.tempsPreparation, r.conservation,
+      (r.ingredients || []).map((i) => [i.ref, i.quantite]), r.instructions]);
+    let h = 5381;
+    for (let i = 0; i < texte.length; i += 1) h = ((h * 33) ^ texte.charCodeAt(i)) >>> 0;
+    return h.toString(36);
+  }
+
   function nettoyerRecette(brut, catalogue) {
     if (!brut || typeof brut !== 'object') return null;
     const recette = {
@@ -4432,11 +4864,11 @@
   /* =========================================================
      5. ÉTAT GLOBAL (source unique de vérité + abonnements)
      ========================================================= */
-  const BIBLIOTHEQUE_VERSION = 4;
+  const BIBLIOTHEQUE_VERSION = 5;
 
   const DEFAULT_STATE = {
     version: 1,
-    ui: { vue: 'accueil', activeTab: 'planning', ongletEntrainement: 'constructeur', jourSeance: 'lundi', dateSeance: null, reposDefaut: 90, jourSuivi: null, masquerCoches: false, achatParFournees: true,
+    ui: { vue: 'accueil', reponseVocale: 'seance', activeTab: 'planning', ongletEntrainement: 'constructeur', jourSeance: 'lundi', dateSeance: null, reposDefaut: 90, jourSuivi: null, masquerCoches: false, achatParFournees: true,
       joursCuisine: ['mercredi', 'dimanche'], fourneesDoubles: true },
     profil: {
       sexe: 'homme', age: 25, taille: 178,
@@ -4525,9 +4957,28 @@
         : structuredClone(RECETTES_EXEMPLES);
 
       // Nouvelles recettes d'exemple : ajoutées une seule fois, sans toucher aux recettes existantes
-      if (nombre(this.data.versionBibliotheque) < BIBLIOTHEQUE_VERSION) {
+      const versionPrecedente = nombre(this.data.versionBibliotheque);
+      if (versionPrecedente < BIBLIOTHEQUE_VERSION) {
         const presentes = new Set(this.data.recettes.map((r) => r.id));
         this.data.recettes.push(...structuredClone(RECETTES_EXEMPLES.filter((r) => !presentes.has(r.id))));
+
+        // Bibliothèque v5 : recettes révisées (ingrédients complets, étapes détaillées).
+        // Une copie restée identique à l'ancienne version est remplacée ; une copie modifiée est conservée
+        // et proposée à la mise à jour dans l'onglet Recettes.
+        if (versionPrecedente >= 1 && versionPrecedente < 5) {
+          const revisees = new Map(RECETTES_EXEMPLES.map((r) => [r.id, r]));
+          const aRevoir = [];
+          let misesAJour = 0;
+          this.data.recettes = this.data.recettes.map((r) => {
+            const nouvelle = revisees.get(r.id);
+            if (!nouvelle || presentes.has(r.id) === false) return r;
+            if (EMPREINTES_EXEMPLES_V4[r.id] === empreinteRecette(r)) { misesAJour += 1; return structuredClone(nouvelle); }
+            if (empreinteRecette(r) !== empreinteRecette(nettoyerRecette(nouvelle, catalogue))) aRevoir.push(r.id);
+            return r;
+          });
+          this.data.recettesARevoir = aRevoir;
+          this.data.recettesMisesAJour = misesAJour;
+        }
         this.data.versionBibliotheque = BIBLIOTHEQUE_VERSION;
       }
       Cache.vider();
@@ -6006,6 +6457,7 @@
     },
 
     ouvrir(date = null) {
+      Parole.deverrouiller();
       if (date) Seances.allerA(date);
       if (!this.exercices().length) { Toast.afficher('Aucun exercice prévu ce jour-là.'); return; }
       this.index = Math.max(0, this.exercices().findIndex((ligne) => !Seances.seriesLoguees(ligne.id).some((s) => s.fait)));
@@ -6033,7 +6485,8 @@
       const bouton = e.target.closest('button');
       if (!bouton) return;
       const ds = bouton.dataset;
-      if ('modeFermer' in ds) this.fermer();
+      if ('modeVoix' in ds) Voix.ouvrir();
+      else if ('modeFermer' in ds) this.fermer();
       else if (ds.modeAller) {
         this.index = Math.min(this.exercices().length - 1, Math.max(0, this.index + Number(ds.modeAller)));
         this.render();
@@ -6101,6 +6554,7 @@
         clearInterval(this.intervalle);
         this.intervalle = null;
         Cuisine.sonner('repos terminé, à toi');
+        setTimeout(() => Parole.dire(Parole.annonceSuite(), 'seance'), 700);  // après le signal sonore
       }
       this.majRepos();
     },
@@ -6148,8 +6602,14 @@
             <p class="truncate text-sm text-pierre">${esc(seance.nom || 'Séance')}, ${dateCourte(Seances.date())}</p>
             <h2 id="mode-titre" class="text-lg font-extrabold leading-tight">Exercice ${this.index + 1} sur ${lignes.length}</h2>
           </div>
+          <span class="flex shrink-0 items-center gap-2">
+          <button type="button" data-mode-voix aria-label="Commande vocale"
+                  class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-basilic text-white hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+            <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke-linecap="round" /></svg>
+          </button>
           <button type="button" data-mode-fermer data-focus="mode|fermer" aria-label="Quitter le mode séance"
                   class="grid h-11 w-11 shrink-0 place-items-center rounded-full text-xl ring-1 ring-encre/15 hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
+          </span>
         </header>
         <div class="h-1.5 bg-encre/10" aria-hidden="true">
           <div class="h-full bg-basilic transition-[width] duration-300" style="width:${(totalFaits / lignes.length) * 100}%"></div>
@@ -6448,6 +6908,955 @@
       } catch (e) {
         console.warn('Service worker indisponible', e);
       }
+    },
+  };
+
+  /* =========================================================
+     7 undecies. COMMANDES VOCALES : ANALYSE DE LA PHRASE (logique pure)
+     ========================================================= */
+  /*
+   * Transforme une phrase (« planifie les lasagnes pour lundi midi ») en commande :
+   * { action, jourId, creneau, portions, recette, candidats }.
+   * Le domaine est très contraint (7 jours, 4 créneaux, recettes connues) :
+   * des règles suffisent, sans service extérieur.
+   */
+  const VOIX_MOTS_VIDES = new Set([
+    'le', 'la', 'les', 'l', 'de', 'du', 'des', 'd', 'un', 'une', 'pour', 'a', 'au', 'aux', 'en', 'et', 'mon', 'ma',
+    'mes', 'ce', 'cet', 'cette', 'ces', 'sur', 'dans', 'avec', 'moi', 'me', 'm', 'stp', 'svp', 'plait', 's', 'il', 'te',
+    'recette', 'recettes', 'repas', 'plat', 'plats', 'prochain', 'prochaine', 'je', 'veux', 'voudrais', 'peux', 'tu',
+    'fais', 'faire', 'prevoir', 'mettre', 'planifier', 'ajouter', 'alors', 'puis', 'ensuite', 'aussi', 'bien', 'sauce',
+  ]);
+
+  const VOIX_REGLES = {
+    creneaux: [
+      ['matin', /\b(petits? dej(euner)?s?|p ?tit dej|matin|breakfast)\b/g],
+      ['midi', /\b(dejeuner|dej|midi|lunch)\b/g],
+      ['collation', /\b(collation|gouter|en cas|snack|encas)\b/g],
+      ['soir', /\b(soir|diner|souper|dinner)\b/g],
+    ],
+    portions: [
+      [2, /\b(double portion|portion double|double|deux portions|2 portions|x ?2|fois deux|fois 2)\b/g],
+      [1.5, /\b(une portion et demie|portion et demie|une et demie|1 5 portions?|1 et demi)\b/g],
+      [0.75, /\b(trois quarts?( de portion)?)\b/g],
+      [0.5, /\b(demi portion|une demi|la moitie|moitie)\b/g],
+      [1.25, /\b(un quart en plus|1 25 portions?)\b/g],
+    ],
+    actions: [
+      ['proposer', /\b(propose|proposer|remplis|remplir|genere|generer|organise)\b.*\bsemaine\b/],
+      ['consommer', /\b(j ai mange|j ai pris|j ai fini|mange|consomme|valide|valider)\b/],
+      ['vider', /\b(vide|vider)\b/],
+      ['retirer', /\b(retire|retirer|enleve|enlever|supprime|supprimer|efface|effacer|annule|annuler)\b/],
+      ['planifier', /\b(planifie|planifier|mets|met|ajoute|ajouter|programme|prevois|place|placer|cale|note|remplace|remplacer|choisis|je prends|je veux)\b/],
+    ],
+    verbesPlanifier: /\b(planifie|planifier|mets|met|ajoute|ajouter|programme|prevois|place|placer|cale|note|remplace|remplacer|choisis|je prends|je veux|retire|retirer|enleve|enlever|supprime|supprimer|efface|effacer|annule|annuler|vide|vider|propose|proposer|remplis|remplir)\b/g,
+    pronoms: /\b(cette recette|ce plat|ce repas|celle ci|celui ci|planifie la|planifie le|mets la|mets le|ajoute la|ajoute le|programme la|programme le|place la|place le)\b/,
+  };
+
+  const racineVoix = (mot) => (mot.length > 3 ? mot.replace(/(s|x)$/, '') : mot);
+
+  function analyserCommande(texte, contexte = {}) {
+    const brut = String(texte || '').trim();
+    let t = ` ${normaliserNom(brut)} `;
+    const commande = { texte: brut, action: null, jourId: null, jourImplicite: false, creneau: null, portions: 1, recette: null, candidats: [] };
+
+    // Action
+    const action = VOIX_REGLES.actions.find(([, rx]) => rx.test(t));
+    commande.action = action ? action[0] : 'planifier';
+    commande.actionExplicite = !!action;
+
+    // Jour : nom du jour, ou repère relatif
+    const aujourdhui = jourDeLaDate(dateISO());
+    if (/\bapres demain\b/.test(t)) { commande.jourId = jourDeLaDate(decalerDate(dateISO(), 2)).id; t = t.replace(/\bapres demain\b/g, ' '); }
+    if (!commande.jourId && /\bdemain\b/.test(t)) { commande.jourId = jourDeLaDate(decalerDate(dateISO(), 1)).id; t = t.replace(/\bdemain\b/g, ' '); }
+    if (!commande.jourId && /\b(aujourd hui|ce midi|ce soir|ce matin)\b/.test(t)) { commande.jourId = aujourdhui.id; t = t.replace(/\baujourd hui\b/g, ' '); }
+    if (!commande.jourId) {
+      const jour = JOURS.find((j) => new RegExp(`\\b${j.id}s?\\b`).test(t));
+      if (jour) { commande.jourId = jour.id; t = t.replace(new RegExp(`\\b${jour.id}s?\\b`, 'g'), ' '); }
+    }
+
+    // Créneau (le petit-déjeuner avant le déjeuner)
+    for (const [creneau, rx] of VOIX_REGLES.creneaux) {
+      rx.lastIndex = 0;
+      if (rx.test(t)) {
+        commande.creneau = commande.creneau || creneau;
+        t = t.replace(rx, ' ');
+      }
+    }
+
+    // Portion
+    for (const [portions, rx] of VOIX_REGLES.portions) {
+      rx.lastIndex = 0;
+      if (rx.test(t)) { commande.portions = portions; t = t.replace(rx, ' '); break; }
+    }
+    const pronom = VOIX_REGLES.pronoms.test(t);
+
+    // Il reste le nom de la recette : on nettoie les verbes et les mots vides
+    t = t.replace(VOIX_REGLES.verbesPlanifier, ' ').replace(/\b(j ai mange|j ai pris|j ai fini|mange|consomme|valide|semaine|portions?|ce|cette)\b/g, ' ');
+    const requete = t.split(/\s+/).filter((m) => m.length > 1 && !VOIX_MOTS_VIDES.has(m)).map(racineVoix);
+
+    if (requete.length) {
+      const scores = getMeals().map((meal) => {
+        const mots = normaliserNom(meal.nom).split(' ').filter((m) => m.length > 1 && !VOIX_MOTS_VIDES.has(m)).map(racineVoix);
+        let points = 0;
+        requete.forEach((q) => {
+          if (mots.includes(q)) points += 1;
+          else if (q.length >= 4 && mots.some((m) => m.length >= 4 && (m.startsWith(q) || q.startsWith(m)))) points += 0.6;
+        });
+        let score = points / requete.length;
+        if (score > 0) {
+          score += 0.1 * (points / mots.length);  // un nom court et entièrement cité est plus probable
+          // Les mots prononcés dans l'ordre, au début du nom : « les pâtes au thon » vise « Pâtes au thon… »
+          if (mots.slice(0, requete.length).join(' ') === requete.join(' ')) score += 0.2;
+          if (commande.creneau && meal.creneaux.includes(commande.creneau)) score += 0.1;
+        }
+        return { meal, score };
+      }).filter((s) => s.score >= 0.5).sort((a, b) => b.score - a.score);
+
+      commande.candidats = scores.slice(0, 3).map((s) => s.meal);
+      const [premier, second] = scores;
+      if (premier && premier.score >= 0.75 && (!second || premier.score - second.score >= 0.15)) {
+        commande.recette = premier.meal;
+      }
+    }
+
+    // « Cette recette » : la fiche ouverte à l'écran
+    if (commande.action === 'planifier' && !commande.recette && !commande.candidats.length
+      && contexte.recetteId && (pronom || !requete.length)) {
+      commande.recette = getMealById(contexte.recetteId);
+    }
+
+    // Jour par défaut : aujourd'hui
+    if (!commande.jourId && ['planifier', 'retirer', 'consommer', 'vider'].includes(commande.action)) {
+      commande.jourId = aujourdhui.id;
+      commande.jourImplicite = true;
+    }
+
+    // Pas de créneau : le premier créneau compatible encore libre ce jour-là
+    if (commande.action === 'planifier' && commande.recette && !commande.creneau) {
+      const libres = commande.recette.creneaux.filter((c) => !lireSlot(State.data.planning, commande.jourId, c));
+      commande.creneau = libres[0] || commande.recette.creneaux[0];
+      commande.creneauImplicite = true;
+    }
+    return commande;
+  }
+
+  /* =========================================================
+     7 undecies bis. COMMANDES VOCALES : NOMBRES, STOCK, SÉANCE, ENCHAÎNEMENTS
+     ========================================================= */
+
+  // Normalisation qui préserve les décimales : « 1,5 kg » -> « 1.5 kg »
+  function normaliserVoix(texte) {
+    return ` ${String(texte || '').toLowerCase().replace(/œ/g, 'oe')
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      .replace(/(\d)[.,](\d)/g, '$1_$2')
+      .replace(/[^a-z0-9_]+/g, ' ')
+      .replace(/_/g, '.')
+      .trim()} `;
+  }
+
+  // « quatre vingt dix » -> 90, « deux cent cinquante » -> 250, « deux et demi » -> 2.5
+  const NOMBRES_MOTS = {
+    zero: 0, un: 1, une: 1, deux: 2, trois: 3, quatre: 4, cinq: 5, six: 6, sept: 7, huit: 8, neuf: 9, dix: 10,
+    onze: 11, douze: 12, treize: 13, quatorze: 14, quinze: 15, seize: 16, vingt: 20, vingts: 20, trente: 30,
+    quarante: 40, cinquante: 50, soixante: 60, cent: 100, cents: 100, mille: 1000,
+  };
+  const UNITES_VOIX = /^(kilos?|kilogrammes?|kg|grammes?|g|gr|litres?|l|centilitres?|cl|millilitres?|ml|paquets?|boites?|bouteilles?|sachets?|pots?|barquettes?|pieces?|unites?|tranches?|reps?|repetitions?|fois|minutes?|min|kilometres?|km|demi|et)$/;
+
+  function motsEnChiffres(texte) {
+    const t = texte
+      .replace(/\bet demie?\b/g, ' etdemi ')
+      .replace(/\bdemie? douzaine\b/g, ' 6 ')
+      .replace(/\b(une|1) douzaine\b/g, ' 12 ')
+      .replace(/\b(un|une) demie?\b/g, ' 0.5 ')
+      .replace(/\bdemie?\b/g, ' 0.5 ');
+    const mots = t.trim().split(/\s+/);
+    const sortie = [];
+    for (let i = 0; i < mots.length; i += 1) {
+      const mot = mots[i];
+      // « un » et « une » ne sont des nombres que devant une unité : sinon ce sont des articles
+      const estArticle = (mot === 'un' || mot === 'une') && !(UNITES_VOIX.test(mots[i + 1] || '') || (mots[i + 1] in NOMBRES_MOTS));
+      if (!(mot in NOMBRES_MOTS) || estArticle) {
+        sortie.push(mot);
+        continue;
+      }
+      let total = 0;
+      let courant = 0;
+      let j = i;
+      while (j < mots.length) {
+        const m = mots[j];
+        if (m === 'et' && mots[j + 1] === 'un' && j > i) { j += 1; continue; }  // « vingt et un »
+        if (!(m in NOMBRES_MOTS)) break;
+        const v = NOMBRES_MOTS[m];
+        if (v === 100) courant = (courant || 1) * 100;
+        else if (v === 1000) { total += (courant || 1) * 1000; courant = 0; }
+        else if (v === 20 && courant === 4) courant = 80;
+        else courant += v;
+        j += 1;
+      }
+      let valeur = total + courant;
+      if (mots[j] === 'etdemi') { valeur += 0.5; j += 1; }  // « deux et demi »
+      if (mots[j] === 'douzaines' || mots[j] === 'douzaine') { valeur *= 12; j += 1; }
+      sortie.push(String(valeur));
+      i = j - 1;
+    }
+    let resultat = ` ${sortie.join(' ')} `;
+    // « deux kilos et demi » -> « 2.5 kilos »
+    resultat = resultat.replace(/ (\d+(?:\.\d+)?) (kilos?|kg|litres?|l|heures?) etdemi /g, (_, n, u) => ` ${Number(n) + 0.5} ${u} `);
+    return resultat.replace(/ etdemi /g, ' ');
+  }
+
+  /* ---- Stock à la voix ---- */
+
+  const UNITES_STOCK = [
+    [/^(kilos?|kilogrammes?|kg)$/, { facteur: 1000, type: 'masse' }],
+    [/^(grammes?|g|gr)$/, { facteur: 1, type: 'masse' }],
+    [/^(litres?|l)$/, { facteur: 1000, type: 'volume' }],
+    [/^(centilitres?|cl)$/, { facteur: 10, type: 'volume' }],
+    [/^(millilitres?|ml)$/, { facteur: 1, type: 'volume' }],
+    [/^(paquets?|boites?|bouteilles?|sachets?|pots?|barquettes?|briques?|filets?|tablettes?|packs?)$/, { type: 'conditionnement' }],
+    [/^(pieces?|unites?|tranches?)$/, { type: 'piece' }],
+  ];
+
+  function estCommandeStock(t) {
+    return /\bstock\b|\bil (me |nous )?reste\b|\bj ai achete\b|\bj ai utilise\b|\bj ai range\b|\bplus de\b.*\b(dans|au) stock\b/.test(t)
+      || (/\b\d+(\.\d+)? (kilos?|kg|grammes?|g|litres?|l|cl|ml|paquets?|boites?|bouteilles?|sachets?|pots?)\b/.test(t)
+        && !JOURS.some((j) => t.includes(` ${j.id} `)));
+  }
+
+  function analyserStock(texteBrut) {
+    let t = motsEnChiffres(normaliserVoix(texteBrut));
+    const commande = { type: 'stock', texte: texteBrut, action: 'ajouter', quantite: null, uniteDite: null, ingredient: null, candidats: [] };
+    if (/\bil (me |nous )?reste\b|\bj ai encore\b|\bmets le stock\b|\bplus que\b/.test(t)) commande.action = 'definir';
+    else if (/\b(retire|retirer|enleve|enlever|j ai utilise|utilise|consomme|supprime)\b/.test(t)) commande.action = 'retirer';
+    commande.actionExplicite = commande.action !== 'ajouter' || /\b(ajoute|ajouter|mets|range|ranger|j ai achete|achete)\b/.test(t);
+    if (/\b(plus de|il n y a plus|il ne reste plus|termine|fini)\b/.test(t) && !/\d/.test(t)) { commande.action = 'definir'; commande.quantite = 0; }
+
+    const mesure = t.match(/ (\d+(?:\.\d+)?) (\w+)? ?/);
+    if (mesure) {
+      commande.quantite = Number(mesure[1]);
+      const unite = UNITES_STOCK.find(([rx]) => rx.test(mesure[2] || ''));
+      if (unite) {
+        commande.uniteDite = unite[1];
+        t = t.replace(` ${mesure[1]} ${mesure[2]} `, ' ');
+      } else {
+        t = t.replace(` ${mesure[1]} `, ' ');
+      }
+    }
+
+    t = t.replace(/\b(ajoute|ajouter|mets|met|range|ranger|j ai achete|achete|retire|retirer|enleve|enlever|j ai utilise|utilise|il me reste|il nous reste|il reste|j ai encore|stock|au|du|dans|le|la|les|l|de|des|d|un|une|en|plus|que|n|y|a|il|ne|reste|me|mets le stock|kilos?|kilogrammes?|kg|grammes?|gr|litres?|centilitres?|cl|millilitres?|ml|paquets?|boites?|bouteilles?|sachets?|pots?|barquettes?|pieces?|unites?|tranches?|mon|ma|mes|encore|termine|fini)\b/g, ' ');
+    const requete = t.split(/\s+/).filter((m) => m.length > 1).map(racineVoix);
+    if (!requete.length) return commande;
+
+    const catalogue = getIngredients();
+    const scores = Object.entries(catalogue).map(([ref, ing]) => {
+      const mots = normaliserNom(ing.nom).split(' ').filter((m) => m.length > 1 && !VOIX_MOTS_VIDES.has(m)).map(racineVoix);
+      let points = 0;
+      requete.forEach((q) => {
+        if (mots.includes(q)) points += 1;
+        else if (q.length >= 4 && mots.some((m) => m.length >= 4 && (m.startsWith(q) || q.startsWith(m)))) points += 0.6;
+      });
+      let score = points / requete.length;
+      if (score > 0) {
+        score += 0.1 * (points / mots.length);
+        if (mots.slice(0, requete.length).join(' ') === requete.join(' ')) score += 0.15;
+        if (ref in State.data.stock) score += 0.1;  // on parle plus souvent de ce qu'on a déjà
+      }
+      return { ref, score };
+    }).filter((s) => s.score >= 0.5).sort((a, b) => b.score - a.score);
+
+    commande.candidats = scores.slice(0, 3).map((s) => s.ref);
+    const [premier, second] = scores;
+    if (premier && premier.score >= 0.75 && (!second || premier.score - second.score >= 0.15)) commande.ingredient = premier.ref;
+    // Hésitation : si un seul des candidats est déjà en stock, c'est sûrement celui-là
+    if (!commande.ingredient) {
+      const enStock = scores.slice(0, 3).filter((s) => s.score >= 0.75 && s.ref in State.data.stock);
+      if (enStock.length === 1) commande.ingredient = enStock[0].ref;
+    }
+    return commande;
+  }
+
+  // Quantité dans l'unité de l'ingrédient (g, ml ou pièces)
+  function quantiteStock(commande, ref) {
+    const ing = getIngredients()[ref];
+    const { quantite, uniteDite } = commande;
+    if (quantite === null) return { valeur: null };
+    if (uniteDite?.type === 'conditionnement') {
+      return ing.achat ? { valeur: quantite * ing.achat.quantite, precision: `${quantite} × ${formatQuantiteBrute(ing.achat.quantite, ing.unite)}` } : { valeur: null };
+    }
+    if (uniteDite?.facteur) return { valeur: quantite * uniteDite.facteur };
+    if (ing.unite === 'pièce') return { valeur: quantite };
+    // Sans unité : un petit nombre désigne des conditionnements, un grand nombre des grammes ou des ml
+    if (quantite < 10 && ing.achat) return { valeur: quantite * ing.achat.quantite, precision: `${quantite} × ${formatQuantiteBrute(ing.achat.quantite, ing.unite)}` };
+    return { valeur: quantite };
+  }
+
+  /* ---- Mode séance à la voix ---- */
+
+  function analyserSeance(texteBrut) {
+    const t = motsEnChiffres(normaliserVoix(texteBrut));
+    const commande = { type: 'seance', texte: texteBrut, action: null, poids: null, reps: null, duree: null, distance: null };
+    if (/\b(exercice )?suivant\b|\bpasse a la suite\b|\bexercice d apres\b/.test(t)) commande.action = 'suivant';
+    else if (/\b(exercice )?precedent\b|\bretour\b/.test(t)) commande.action = 'precedent';
+    else if (/\b(termine|terminer|fin de) (la )?seance\b|\bj ai fini la seance\b/.test(t)) commande.action = 'terminer';
+    else if (/\b(stop|arrete) (le )?repos\b/.test(t)) commande.action = 'stop-repos';
+    else if (/\b(lance|demarre) (le )?repos\b|^ ?repos\b/.test(t) && !/\bserie\b/.test(t)) commande.action = 'repos';
+
+    const nombre = (rx) => { const m = t.match(rx); return m ? Number(m[1]) : null; };
+    commande.poids = nombre(/ (\d+(?:\.\d+)?) (?:kilos?|kg|kilogrammes?)\b/) ?? nombre(/\ba (\d+(?:\.\d+)?)\b(?! (?:reps?|repetitions?|minutes?))/);
+    commande.reps = nombre(/ (\d+) (?:reps?|repetitions?|fois)\b/);
+    commande.duree = nombre(/ (\d+(?:\.\d+)?) (?:minutes?|min)\b/);
+    commande.distance = nombre(/ (\d+(?:\.\d+)?) (?:kilometres?|km)\b/);
+    if (commande.action === 'repos' && commande.duree) commande.reposSecondes = commande.duree * 60;
+    const secondes = nombre(/ (\d+) secondes?\b/);
+    if (commande.action === 'repos' && secondes) commande.reposSecondes = secondes;
+
+    // « 80 8 » : deux nombres sans unité, charge puis répétitions
+    if (commande.poids === null && commande.reps === null && !commande.duree && !commande.distance) {
+      const nus = [...t.matchAll(/ (\d+(?:\.\d+)?)(?= )/g)].map((m) => Number(m[1]));
+      if (nus.length >= 2) { commande.poids = nus[0]; commande.reps = nus[1]; } else if (nus.length === 1) commande.reps = nus[0];
+    }
+    if (!commande.action && (/\bserie\b|\bvalide\b|\bfait\b/.test(t) || commande.poids !== null || commande.reps !== null || commande.duree || commande.distance)) {
+      commande.action = 'serie';
+    }
+    return commande.action ? commande : null;
+  }
+
+  /* ---- Plusieurs commandes dans une seule phrase ---- */
+
+  const MOTS_JOUR = /\b(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|demain|aujourd hui)\b/g;
+
+  function decouperCommandes(texteBrut) {
+    // 1. Séparateurs explicites
+    let segments = String(texteBrut).split(/\s*(?:[,;]|\bpuis\b|\bensuite\b|\bet aussi\b|\bet apres\b)\s*/i).filter((s) => s.trim());
+    // 2. « et » entre deux commandes : chaque côté a un jour, ou chaque côté une quantité.
+    //    Pas dans « deux kilos et demi », « vingt et un », ni dans un nom de recette.
+    const aUnJour = (m) => (normaliserVoix(m).match(MOTS_JOUR) || []).length > 0;
+    const aUneQuantite = (m) => /\d/.test(motsEnChiffres(normaliserVoix(m)));
+    const DIZAINES = /^(vingt|trente|quarante|cinquante|soixante)$/i;
+    segments = segments.flatMap((s) => {
+      const mots = s.trim().split(/\s+/);
+      const coupes = [];
+      mots.forEach((m, i) => {
+        if (m.toLowerCase() !== 'et' || i === 0 || i === mots.length - 1) return;
+        const suivant = normaliserNom(mots[i + 1]);
+        if (/^demie?$/.test(suivant)) return;
+        if (DIZAINES.test(normaliserNom(mots[i - 1])) && /^une?$/.test(suivant)) return;
+        coupes.push(i);
+      });
+      if (!coupes.length) return [s];
+      // On découpe, puis on vérifie que chaque morceau ressemble bien à une commande complète
+      const morceaux = [];
+      let debut = 0;
+      coupes.forEach((i) => { morceaux.push(mots.slice(debut, i).join(' ')); debut = i + 1; });
+      morceaux.push(mots.slice(debut).join(' '));
+      const tousDates = morceaux.every(aUnJour);
+      const tousQuantites = morceaux.every(aUneQuantite) && estCommandeStock(motsEnChiffres(normaliserVoix(s)));
+      return tousDates || tousQuantites ? morceaux : [s];
+    });
+    // 3. Plusieurs jours sans séparateur : on coupe au début ou à la fin de chaque groupe « jour créneau »
+    return segments.flatMap((s) => {
+      const norm = normaliserVoix(s);
+      if ((norm.match(MOTS_JOUR) || []).length < 2) return [s];
+      const mots = s.trim().split(/\s+/);
+      const estJour = (m) => /^(lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|demain)$/i.test(normaliserNom(m));
+      const estCreneau = (m) => /^(matin|midi|soir|gouter|collation|diner|dejeuner)$/i.test(normaliserNom(m));
+      const coupesAvant = [];
+      const coupesApres = [];
+      mots.forEach((m, i) => {
+        if (estJour(m) && i > 0) coupesAvant.push(i);
+        if (estJour(m) || estCreneau(m)) {
+          const fin = estCreneau(mots[i + 1] || '') ? i + 2 : i + 1;
+          if (estJour(m) && fin < mots.length) coupesApres.push(fin);
+        }
+      });
+      const decouper = (coupes) => [0, ...coupes, mots.length].reduce((acc, debut, k, tab) => (
+        k < tab.length - 1 ? [...acc, mots.slice(debut, tab[k + 1]).join(' ')] : acc), []).filter(Boolean);
+      const note = (parts) => parts.reduce((s, p) => {
+        const c = analyserCommande(p);
+        return s + (c.recette ? 2 : c.candidats.length ? 1 : 0) + (c.jourImplicite ? 0 : 1);
+      }, 0) / parts.length;
+      const options = [decouper(coupesAvant), decouper(coupesApres)].filter((o) => o.length >= 2);
+      if (!options.length) return [s];
+      return options.sort((a, b) => note(b) - note(a))[0];
+    });
+  }
+
+  /* =========================================================
+     7 terdecies. RÉPONSE VOCALE (synthèse vocale du navigateur)
+     ========================================================= */
+  const Parole = {
+    deverrouille: false,
+    MODES: [['jamais', 'Désactivée'], ['seance', 'En séance'], ['toujours', 'Toujours']],
+
+    disponible() {
+      return typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance !== 'undefined';
+    },
+
+    mode() { return State.data.ui.reponseVocale || 'seance'; },
+
+    autorise(contexte) {
+      const mode = this.mode();
+      return mode === 'toujours' || (mode === 'seance' && contexte === 'seance');
+    },
+
+    voixFrancaise() {
+      const voix = window.speechSynthesis.getVoices?.() || [];
+      return voix.find((v) => /^fr[-_]FR/i.test(v.lang) && v.localService)
+        || voix.find((v) => /^fr[-_]FR/i.test(v.lang))
+        || voix.find((v) => /^fr/i.test(v.lang))
+        || null;
+    },
+
+    // Sur iPhone, la première lecture doit suivre un geste de l'utilisateur :
+    // on « amorce » la synthèse au démarrage d'une séance ou à l'ouverture du micro.
+    deverrouiller() {
+      if (!this.disponible() || this.deverrouille) return;
+      try {
+        const amorce = new SpeechSynthesisUtterance(' ');
+        amorce.volume = 0;
+        window.speechSynthesis.speak(amorce);
+        this.deverrouille = true;
+      } catch (e) { /* synthèse indisponible */ }
+    },
+
+    dire(texte, contexte = 'general') {
+      if (!texte || !this.disponible() || !this.autorise(contexte)) return;
+      try {
+        window.speechSynthesis.cancel();
+        const phrase = new SpeechSynthesisUtterance(texte);
+        phrase.lang = 'fr-FR';
+        const voix = this.voixFrancaise();
+        if (voix) phrase.voice = voix;
+        phrase.rate = 1.05;
+        window.speechSynthesis.speak(phrase);
+      } catch (e) { /* synthèse indisponible */ }
+    },
+
+    // 90 -> « 1 minute 30 », 120 -> « 2 minutes », 45 -> « 45 secondes »
+    duree(secondes) {
+      const m = Math.floor(secondes / 60);
+      const s = Math.round(secondes % 60);
+      if (!m) return `${s} secondes`;
+      return `${m} minute${m > 1 ? 's' : ''}${s ? ` ${s}` : ''}`;
+    },
+
+    nombre(n) { return nfMesure.format(n); },
+
+    // Ce qui vient après le repos : la prochaine série, ou l'exercice suivant
+    annonceSuite() {
+      const lignes = ModeSeance.exercices();
+      const ligne = lignes[ModeSeance.index];
+      const exercice = getExerciceById(ligne?.id);
+      if (!exercice) return 'Repos terminé.';
+      const series = Seances.seriesAffichees(ligne);
+      const index = series.findIndex((s) => !s.fait);
+      if (index === -1) {
+        const suivante = lignes[ModeSeance.index + 1];
+        return suivante
+          ? `Repos terminé. ${exercice.nom} est fini. Exercice suivant : ${getExerciceById(suivante.id).nom}.`
+          : 'Repos terminé. Dernier exercice fini : bravo.';
+      }
+      const precedente = series[index - 1];
+      const serie = series[index];
+      const poids = serie.poids ?? precedente?.poids;
+      const reps = serie.reps ?? ligne.reps;
+      const detail = exercice.type === 'cardio' ? '' : `${poids ? `, ${this.nombre(poids)} kilos` : ''}${reps ? `, ${reps} répétitions` : ''}`;
+      return `Repos terminé. Série ${index + 1} de ${exercice.nom}${detail}.`;
+    },
+  };
+
+  /* =========================================================
+     7 duodecies. COMMANDES VOCALES : BOUTON, ÉCOUTE ET EXÉCUTION
+     ========================================================= */
+  const Voix = {
+    reconnaissance: null,
+    etat: 'attente',        // attente | ecoute | resultat | erreur
+    transcription: '',
+    resultat: null,         // { lignes, choix, avant, suite, message }
+
+    disponible() {
+      return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+    },
+
+    init() {
+      this.dialog = $('modale-voix');
+      $('voix-bouton').addEventListener('click', () => this.ouvrir());
+      this.dialog.addEventListener('click', (e) => this.onClick(e));
+      this.dialog.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const champ = $('voix-texte');
+        if (champ?.value.trim()) this.traiter([champ.value.trim()]);
+      });
+      this.dialog.addEventListener('close', () => { this.arreter(); clearTimeout(this.fermetureAuto); });
+    },
+
+    // Recette affichée à l'écran : cible de « cette recette »
+    contexte() {
+      if (DetailRecette.dialog?.open) return { recetteId: DetailRecette.id };
+      if (Modale.dialog?.open && Modale.contexte) {
+        const slot = lireSlot(State.data.planning, Modale.contexte.jourId, Modale.contexte.creneau);
+        if (slot) return { recetteId: slot.meal.id };
+      }
+      return {};
+    },
+
+    enSeance() { return !!ModeSeance.dialog?.open; },
+
+    ouvrir() {
+      Parole.deverrouiller();
+      this.contexteOuverture = this.contexte();
+      this.etat = 'attente';
+      this.transcription = '';
+      this.resultat = null;
+      this.render();
+      if (!this.dialog.open) this.dialog.showModal();
+      if (this.disponible()) this.ecouter();
+      else $('voix-texte')?.focus();
+    },
+
+    ecouter() {
+      const Reconnaissance = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Reconnaissance) return;
+      this.arreter();
+      clearTimeout(this.fermetureAuto);
+      const rec = new Reconnaissance();
+      rec.lang = 'fr-FR';
+      rec.interimResults = true;
+      rec.maxAlternatives = 3;
+      rec.continuous = false;
+      this.reconnaissance = rec;
+      this.etat = 'ecoute';
+      this.transcription = '';
+      this.render();
+      navigator.vibrate?.(30);
+
+      rec.onresult = (e) => {
+        const resultat = e.results[e.results.length - 1];
+        this.transcription = Array.from(e.results).map((r) => r[0].transcript).join(' ');
+        this.majTranscription();
+        if (resultat.isFinal) this.traiter(Array.from(resultat).map((a) => a.transcript));
+      };
+      rec.onerror = (e) => {
+        const messages = {
+          'not-allowed': "L'accès au micro est refusé. Autorise-le dans les réglages du navigateur, ou tape ta commande ci-dessous.",
+          'service-not-allowed': "La reconnaissance vocale n'est pas disponible ici. Tape ta commande ci-dessous.",
+          'no-speech': "Je n'ai rien entendu. Touche le micro et parle après le signal.",
+          network: "La reconnaissance vocale a besoin d'une connexion. Tape ta commande ci-dessous.",
+          'audio-capture': 'Aucun micro détecté. Tape ta commande ci-dessous.',
+        };
+        if (e.error === 'aborted') return;
+        this.erreur(messages[e.error] || 'La reconnaissance vocale a échoué. Réessaie, ou tape ta commande.');
+      };
+      rec.onend = () => {
+        this.reconnaissance = null;
+        if (this.etat === 'ecoute') { this.etat = 'attente'; this.render(); }
+      };
+      try { rec.start(); } catch (e) { this.erreur('Impossible de démarrer le micro. Tape ta commande ci-dessous.'); }
+    },
+
+    arreter() {
+      try { this.reconnaissance?.abort(); } catch (e) { /* déjà arrêtée */ }
+      this.reconnaissance = null;
+    },
+
+    erreur(message) {
+      this.etat = 'erreur';
+      this.resultat = { message };
+      this.render();
+    },
+
+    /* ---- Analyse : une phrase peut contenir plusieurs commandes ---- */
+
+    analyserTout(texte) {
+      if (this.enSeance()) {
+        const commande = analyserSeance(texte);
+        if (commande) return { texte, commandes: [commande], note: 10 };
+      }
+      let precedentStock = false;
+      const commandes = decouperCommandes(texte).map((segment) => {
+        const norm = motsEnChiffres(normaliserVoix(segment));
+        // Dans une énumération de stock, « 6 œufs » reste du stock, pas la recette aux œufs
+        const suiteDeStock = precedentStock && /\d/.test(norm) && !(norm.match(MOTS_JOUR) || []).length;
+        const stock = estCommandeStock(norm) || suiteDeStock;
+        precedentStock = stock;
+        return stock ? analyserStock(segment) : analyserCommande(segment, this.contexteOuverture || {});
+      });
+      // « Il reste 2 kilos de riz et 6 œufs » : le second morceau hérite de l'action du premier
+      let derniereStock = null;
+      let dernierePlanning = null;
+      commandes.forEach((c) => {
+        if (c.type === 'stock') {
+          if (!c.actionExplicite && derniereStock) c.action = derniereStock;
+          derniereStock = c.action;
+        } else {
+          if (!c.actionExplicite && dernierePlanning && ['retirer', 'vider', 'consommer'].includes(dernierePlanning) && !c.recette) c.action = dernierePlanning;
+          dernierePlanning = c.action;
+        }
+      });
+      const noteCommande = (c) => {
+        if (c.type === 'stock') return (c.ingredient ? 3 : c.candidats.length ? 2 : 0) + (c.quantite !== null ? 1 : 0);
+        return (c.recette ? 3 : c.candidats.length ? 2 : 0) + (c.creneau ? 1 : 0) + (c.jourImplicite ? 0 : 1)
+          + (['retirer', 'vider', 'proposer', 'consommer'].includes(c.action) ? 3 : 0);
+      };
+      return { texte, commandes, note: commandes.reduce((s, c) => s + noteCommande(c), 0) / commandes.length };
+    },
+
+    // Parmi les transcriptions proposées, on garde celle qui se comprend le mieux
+    traiter(phrases) {
+      this.arreter();
+      const meilleure = phrases.map((p) => this.analyserTout(p)).sort((a, b) => b.note - a.note)[0];
+      this.transcription = meilleure.texte;
+      this.executerTout(meilleure.commandes);
+    },
+
+    libelleCreneau(jourId, creneau) {
+      const jour = JOURS.find((j) => j.id === jourId);
+      return `${jour.label.toLowerCase()} ${CRENEAUX[creneau].toLowerCase()}`;
+    },
+
+    instantane() {
+      const { planning, stock, stockHistorique, suivi } = State.data;
+      return structuredClone({ planning, stock, stockHistorique, suivi });
+    },
+
+    /* ---- Exécution ---- */
+
+    executerTout(commandes) {
+      // Commandes qui quittent la feuille : séance, proposition de semaine, repas validé
+      if (commandes.length === 1) {
+        const [c] = commandes;
+        if (c.type === 'seance') { this.executerSeance(c); return; }
+        if (c.action === 'proposer') {
+          this.dialog.close();
+          Router.aller('repas', 'planning');
+          Planning.proposer();
+          return;
+        }
+      }
+
+      const avant = this.instantane();
+      const lignes = [];
+      const choix = [];
+      let suite = null;
+
+      commandes.forEach((c, index) => {
+        const retour = c.type === 'stock' ? this.executerStock(c) : this.executerPlanning(c, commandes.length === 1);
+        if (retour.choix) choix.push({ index, commande: c });
+        else lignes.push(retour);
+        if (retour.suite) suite = retour.suite;
+      });
+
+      this.etat = lignes.some((l) => l.ok) || choix.length ? 'resultat' : 'erreur';
+      this.resultat = { lignes, choix, avant, suite, message: lignes.length === 1 && !choix.length ? lignes[0].message : null };
+      if (lignes.some((l) => l.ok)) navigator.vibrate?.([20, 40, 20]);
+      const reussies = lignes.filter((l) => l.ok).length;
+      Parole.dire(lignes.length === 1 && !choix.length
+        ? lignes[0].message.replace(/ × /g, ' fois ')
+        : `${reussies ? `${pluriel(reussies, 'commande effectuée', 'commandes effectuées')}.` : ''}${choix.length ? ' Plusieurs possibilités : choisis à l\'écran.' : ''}${lignes.length - reussies ? ` ${pluriel(lignes.length - reussies, 'commande non comprise', 'commandes non comprises')}.` : ''}`);
+      this.render();
+    },
+
+    executerPlanning(c, seule) {
+      const jour = JOURS.find((j) => j.id === c.jourId);
+
+      if (c.action === 'consommer') {
+        const cible = c.creneau || Object.keys(CRENEAUX).find((x) => lireSlot(State.data.planning, c.jourId, x) && !State.data.suivi.repas[`${c.jourId}|${x}`]);
+        if (!cible || !lireSlot(State.data.planning, c.jourId, cible)) {
+          return { ok: false, message: `Aucun repas à valider ${jour.label.toLowerCase()}${c.creneau ? ` ${CRENEAUX[c.creneau].toLowerCase()}` : ''}.` };
+        }
+        const slot = lireSlot(State.data.planning, c.jourId, cible);
+        const lignesConso = consommationRepas(slot.meal, slot.portions);
+        const fournee = Stock.fourneeDeduitePour(slot.meal, c.jourId);
+        State.update((d) => { d.suivi.repas[`${c.jourId}|${cible}`] = { date: dateISO(), deduit: !fournee }; });
+        if (!fournee) Stock.appliquer(lignesConso, `${slot.meal.nom}, ${this.libelleCreneau(c.jourId, cible)}`);
+        return { ok: true, message: `Repas validé ${this.libelleCreneau(c.jourId, cible)} : ${slot.meal.nom}${fournee ? ' (déjà déduit avec la fournée)' : ', stock mis à jour'}.` };
+      }
+
+      if (c.action === 'vider' || (c.action === 'retirer' && !c.creneau)) {
+        const nb = Planning.nbRepas(State.data.planning, c.jourId);
+        if (!nb) return { ok: false, message: `Le planning du ${jour.label.toLowerCase()} est déjà vide.` };
+        State.update((d) => { delete d.planning[c.jourId]; });
+        return { ok: true, message: `${jour.label} vidé : ${pluriel(nb, 'repas retiré', 'repas retirés')}.` };
+      }
+
+      if (c.action === 'retirer') {
+        const slot = lireSlot(State.data.planning, c.jourId, c.creneau);
+        if (!slot) return { ok: false, message: `Rien n'est prévu ${this.libelleCreneau(c.jourId, c.creneau)}.` };
+        State.update((d) => {
+          delete d.planning[c.jourId]?.[c.creneau];
+          delete d.suivi.repas[`${c.jourId}|${c.creneau}`];
+        });
+        return { ok: true, message: `Créneau du ${this.libelleCreneau(c.jourId, c.creneau)} libéré (c'était : ${slot.meal.nom}).` };
+      }
+
+      if (!c.recette) {
+        if (c.candidats.length) return { choix: true };
+        return { ok: false, message: `Recette non reconnue dans « ${c.texte} ».` };
+      }
+      return this.planifier(c.recette, c.jourId, c.creneau, c.portions, c, seule);
+    },
+
+    planifier(recette, jourId, creneau, portions, commande = {}, avecSuite = true) {
+      const remplace = lireSlot(State.data.planning, jourId, creneau);
+      State.update((d) => {
+        d.planning[jourId] ??= {};
+        d.planning[jourId][creneau] = { id: recette.id, portions };
+        delete d.suivi.repas[`${jourId}|${creneau}`];
+      });
+      const precisions = [];
+      if (commande.jourImplicite) precisions.push("aujourd'hui, faute de jour précisé");
+      if (commande.creneauImplicite) precisions.push('premier créneau libre compatible');
+      const message = `Au planning ${this.libelleCreneau(jourId, creneau)} : ${recette.nom}${portions !== 1 ? ` (${formatPortion(portions)})` : ''}`
+        + (remplace && remplace.meal.id !== recette.id ? `, à la place de ${remplace.meal.nom}` : '')
+        + (precisions.length ? ` (${precisions.join(', ')})` : '') + '.';
+
+      let suite = null;
+      if (avecSuite && recette.portions >= 2 && portions === 1) {
+        const cibles = Planning.creneauxLibres(jourId, creneau, recette, recette.portions - 1);
+        if (cibles.length) {
+          suite = {
+            libelle: `Placer ${cibles.length > 1 ? `les ${cibles.length} autres portions` : 'la 2e portion'} (${cibles.map((x) => x.label).join(', ')})`,
+            action: () => {
+              State.update((d) => cibles.forEach(({ jourId: j, creneau: x }) => {
+                d.planning[j] ??= {};
+                d.planning[j][x] = { id: recette.id, portions: 1 };
+              }));
+              this.resultat.lignes.push({ ok: true, message: `${pluriel(cibles.length, 'portion placée', 'portions placées')} : ${cibles.map((x) => x.label).join(', ')}.` });
+              this.resultat.suite = null;
+              this.render();
+            },
+          };
+        }
+      }
+      return { ok: true, message, suite };
+    },
+
+    executerStock(c, refChoisie = null) {
+      const ref = refChoisie || c.ingredient;
+      if (!ref) {
+        if (c.candidats.length) return { choix: true };
+        return { ok: false, message: `Ingrédient non reconnu dans « ${c.texte} ».` };
+      }
+      const ing = getIngredients()[ref];
+      const { valeur, precision } = quantiteStock(c, ref);
+      if (valeur === null) return { ok: false, message: `Quelle quantité de ${ing.nom} ? Dis par exemple « deux kilos » ou « un paquet ».` };
+
+      const actuel = stockDisponible(ref);
+      let delta = valeur;
+      if (c.action === 'definir') delta = valeur - actuel;
+      else if (c.action === 'retirer') delta = -valeur;
+      const details = Stock.appliquer([{ ref, quantite: Math.abs(delta) }],
+        `Commande vocale, ${ing.nom}`, { sens: delta >= 0 ? 1 : -1 });
+      const apres = details[0].apres;
+      return {
+        ok: true,
+        message: `Stock de ${ing.nom} : ${Stock.quantite(ref, arrondiStock(actuel))} → ${Stock.quantite(ref, apres)}${precision ? ` (${precision})` : ''}.`,
+      };
+    },
+
+    executerSeance(c) {
+      const lignes = ModeSeance.exercices();
+      const ligne = lignes[ModeSeance.index];
+      const exercice = getExerciceById(ligne?.id);
+      let message = '';
+      let oral = '';
+
+      if (c.action === 'suivant' || c.action === 'precedent') {
+        ModeSeance.index = Math.min(lignes.length - 1, Math.max(0, ModeSeance.index + (c.action === 'suivant' ? 1 : -1)));
+        ModeSeance.render();
+        message = `Exercice ${ModeSeance.index + 1} sur ${lignes.length} : ${getExerciceById(lignes[ModeSeance.index].id).nom}.`;
+        const ligneSuivante = lignes[ModeSeance.index];
+        oral = `${message} ${ligneSuivante.series} séries${ligneSuivante.reps ? ` de ${ligneSuivante.reps}` : ''}.`;
+      } else if (c.action === 'terminer') {
+        this.dialog.close();
+        ModeSeance.fermer();
+        Toast.afficher('Séance terminée, bravo. Tout est enregistré.');
+        Parole.dire('Séance terminée, bravo. Tout est enregistré.', 'seance');
+        return;
+      } else if (c.action === 'repos') {
+        ModeSeance.lancerRepos(c.reposSecondes || State.data.ui.reposDefaut);
+        message = `Repos lancé : ${Cuisine.format(c.reposSecondes || State.data.ui.reposDefaut)}.`;
+        oral = `Repos, ${Parole.duree(c.reposSecondes || State.data.ui.reposDefaut)}.`;
+      } else if (c.action === 'stop-repos') {
+        ModeSeance.actionRepos('stop');
+        message = 'Repos arrêté.';
+      } else if (c.action === 'serie' && exercice) {
+        const cardio = exercice.type === 'cardio';
+        let series = Seances.seriesAffichees(ligne);
+        let index = series.findIndex((s) => !s.fait);
+        if (index === -1) { Seances.ajouterSerie(ligne.id); series = Seances.seriesAffichees(ligne); index = series.length - 1; }
+        const valeurs = cardio ? { duree: c.duree, distance: c.distance } : { poids: c.poids, reps: c.reps };
+        Object.entries(valeurs).forEach(([cle, v]) => { if (v !== null && v !== undefined) Seances.majSerie(ligne.id, index, cle, v); });
+        const serie = Seances.seriesAffichees(ligne)[index];
+        ModeSeance.validerSerie(ligne.id, index);
+        message = cardio
+          ? `${exercice.nom} : ${serie.duree || '?'} min, ${nfMesure.format(serie.distance || 0)} km, validé.`
+          : `Série ${index + 1} de ${exercice.nom} validée : ${nfMesure.format(serie.poids || 0)} kg × ${serie.reps || 0}. Repos lancé.`;
+        oral = cardio
+          ? `${serie.duree || 0} minutes, ${Parole.nombre(serie.distance || 0)} kilomètres, c'est noté.`
+          : `Série ${index + 1} validée : ${Parole.nombre(serie.poids || 0)} kilos, ${serie.reps || 0} répétitions. Repos, ${Parole.duree(State.data.ui.reposDefaut)}.`;
+      } else {
+        this.erreur("Je n'ai pas compris. Dis par exemple « 80 kilos, 8 répétitions » ou « exercice suivant ».");
+        Parole.dire("Je n'ai pas compris.", 'seance');
+        return;
+      }
+
+      this.etat = 'resultat';
+      this.resultat = { lignes: [{ ok: true, message }], choix: [], avant: null, message };
+      navigator.vibrate?.([20, 40, 20]);
+      Parole.dire(oral || message, 'seance');
+      this.render();
+      // En salle, on referme vite pour revenir à la séance
+      clearTimeout(this.fermetureAuto);
+      this.fermetureAuto = setTimeout(() => { if (this.dialog.open && this.etat === 'resultat') this.dialog.close(); }, 2200);
+    },
+
+    onClick(e) {
+      if (e.target === this.dialog) { this.dialog.close(); return; }
+      const bouton = e.target.closest('button');
+      if (!bouton) return;
+      const ds = bouton.dataset;
+      if (ds.reponseVocale) {
+        State.update((d) => { d.ui.reponseVocale = ds.reponseVocale; });
+        this.render();
+        if (ds.reponseVocale !== 'jamais') Parole.dire('Réponse vocale activée.', 'seance');
+        return;
+      }
+      if ('voixFermer' in ds) this.dialog.close();
+      else if ('voixEcouter' in ds) this.ecouter();
+      else if ('voixAnnuler' in ds) {
+        const avant = this.resultat?.avant;
+        if (avant) State.update((d) => { Object.assign(d, structuredClone(avant)); });
+        this.etat = 'attente';
+        this.resultat = { annule: true };
+        this.render();
+      } else if ('voixSuite' in ds) {
+        this.resultat?.suite?.action();
+      } else if (ds.voixChoix) {
+        const [index, id] = ds.voixChoix.split('|');
+        const attente = this.resultat.choix.find((x) => String(x.index) === index);
+        if (!attente) return;
+        const c = attente.commande;
+        let retour;
+        if (c.type === 'stock') retour = this.executerStock(c, id);
+        else {
+          const recette = getMealById(id);
+          const creneau = c.creneau || recette.creneaux.find((x) => !lireSlot(State.data.planning, c.jourId, x)) || recette.creneaux[0];
+          retour = this.planifier(recette, c.jourId, creneau, c.portions, { ...c, creneauImplicite: !c.creneau }, this.resultat.choix.length === 1 && !this.resultat.lignes.length);
+        }
+        this.resultat.choix = this.resultat.choix.filter((x) => x !== attente);
+        this.resultat.lignes.push(retour);
+        if (retour.suite) this.resultat.suite = retour.suite;
+        this.render();
+      } else if (ds.voixExemple) {
+        $('voix-texte').value = ds.voixExemple;
+        this.traiter([ds.voixExemple]);
+      }
+    },
+
+    majTranscription() {
+      const zone = $('voix-transcription');
+      if (zone) zone.textContent = this.transcription || "Je t'écoute…";
+    },
+
+    render() {
+      const bouton = (attributs, texte, principal = false) => `
+        <button type="button" ${attributs}
+                class="rounded-full px-4 py-2.5 text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus ${principal ? 'bg-basilic text-white hover:bg-accentfort' : 'ring-1 ring-encre/15 hover:bg-sauge'}">${texte}</button>`;
+      const seance = this.enSeance();
+      const exemples = seance
+        ? ['80 kilos, 8 répétitions', 'Série validée', 'Exercice suivant', 'Repos 2 minutes']
+        : ['Lundi midi les lasagnes, mardi soir le chili', 'Mets le chili mardi soir en double portion', 'Ajoute deux kilos de riz au stock', "J'ai mangé mon petit-déjeuner"];
+      const ecoute = this.etat === 'ecoute';
+      const r = this.resultat || {};
+      let corps = '';
+
+      if (this.etat === 'resultat') {
+        corps = `
+          <ul class="space-y-2">
+            ${(r.lignes || []).map((l) => `
+              <li class="rounded-2xl p-3 text-sm ring-1 ${l.ok ? 'bg-basilic/10 ring-basilic/30' : 'bg-lip/10 ring-lip/30'}">
+                <span class="font-semibold">${l.ok ? '✓' : '!'}</span> ${esc(l.message)}
+              </li>`).join('')}
+          </ul>
+          ${(r.choix || []).map(({ index, commande: c }) => `
+            <div class="space-y-2">
+              <p class="text-sm text-pierre">« ${esc(c.texte)} » : plusieurs ${c.type === 'stock' ? 'ingrédients' : 'recettes'} correspondent.</p>
+              <div class="grid gap-2">
+                ${c.candidats.map((id) => {
+                  const nom = c.type === 'stock' ? getIngredients()[id]?.nom : getMealById(id.id || id)?.nom;
+                  const cle = c.type === 'stock' ? id : (id.id || id);
+                  const detail = c.type === 'stock'
+                    ? `En stock : ${Stock.quantite(cle, stockDisponible(cle))}`
+                    : `${nf0.format(getMealById(cle).macros.calories)} kcal par portion`;
+                  return `
+                    <button type="button" data-voix-choix="${index}|${cle}"
+                            class="rounded-2xl bg-carte px-4 py-3 text-left ring-1 ring-encre/15 hover:ring-focus focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">
+                      <span class="block font-semibold">${esc(nom || cle)}</span>
+                      <span class="block text-xs text-pierre">${detail}</span>
+                    </button>`;
+                }).join('')}
+              </div>
+            </div>`).join('')}
+          <div class="flex flex-wrap gap-2">
+            ${r.suite ? bouton('data-voix-suite', esc(r.suite.libelle), true) : ''}
+            ${r.avant && (r.lignes || []).some((l) => l.ok) ? bouton('data-voix-annuler', (r.lignes || []).filter((l) => l.ok).length > 1 ? 'Tout annuler' : 'Annuler') : ''}
+          </div>`;
+      } else if (this.etat === 'erreur') {
+        const lignes = r.lignes?.length ? r.lignes.map((l) => l.message).join(' ') : r.message;
+        corps = `<div class="rounded-2xl bg-lip/10 p-4 text-sm ring-1 ring-lip/30">${esc(lignes || '')}</div>`;
+      } else if (!ecoute) {
+        corps = `
+          <div>
+            <p class="text-sm text-pierre">${seance ? 'En séance, par exemple :' : 'Par exemple :'}</p>
+            <div class="mt-2 flex flex-wrap gap-2">
+              ${exemples.map((e) => `<button type="button" data-voix-exemple="${esc(e)}" class="rounded-full bg-sauge px-3 py-1.5 text-left text-xs font-semibold hover:bg-sauge/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">« ${esc(e)} »</button>`).join('')}
+            </div>
+          </div>
+          ${r.annule ? '<p class="text-sm text-pierre">Commande annulée : tout est revenu à l\'état précédent.</p>' : ''}`;
+      }
+
+      $('voix-contenu').innerHTML = `
+        <header class="flex items-center justify-between gap-3">
+          <h2 id="voix-titre" class="text-lg font-extrabold">${seance ? 'Commande vocale, en séance' : 'Commande vocale'}</h2>
+          <button type="button" data-voix-fermer aria-label="Fermer"
+                  class="grid h-10 w-10 place-items-center rounded-full text-xl hover:bg-sauge focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">×</button>
+        </header>
+
+        <div class="flex items-center gap-4">
+          <button type="button" data-voix-ecouter ${this.disponible() ? '' : 'disabled'}
+                  aria-label="${ecoute ? 'Écoute en cours' : 'Parler'}"
+                  class="relative grid h-16 w-16 shrink-0 place-items-center rounded-full text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-focus disabled:opacity-40 ${ecoute ? 'bg-lip' : 'bg-basilic hover:bg-accentfort'}">
+            ${ecoute ? '<span class="absolute inset-0 animate-ping rounded-full bg-lip/40" aria-hidden="true"></span>' : ''}
+            <svg viewBox="0 0 24 24" class="relative h-7 w-7" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="9" y="3" width="6" height="11" rx="3" /><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke-linecap="round" />
+            </svg>
+          </button>
+          <p id="voix-transcription" aria-live="polite" class="min-w-0 flex-1 text-lg font-semibold leading-snug ${this.transcription ? '' : 'text-pierre'}">
+            ${esc(this.transcription || (ecoute ? "Je t'écoute…" : this.disponible() ? 'Touche le micro et parle.' : 'Tape ta commande ci-dessous.'))}
+          </p>
+        </div>
+
+        ${corps}
+
+        <form class="flex gap-2 border-t border-encre/10 pt-4">
+          <label class="min-w-0 flex-1">
+            <span class="sr-only">Commande écrite</span>
+            <input type="text" id="voix-texte" autocomplete="off" placeholder="${seance ? 'Ou écris : 80 kg 8 reps' : 'Ou écris : lundi midi lasagnes'}"
+                   class="w-full rounded-xl bg-sauge/60 px-3 py-2.5 text-sm ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus" />
+          </label>
+          <button type="submit" class="rounded-full bg-panneau px-4 py-2.5 text-sm font-semibold text-surpanneau hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Valider</button>
+        </form>
+        ${this.disponible() ? '' : '<p class="text-xs text-pierre">Ton navigateur ne propose pas la reconnaissance vocale : la commande écrite fonctionne de la même façon.</p>'}
+        ${Parole.disponible() ? `
+          <div class="flex flex-wrap items-center justify-between gap-2 text-sm">
+            <span class="text-pierre">Réponse vocale</span>
+            <div class="flex rounded-full bg-sauge p-1" role="group" aria-label="Réponse vocale">
+              ${Parole.MODES.map(([id, label]) => `
+                <button type="button" data-reponse-vocale="${id}" aria-pressed="${Parole.mode() === id}"
+                        class="rounded-full px-3 py-1 text-xs font-semibold aria-pressed:bg-carte aria-pressed:shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">${label}</button>`).join('')}
+            </div>
+          </div>` : ''}`;
     },
   };
 
@@ -8493,6 +9902,40 @@
   const CLASSE_CHAMP = 'w-full rounded-xl bg-carte px-3 py-2.5 ring-1 ring-encre/15 outline-none focus:ring-2 focus:ring-focus aria-[invalid=true]:ring-2 aria-[invalid=true]:ring-lip';
 
   const Recettes = {
+    // Bibliothèque v5 : recettes d'exemple révisées que l'utilisateur avait modifiées
+    renderRevision() {
+      const zone = $('recettes-revision');
+      const aRevoir = (State.data.recettesARevoir || []).filter((id) => getMealById(id));
+      const misesAJour = State.data.recettesMisesAJour || 0;
+      if (!aRevoir.length && !misesAJour) { zone.hidden = true; return; }
+      zone.hidden = false;
+      const plusieurs = aRevoir.length > 1;
+      zone.innerHTML = `
+        <p class="font-semibold">Les recettes ont été révisées : ingrédients complets (assaisonnements compris) et étapes détaillées.</p>
+        <p class="mt-1">${misesAJour ? `${pluriel(misesAJour, 'recette mise à jour automatiquement', 'recettes mises à jour automatiquement')}. ` : ''}${aRevoir.length
+          ? `${pluriel(aRevoir.length, 'recette a', 'recettes ont')} une version révisée, mais ${plusieurs ? 'elles diffèrent' : 'elle diffère'} de l'ancienne version (modifiée par toi, ou copiée depuis une version plus ancienne) : ${aRevoir.slice(0, 4).map((id) => esc(getMealById(id).nom)).join(', ')}${aRevoir.length > 4 ? '…' : ''}.`
+          : ''}</p>
+        <div class="mt-3 flex flex-wrap gap-2">
+          ${aRevoir.length ? `<button type="button" data-revision="appliquer" class="rounded-full bg-panneau px-4 py-2 font-semibold text-surpanneau hover:bg-accentfort focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">Mettre ${plusieurs ? `ces ${aRevoir.length} recettes` : 'cette recette'} à jour</button>` : ''}
+          <button type="button" data-revision="fermer" class="rounded-full px-4 py-2 font-semibold ring-1 ring-nuit/20 hover:bg-carte/40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-focus">${aRevoir.length ? 'Garder mes versions' : 'Compris'}</button>
+        </div>`;
+    },
+
+    appliquerRevision() {
+      const aRevoir = new Set(State.data.recettesARevoir || []);
+      const revisees = new Map(RECETTES_EXEMPLES.map((r) => [r.id, r]));
+      const avant = structuredClone(State.data.recettes);
+      State.update((d) => {
+        d.recettes = d.recettes.map((r) => (aRevoir.has(r.id) && revisees.has(r.id) ? structuredClone(revisees.get(r.id)) : r));
+        d.recettesARevoir = [];
+        d.recettesMisesAJour = 0;
+      });
+      Toast.afficher(`${pluriel(aRevoir.size, 'recette mise à jour', 'recettes mises à jour')}.`, {
+        action: 'Annuler',
+        onAction: () => State.update((d) => { d.recettes = avant; d.recettesARevoir = [...aRevoir]; }),
+      });
+    },
+
     filtre: { texte: '', creneau: null },
 
     init() {
@@ -8511,6 +9954,12 @@
       $('btn-nouvelle-recette').addEventListener('click', () => EditeurRecette.ouvrir());
       $('btn-nouvel-ingredient').addEventListener('click', () => EditeurIngredient.ouvrir());
 
+      $('recettes-revision').addEventListener('click', (e) => {
+        const bouton = e.target.closest('[data-revision]');
+        if (!bouton) return;
+        if (bouton.dataset.revision === 'appliquer') this.appliquerRevision();
+        else State.update((d) => { d.recettesARevoir = []; d.recettesMisesAJour = 0; });
+      });
       $('recettes-liste').addEventListener('click', (e) => {
         const bouton = e.target.closest('[data-action-recette]');
         if (!bouton) return;
@@ -8615,6 +10064,7 @@
       const toutes = [...getMeals()].sort((a, b) => a.nom.localeCompare(b.nom, 'fr'));
       const visibles = toutes.filter((m) => this.correspond(m));
 
+      this.renderRevision();
       $('recettes-compte').textContent = visibles.length === toutes.length
         ? `${pluriel(toutes.length, 'recette')}, macros calculées à partir des ingrédients.`
         : `${visibles.length} sur ${pluriel(toutes.length, 'recette')}.`;
@@ -10606,6 +12056,7 @@
   function genererListeCourses(planning, { parFournees = true } = {}) {
     const catalogue = getIngredients();
     const articles = new Map();
+    const basiques = new Set();
     const { sessions, nbRepas } = sessionsCuisine(planning);
 
     sessions.forEach(({ meal, portions, repas, fournees }) => {
@@ -10618,6 +12069,12 @@
       meal.ingredients.forEach(({ ref, quantite }) => {
         const ingredient = catalogue[ref];
         if (!ingredient) return;
+        // Sel, poivre, épices : un pot dure des semaines. On ne les rachète que si le stock est sous le seuil.
+        const ligneStock = State.data.stock?.[ref];
+        if (ingredient.placard && !(ligneStock && ligneStock.seuil > 0 && ligneStock.quantite < ligneStock.seuil)) {
+          basiques.add(ingredient.nom);
+          return;
+        }
         if (!articles.has(ref)) {
           articles.set(ref, { ref, nom: ingredient.nom, unite: ingredient.unite, rayon: ingredient.rayon, quantite: 0, repas: 0, recettes: new Map() });
         }
@@ -10636,7 +12093,7 @@
       }))
       .filter((groupe) => groupe.articles.length);
 
-    return { rayons, nbArticles: articles.size, nbRepas };
+    return { rayons, nbArticles: articles.size, nbRepas, basiques: [...basiques].sort((a, b) => a.localeCompare(b, 'fr')) };
   }
 
   // Quantité à acheter : pièces arrondies au supérieur, kg et L au-delà de 1 000
@@ -10701,7 +12158,7 @@
      */
     calculer() {
       const catalogue = getIngredients();
-      const { rayons, nbRepas } = genererListeCourses(State.data.planning, { parFournees: State.data.ui.achatParFournees });
+      const { rayons, nbRepas, basiques } = genererListeCourses(State.data.planning, { parFournees: State.data.ui.achatParFournees });
       const articles = new Map();
       rayons.forEach((groupe) => groupe.articles.forEach((a) => articles.set(a.ref, { ...a, besoin: a.quantite })));
 
@@ -10723,7 +12180,7 @@
         .map(([rayon, label]) => ({ rayon, label, articles: liste.filter((a) => a.rayon === rayon).sort((x, y) => x.nom.localeCompare(y.nom, 'fr')) }))
         .filter((groupe) => groupe.articles.length);
 
-      return { groupes, articles: liste, nbRepas };
+      return { groupes, articles: liste, nbRepas, basiques };
     },
 
     // Coché à la main, sinon coché d'office quand il n'y a rien à acheter
@@ -10880,8 +12337,12 @@
       const cleFocus = zone.contains(actif) ? actif.dataset.focus : null;
       const ordreAvant = cleFocus ? [...zone.querySelectorAll('[data-focus$="|case"]')].map((el) => el.dataset.focus) : [];
 
-      const { groupes, articles, nbRepas } = this.calculer();
+      const { groupes, articles, nbRepas, basiques } = this.calculer();
       const masquer = State.data.ui.masquerCoches;
+      $('courses-basiques').hidden = !basiques.length;
+      $('courses-basiques').textContent = basiques.length
+        ? `Basiques du placard utilisés cette semaine, non ajoutés à la liste : ${basiques.join(', ')}. Donne-leur un seuil dans le stock pour qu'ils reviennent quand il faut en racheter.`
+        : '';
       const nbArticles = articles.length;
       const possedes = articles.filter((a) => this.estCoche(a.ref));
       const couvertsParStock = articles.filter((a) => a.manque <= 0).length;
@@ -10979,6 +12440,7 @@
     Performances.init();
     Progression.init();
     Router.init();
+    Voix.init();
     Installation.init();
   });
   </script>
